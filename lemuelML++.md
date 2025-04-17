@@ -66,8 +66,6 @@ img {
 
 [Introduzione](#page-0-1) [Tipologie](#page-1-0) di algoritmi di learning [Supervised learning](#page-1-1) [Unsupervised learning](#page-1-2) [Reinforcement](#page-1-3) learning [Self-supervised learning](#page-1-4) [Notazione](#page-1-5) [Normalizzazione](#page-2-0) Modelli generativi vs [discriminativi](#page-2-1) [Origine](#page-3-0) delle reti neurali
 -->
-## Realizzato da Yuri e Ignazio
-
 ## **Introduzione**
 
 Il Machine Learning dona ai computer l'abilità di imparare senza essere esplicitamente programmati. La definizione formale è stata coniata da Tom Mitchel nel 1998:
