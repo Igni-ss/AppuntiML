@@ -199,14 +199,14 @@ I neuroni più in alto nella gerarchia tendono ad attivarsi in presenza di conce
 
 Il primo tentativo di modellare matematicamente un neurone è dovuto a McCulloch (un neuroscienziato) e Walter Pitts (un logico) che proposero il neurone McCulloch-Pitts nel 1943. Un McCulloch-Pitts può essere visto come un'unità che riceve n input binari e restituisce un output:
 
-![](/img/McCullochs-Pitts_unit.png)
+![](img/McCullochs-Pitts_unit.png)
 
 Analogamente al modello di un neurone, tutti gli input e gli output sono binari. Il neurone è anche associato ad una soglia $\theta$.
-L’output può “distribuirsi” molte volte, collegandosi ad altri neuroni. Gli input 𝑥𝑖 possono provenire da altri neuroni o essere caratteristiche di un elemento di input. Ogni input è collegato al neurone tramite bordi diretti (tutti vanno dall'input al neurone). Esistono due tipi di connessioni: eccitatorio e inibitorio. Per indicare gli input inibitori si mette un pallino come nelle porte logiche negate. Il neurone esegue un semplice calcolo:
+L’output può “distribuirsi” molte volte, collegandosi ad altri neuroni. Gli input 𝑥𝑖 possono provenire da altri neuroni o essere caratteristiche di un elemento di input. Ogni input è collegato al neurone tramite archi diretti (tutti vanno dall'input al neurone). Esistono due tipi di connessioni: **eccitatoria** e **inibitoria**. Per indicare gli input inibitori si mette un pallino come nelle porte logiche negate. Il neurone esegue un semplice calcolo:
 
-  1. Supponiamo che il neurone ottenga $x_1,...,x_n$ input eccitatori e $y_1,...,y_n$ input inibitori.
+  1. Supponiamo che il neurone ottenga $x_1,...,x_n$ input eccitatori e $y_1,...,y_m$ input inibitori.
   2. Se $m \ge 1$ e almeno uno degli input inibitori è $1$, il neurone viene inibito e il calcolo finale è $0$ (il neurone non si attiva).
-  3. Altrimenti l'eccitazione totale viene calcolata sommando i valori degli ingressi eccitatori: $x = x_1 + x_2 + ... + x_n$. Se $$x \ge \theta$ l'uscita è $1$ (l'unità si accende), altrimenti no.
+  3. Altrimenti l'eccitazione totale viene calcolata sommando i valori degli ingressi eccitatori: $x = x_1 + x_2 + ... + x_n$. Se $x \ge \theta$ l'uscita è $1$ (l'unità si accende), altrimenti no.
 
 L'operazione di soglia (thresholding) può essere vista come una funzione a gradino che trasforma un ingresso non binario in un'uscita binaria.
 
@@ -214,12 +214,12 @@ L'operazione di soglia (thresholding) può essere vista come una funzione a grad
 
 Sebbene questo modello possa sembrare semplice, la scelta della soglia appropriata permette di implementare semplicemente porte AND e OR anche con più di due input:
 
-![](/img/AND_OR.png)
-![](/img/AND_OR_generiche.png)
+![](img/AND_OR.png)
+![](img/AND_OR_generiche.png)
 
 L'utilizzo di connessioni inibitorie (contrassegnate da un punto all'estremità del bordo) può consentire di implementare unità logiche ancora più complesse:
 
-![](/img/AND_OR_Complesse.png)
+![](img/AND_OR_Complesse.png)
 
 Quindi, abbiamo un modello parametrico con cui può implementare diverse funzioni con una scelta adeguata dei parametri. I parametri qui sono:
   
@@ -228,7 +228,7 @@ Quindi, abbiamo un modello parametrico con cui può implementare diverse funzion
 
 McCulloch e Pitts dimostrarono anche che impilare diverse unità potrebbe consentire di implementare funzioni più complesse, creando così i primi tipi di “reti neurali artificiali”.
 
-![](/img/Funzione_complessa.png)
+![](img/Funzione_complessa.png)
 
 ## Limitazioni
 
@@ -259,10 +259,15 @@ Perceptron
 ```-->
 ## **Introduzione al perceptron**
 
-Il perceptron fu ideato da Rosemblatt originariamente come una macchina per la classificazione binaria, quindi  $x \in \mathbb{R}^d \rightarrow y \in \{0, 1\}$ ma può essere esteso a valori reali. L'idea principale è la seguente:
+Il perceptron fu ideato da Rosemblatt originariamente come una macchina per la classificazione binaria, quindi  $x \in \mathbb{R}^d \rightarrow y \in \{0, 1\}$ ma può essere esteso a valori reali. Esso supera alcune limitazioni in due modi:
+
+- Assegnazione dei pesi alle connessioni. Questi pesi verranno moltiplicati per i valori di input. Poiché sono possibili pesi negativi, non è necessario distinguere tra connessioni eccitatorie e inibitorie.
+- Fornire un algoritmo di apprendimento efficace per il percettrone in grado di trovare i pesi appropriati del modello (i pesi sono parametri del modello) se esistono.
+
+Il suo funzionamento è il seguente:
 <span id="page-4-1"></span>
 
-1. Un peso  $\theta_i$  per ogni componente dell'input:
+1. Si ha un peso  $\theta_i$  per ogni componente dell'input:
 2. Effettuare una combinazione lineare tra il vettore dei pesi e quello dell'input
 3. Se il risultato della combinazione è maggiore di una soglia  $t$, ritorna 1, altrimenti 0
 
@@ -295,11 +300,11 @@ $$
 \theta_j^{new} = \theta_j^{old} + \eta(y^{(i)} - \hat{y}^{(i)}) \cdot x_j^{(i)}
 $$
 
-Assumendo che $x_j^{(i)}$ sia normalizzato in $[0, 1]$, possiamo considerarlo come una sorta di lunghezza del passo di aggiornamento. L'espressione $(y^{(i)} - \hat{y}^{(i)})$ risulta 0 quando la predizione è corretta, quindi groundtruth e inferenza sono uguali ed in tal caso il peso resta invariato; risulta 1 nel caso (a) e -1 nel caso (b), quindi nel caso (a) andiamo a sommare $x_j^{(i)}$ al vecchio peso e lo "incrementiamo", mentre nel caso (*b*) andiamo a sottrarre $x_j^{(i)}$ quindi lo "decrementiamo". $\eta$ è il **learning rate** e indica quanto grande deve essere l'aggiornamento. Questo algoritmo arriva a soluzione se i punti in input sono linearmente separabili.
+Assumendo che $x_j^{(i)}$ sia normalizzato in $[0, 1]$, possiamo considerarlo come una sorta di lunghezza del passo di aggiornamento. L'espressione $(y^{(i)} - \hat{y}^{(i)})$ risulta $0$ quando la predizione è corretta, quindi groundtruth e inferenza sono uguali ed in tal caso il peso resta invariato; risulta $1$ nel caso (a) e $-1$ nel caso (b), quindi nel caso (a) andiamo a sommare $x_j^{(i)}$ al vecchio peso e lo "incrementiamo", mentre nel caso (*b*) andiamo a sottrarre $x_j^{(i)}$ quindi lo "decrementiamo". $\eta$ è il **learning rate** e indica quanto grande deve essere l'aggiornamento. Questo algoritmo arriva a soluzione se i punti in input sono linearmente separabili.
 
 ## **Evaluation during training**
 
-Per valutare le performance del modello impostiamo una loss function / cost function che vogliamo minimizzare, essa corrisponde all'accuratezza:
+Per valutare le performance del modello impostiamo una **loss function** / **cost function** che vogliamo minimizzare, essa corrisponde all'accuratezza:
 
 <span id="page-5-1"></span>
 $$ \text{cost function} = \frac{\#\text{errors }\hat{y}^{(i)} \neq y^{(i)}}{|X_{train}|} $$
@@ -330,17 +335,17 @@ $$
 \end{cases}
 $$
 
-Da cui sovviene la contraddizione:  $t$  è una soglia strettamente positiva per la dis.1, e per le dis. 2 e 3 i valori  $w_1$  e  $w_2$  sono maggiori o uguali di  $t$ . L'dis.4 assume che la somma  $w_1 + w_2$  siano minore stretta di  $t$, il che è assurdo per le prime 3 disequazioni. Quindi il sistema non ammette soluzioni. Da questa dimostrazione ci accorgiamo che il Perceptron può calcolare solo **decision boundaries lineari**!
+Da cui sovviene la contraddizione:  $t$  è una soglia strettamente positiva per la dis.1, e per le dis. 2 e 3 i valori  $w_1$  e  $w_2$  sono maggiori o uguali di  $t$ . La dis.4 assume che la somma  $w_1 + w_2$  siano minore stretta di  $t$, il che è assurdo per le prime 3 disequazioni. Quindi il sistema non ammette soluzioni. Da questa dimostrazione ci accorgiamo che il Perceptron può calcolare solo **decision boundaries lineari**!
 
 ![](img/XOR_schema.png)
 
-Questo esempio suggerisce che i percettroni non possono risolvere tutti i tipi di problemi. Infatti, un percettrone è un classificatore lineare e può risolvere solo problemi in cui i dati di addestramento sono linearmente separabili. La separabilità lineare può essere definita come segue:
+Questo esempio suggerisce che i percettroni non possono risolvere tutti i tipi di problemi. Infatti, un percettrone è un classificatore lineare e può risolvere solo problemi in cui i dati di addestramento sono linearmente separabili.
 
 > Nota: con  $d = 2, 14/16$  funzioni risultano linearmente separabili. All'aumentare di  $d$, il numero di funzioni logiche linearmente separabili diminuisce drasticamente (es.  $a$  contiene funzioni lin. sep.).
 
 ## **Linear Separability**
 
-Due insiemi di punti  $A$  e  $B$  in uno spazio  $n$ -dimensionale vengono detti linearmente separabili se esistono  $n + 1$  numeri reali  $w_1, w_1,..., w_{n+1}$  tali che ogni punto  $(x_1,..., x_n) \in A$  soddisfa la disequazione:
+Due insiemi di punti  $A$  e  $B$  in uno spazio  $n$-dimensionale vengono detti linearmente separabili se esistono  $n + 1$  numeri reali  $w_1, w_1,..., w_{n+1}$  tali che ogni punto  $(x_1,..., x_n) \in A$  soddisfa la disequazione:
 
 <span id="page-7-2"></span><span id="page-7-1"></span><span id="page-7-0"></span>
 $$\forall (x_1, \ldots, x_n) \in A \Longrightarrow \sum_{i=1}^n x_i w_i \geq x_{n+1}$$
@@ -491,19 +496,8 @@ Consideriamo ora il caso generale di regressione multivariata in cui vogliamo ma
 $$f: \mathfrak{R}^n → \mathfrak{R}^m$$
 
 La regressione lineare multivariata risolve il problema definendo m regressori multipli indipendenti $f_i(x)$ che elaborano lo stesso input x, ma possono avere pesi diversi:
-$$
-\begin{pmatrix}
-  y_1 \\
-  \vdots \\
-  y_m
-\end{pmatrix}
-=
-\begin{pmatrix}
-  f_1(x) \\
-  \vdots \\
-  f_m(x)
-\end{pmatrix}
-$$
+
+$$ \begin{pmatrix} y_1 \\ \vdots \\ y_m \end{pmatrix} = \begin{pmatrix} f_1(x) \\ \vdots \\ f_m(x) \end{pmatrix} $$
 
 Ogni regressore $f_i(x)$ ha i propri parametri e le relative ottimizzazioni vengono eseguite in modo indipendente.
 
@@ -522,16 +516,10 @@ Se plottiamo questa funzione costo notiamo che essa ha un solo minimo globale. A
 
 # **Gradient Descent**
 
-Il gradient descent è un algoritmo iterativo utilizzato per trovare il minimo di una funzione. Si basa sull'osservazione che, se una funzione $J(\theta)$ è definita e differenziabile in un intorno di un punto $\theta^{(0)}$, allora $J(\theta)$ diminuisce più rapidamente se si procede da $\theta^{(0)}$ verso la direzione della derivata negativa di $J$ calcolata in $\theta^{(0)}$. Il gradiente è una generalizzazione multivariabile della derivata. Il gradiente di una funzione di $n$ variabili calcolato in un punto $\theta è un vettore la cui variabile $i$-esima è data dalla derivata parziale della funzione rispetto alla variabile $i$-esima:
-$$
-\nabla J(\theta)
-=
-\begin{pmatrix}
-  J_{\theta_1}(\theta) \\
-  \vdots \\
-  J_{\theta_n}(\theta)
-\end{pmatrix}
-$$
+Il gradient descent è un algoritmo iterativo utilizzato per trovare il minimo di una funzione. Si basa sull'osservazione che, se una funzione $J(\theta)$ è definita e differenziabile in un intorno di un punto $\theta^{(0)}$, allora $J(\theta)$ diminuisce più rapidamente se si procede da $\theta^{(0)}$ verso la direzione della derivata negativa di $J$ calcolata in $\theta^{(0)}$. Il gradiente è una generalizzazione multivariabile della derivata. Il gradiente di una funzione di $n$ variabili calcolato in un punto $\theta$ è un vettore la cui variabile $i$-esima è data dalla derivata parziale della funzione rispetto alla variabile $i$-esima:
+
+$$\nabla J(\theta) = \begin{pmatrix} J_{\theta_1}(\theta) \\ \vdots \\ J_{\theta_n}(\theta) \end{pmatrix} $$
+
 Nel nostro caso, lo utilizziamo per minimizzare la funzione costo  $J$ . L'algoritmo funziona come segue:
 
 1. Inizializza  $\theta = (\theta_0,..., \theta_n)$  randomicamente.
@@ -592,9 +580,9 @@ Casi come questi indicano che il learning rate ha un valore troppo grande, sareb
 
 Se il learning rate  $\alpha$  è sufficientemente piccolo, allora  $J(\theta)$  decrescerà ad ogni iterazione, ma se è troppo piccolo l'algoritmo andrà a convergenza molto lentamente.
 
-### **Feature mapping**
+## **Feature mapping**
 
-Non è sempre possibile risolvere il problema di regressione usando modelli lineari come visto fino adesso. Se i punti nello spazio si dispongono approssimativamente lungo una linea, un piano, un iperpiano, allora il modello lineare riesce ad approssimare bene, quindi avremo un errore  $\jmath$  basso sia sul training set che sul test set. Se i punti nello spazio delle feature si dispongono in maniera non lineare, il modello visto non è sufficiente. La soluzione risiede nel feature mapping:
+Non è sempre possibile risolvere il problema di regressione usando modelli lineari come visto fino adesso. Se i punti nello spazio si dispongono approssimativamente lungo una linea, un piano, un iperpiano, allora il modello lineare riesce ad approssimare bene, quindi avremo un errore  $J(\theta)$  basso sia sul training set che sul test set. Se i punti nello spazio delle feature si dispongono in maniera non lineare, il modello visto non è sufficiente. La soluzione risiede nel feature mapping:
 
 Estendiamo lo spazio delle features con una funzione kernel  $\phi(x)$  che prende in input un vettore $x \in \mathbb{R}^n$ e lo trasforma in un vettore  $\bar{x} \in \mathbb{R}^m$  con  $m > n$.
 
@@ -919,7 +907,7 @@ L'obiettivo è quello di creare un modello i cui output stiano nel range  $[0, 1
 
 ![](img/_page_26_Figure_0.jpeg)
 
-La funzione logistica è una funzione derivabile  $\sigma : \mathbb{R} \rightarrow [0, 1]$  definita come segue:
+La funzione logistica è una funzione derivabile  $\sigma : \mathbb{R} \rightarrow [0, 1]$ (inversa della funzione logit) definita come segue:
 
 $$\sigma(z) = \frac{1}{1 + e^{-z}} = \frac{e^z}{e^z + 1}$$
 
