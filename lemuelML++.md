@@ -907,7 +907,7 @@ L'obiettivo è quello di creare un modello i cui output stiano nel range  $[0, 1
 
 ![](img/_page_26_Figure_0.jpeg)
 
-La funzione logistica è una funzione derivabile  $\sigma : \mathbb{R} \rightarrow [0, 1]$ (inversa della funzione logit) definita come segue:
+La funzione logistica è una funzione non lineare, derivabile  $\sigma : \mathbb{R} \rightarrow [0, 1]$ (inversa della funzione logit) definita come segue:
 
 $$\sigma(z) = \frac{1}{1 + e^{-z}} = \frac{e^z}{e^z + 1}$$
 
@@ -927,25 +927,35 @@ $$
 
 Per utilizzare la funzione logistica nel nostro modello, prendiamo un regressore lineare e applichiamo tale funzione al suo output. Quindi avremo che:
 
-$$h_{\theta}(x) = \sigma(\Theta^T x)$$
+$$h_{\theta}(x) = \sigma(\theta^T x)$$
 
-Il risultato può essere interpretato come la probabilità di appartenere alla classe 1 (classe positiva) avendo osservato  $x$  come input e  $\Theta$  come parametri:
+Il risultato può essere interpretato come la probabilità di appartenere alla classe 1 (classe positiva) avendo osservato  $x$  come input e  $\theta$  come parametri:
 
-$$h_{\theta}(x) = P(y = 1 \mid x, \Theta)$$
+$$h_{\theta}(x) = P(y = 1 \mid x, \theta)$$
 
 Inoltre osserviamo:
 
-$$\begin{aligned} P(y = 0 \mid x, \Theta) &= 1 - P(y = 1 \mid x, \Theta) \\ &= 1 - h_{\theta}(x) \\ &= 1 - \sigma(\Theta^T x) \\ &= \sigma(-\Theta^T x) \end{aligned}$$
+$$
+P(y = 0 \mid x, \theta) + P(y = 1 \mid x, \theta) = 1\\
+\Downarrow \\
+\begin{aligned}
+P(y = 0 \mid x, \theta) &= 1 - P(y = 1 \mid x, \theta) \\
+&= 1 - h_{\theta}(x) \\
+&= h_{\theta}(-x) \\
+&= 1 - \sigma(\theta^T x) \\
+&= \sigma(-\theta^T x) \\
+&= \frac{1}{1+e^{\theta^Tx}}
+\end{aligned}$$
 
 L'ultima osservazione è la seguente: se osserviamo il grafico della funzione logistica ci accorgiamo che:
 
 $$\begin{aligned} \sigma(z) &\ge 0.5 \Longleftrightarrow z \ge 0 \\ \sigma(z) &< 0.5 \Longleftrightarrow z < 0 \end{aligned}$$
 
-Se imponiamo che  $x$  sarà di classe 1 se  $h_\theta(x) \ge 0.5$, allora ci basta osservare che  $\Theta^T x \ge 0$  (e viceversa per la classe 0). Quindi  $\Theta^T x$  è il **boundary di decisione**. Questo ha una forte implicazione pratica, poiché ci suggerisce che per classificare non è necessario calcolare la funzione logistica (ma nel training si).
+Se imponiamo che  $x$  sarà di classe 1 se  $h_\theta(x) \ge 0.5$, allora ci basta osservare che  $\theta^T x \ge 0$  (e viceversa per la classe 0). Quindi  $\theta^T x$  è il **boundary di decisione**. Questo ha una forte implicazione pratica, poiché ci suggerisce che per classificare non è necessario calcolare la funzione logistica (ma nel training si perchè serve per la loss).
 
 ![](img/_page_27_Figure_0.png)
 
-> Nota:  $\Theta^T x$, prima di essere normalizzato con la funzione logistica, prende il nome di **logit** (con abuso di terminologia, non riferendosi alla funzione logit).
+> Nota:  $\theta^T x$, prima di essere normalizzato con la funzione logistica, prende il nome di **logit** (con abuso di terminologia, non riferendosi alla funzione logit).
 
 Nuovo obiettivo: trovare i parametri del modello (che è una composizione di funzioni derivabili).
 
@@ -957,9 +967,9 @@ Nell'immagine a sx i punti delle due classi non sono linearmente separabili, poi
 
 ## **Funzione costo (Binary Cross-Entropy loss)**
 
-Bisogna definire una loss function / cost function che faccia al caso nostro:
+Bisogna definire una loss function/cost function che faccia al caso nostro:
 
-$$J(\Theta) = \frac{1}{m} \sum_{i=1}^{m} \text{Loss} \{ h_{\theta}(x^{(i)}), y^{(i)} \} $$
+$$J(\theta) = \frac{1}{m} \sum_{i=1}^{m} \text{Loss} \{ h_{\theta}(x^{(i)}), y^{(i)} \} $$
 
 L'ideale è che sia una **funzione convessa**, così da poter usare senza problemi l'algoritmo di discesa del gradiente per trovare un minimo globale. Per adesso non diciamo nulla su come viene ricavata la funzione loss, dedicheremo il prossimo capitolo esclusivamente a questo. La seguente loss prende il nome di binary cross-entropy loss:
 
@@ -967,11 +977,11 @@ $$\text{Loss}(h_{\theta}(x), y) = -y \log(h_{\theta}(x)) - (1 - y) \log(1 - h_{\
 
 E sostituendola a  $J$  otteniamo:
 
-$$J(\Theta) = \frac{1}{m} \sum_{i=1}^{m} \left[ -y^{(i)} \log \left( h_{\theta}(x^{(i)}) \right) - (1 - y^{(i)}) \log \left( 1 - h_{\theta}(x^{(i)}) \right) \right]$$
+$$J(\theta) = \frac{1}{m} \sum_{i=1}^{m} \left[ -y^{(i)} \log \left( h_{\theta}(x^{(i)}) \right) - (1 - y^{(i)}) \log \left( 1 - h_{\theta}(x^{(i)}) \right) \right]$$
 
 La funzione  $J$  così definita è **derivabile** e **convessa**, per cui per minimizzarla allo scopo di trovare i parametri ottimali, possiamo utilizzare la **discesa del gradiente**. La derivata della funzione costo è la seguente (senza regolarizzazione):
 
-$$\frac{\partial}{\partial \theta_j} J(\Theta) = \frac{1}{m} \sum_{i=1}^{m} \left[ h_{\theta}(x^{(i)}) - y^{(i)} \right] \cdot x_j^{(i)}$$
+$$\frac{\partial}{\partial \theta_j} J(\theta) = \frac{1}{m} \sum_{i=1}^{m} \left[ h_{\theta}(x^{(i)}) - y^{(i)} \right] \cdot x_j^{(i)}$$
 
 Come la si è calcolata? Tié
 
@@ -1014,7 +1024,7 @@ Abbiamo già visto come formare la funzione costo  $J$  e la sua derivata nel ca
 
 Per una descrizione su Entropia, Cross-Entropy e KL-Divergence, leggere Section 3.2 di DiveIntoDataMining.
 
-L'entropia è la misura dell'incertezza / disordine / informazione contenuta in una distribuzione di probabilità. Sia  $X$  una variabile aleatoria che può assumere  $K$  valori, allora l'entropia è definita come:
+L'entropia è la misura dell'incertezza/disordine/informazione contenuta in una distribuzione di probabilità. Sia  $X$  una variabile aleatoria che può assumere  $K$  valori, allora l'entropia è definita come:
 
 $$H(X) = -\sum_{k=1}^{K} p_k \log(p_k)$$
 
@@ -1030,21 +1040,21 @@ La [cross-entropy](https://en.wikipedia.org/wiki/Cross_entropy) indica il numero
 
 $$H(p,q) = -\sum_{k=1}^{K} p_k \log q_k$$
 
-La distribuzione ideale è data da una rappresentazione di tipo "one-hot vector", in cui e ha un'unica componente, mentre tutte le altre sono nulle. Ad esempio, se le classi sono 3 ed il campione appartiene alla seconda classe allora . Nella cross-entropy loss, si fa una media della cross-entropy in tutto il training set:
+La distribuzione ideale è data da una rappresentazione di tipo "one-hot vector", in cui $p(x) = y$ e $y$ ha un'unica componente $y_i = 1$, mentre tutte le altre sono nulle. Ad esempio, se le classi sono 3 ed il campione appartiene alla seconda classe $(c=1)$ allora $y=[0,1,0]$. Per ottenere la loss sul training con la cross-entropy loss, si fa una media della cross-entropy in tutto il training set:
 
-$$\begin{aligned} J(\Theta) &= \frac{1}{m} \sum_{i=1}^m \left[ -\sum_{k=1}^K p_k^{(i)} \log q_k^{(i)} \right] \\ &= \frac{1}{m} \sum_{i=1}^m \left[ -\sum_{k=1}^K y_k^{(i)} \log h_\theta(x^{(i)})_k \right] \end{aligned}$$
+$$\begin{aligned} J(\theta) &= \frac{1}{m} \sum_{i=1}^m \left[ -\sum_{k=1}^K p_k^{(i)} \log q_k^{(i)} \right] \\ &= \frac{1}{m} \sum_{i=1}^m \left[ -\sum_{k=1}^K y_k^{(i)} \log h_\theta(x^{(i)})_k \right] \end{aligned}$$
 
 Notiamo che all'interno della sommatoria, il termine $y_k^{(i)}$ sarà sempre nullo tranne che nella componente che rappresenta la classe di $x^{(i)}$, nella pratica questo step si può semplificare tenendo in considerazione solo tale componente. Supponendo che $y_j^{(i)}=1$, allora
 
-$$J(\Theta) = \frac{1}{m} \sum_{i} \left[ y_j^{(i)} \log h_{\theta}(x^{(i)})_k \right]$$
+$$J(\theta) = \frac{1}{m} \sum_{i} \left[ y_j^{(i)} \log h_{\theta}(x^{(i)})_k \right]$$
 
 # **Multi-class classification**
 
-Analizziamo il task di classificazione quando un campione del dataset può appartenere ad una di classi.
+Analizziamo il task di classificazione quando un campione del dataset può appartenere ad una di $K$ classi.
 
 ## **One-vs-all (one-vs-rest)**
 
-La tecnica del one-vs-all consiste nel allenare  $K$  classificatori, dove l' $i$ -esimo modello è un classificatore binario che distingue la classe dal resto, ovvero predirà la probabilità $P(y=i|x,\Theta^i)$. Quando si deve classificare un nuovo elemento  $x^{new}$ bisognerà prendere la classe corrispondente al classificatore  $h_{\theta}^{j}$  che ha probabilità maggiore:
+La tecnica del one-vs-all consiste nel allenare  $K$  classificatori, dove l' $i$ -esimo modello è un classificatore binario che distingue la classe dal resto, ovvero predirà la probabilità $P(y=i|x,\theta^i)$. Quando si deve classificare un nuovo elemento  $x^{new}$ bisognerà prendere la classe corrispondente al classificatore  $h_{\theta}^{j}$  che ha probabilità maggiore:
 
 $$
 \hat{k} = max_kh_{\theta}^{j}(x^{new})
@@ -1068,14 +1078,19 @@ L'approccio 1v1 è molto dispendioso, dato che con  $K$  classi dovremmo allenar
 
 ## **Softmax**
 
-La softmax è una generalizzazione della funzione logistica adatta alla classificazione multiclasse. Supponendo che ci siano  $k$  classi, il modello torna in output un vettore di lunghezza  $k$ , dove l'*i*esima componente esprime la probabilità condizionata  $P(y = i \mid x; \Theta)$ , con  $\Theta$  matrice dei pesi del modello:
+La softmax è una generalizzazione della funzione logistica adatta alla classificazione multiclasse. Supponendo che ci siano  $k$  classi, il modello torna in output un vettore di lunghezza  $k$, dove l'$i$-esima componente esprime la probabilità condizionata  $P(y = i \mid x; \theta)$ , con  $\theta$  matrice dei pesi del modello:
 
-$$h_{\theta}(x) = \begin{bmatrix} P(y = 0 \mid x; \Theta) \\ P(y = 1 \mid x; \Theta) \\ \vdots \\ P(y = k - 1 \mid x; \Theta) \end{bmatrix}$$
+$$h_{\theta}(x) = \begin{bmatrix}
+P_{\theta^{(0)}}(y = 0 \mid x) \\
+P_{\theta^{(1)}}(y = 1 \mid x) \\
+\vdots \\
+P_{\theta^{(k-1)}}(y = k - 1 \mid x)
+\end{bmatrix}$$
 
-Notasi che la matrice dei pesi  $\Theta$  è una matrice  $(d + 1) \times k$  (supponendo che  $x \in \mathbb{R}^{d}$ , più la costante di bias, per ognuno dei  $k$  output).
+Notasi che  $\theta$  è una matrice dei pesi $(d + 1) \times k$  (supponendo che  $x \in \mathbb{R}^{d}$ , più la costante di bias, per ognuno dei  $k$  output).
 
 $$
-\Theta = \begin{bmatrix}
+\theta = \begin{bmatrix}
 \theta_0^{(0)} & \theta_0^{(1)} & \theta_0^{(2)} & \dots & \theta_0^{(k-1)} \\
 \theta_1^{(0)} & \theta_1^{(1)} & \theta_1^{(2)} & \dots & \theta_1^{(k-1)} \\
 \vdots & \vdots & \vdots & \ddots & \vdots \\
@@ -1083,9 +1098,9 @@ $$
 \end{bmatrix}
 $$
 
-Con  $\theta^{(i)}$  indicheremo la colonna *i*-esima di  $\Theta$ . Nella pratica, la componente *i*-esima del modello viene calcolata come segue:
+Con  $\theta^{(i)}$ indicheremo la colonna $i$-esima di  $\theta$. Nella pratica, la componente *i*-esima del modello viene calcolata come segue:
 
-$$h_{\theta}^{(i)}(x) = P(y = i \mid x; \Theta) = \frac{\exp(\theta^{(i)T}x)}{\sum_{j=0}^{k-1} \exp(\theta^{(j)T}x)}$$
+$$h_{\theta}^{(i)}(x) = P(y = i \mid x) = \frac{\exp(\theta^{(i)T}x)}{\sum_{j=0}^{k-1} \exp(\theta^{(j)T}x)}$$
 
 Dove il denominatore serve a normalizzare la componente in $[0,1]$, e cosicché la somma delle componenti faccia 1. Come funzione costo è possibile utilizzare la Cross-Entropy loss più il termine di regolarizzazione:
 
@@ -1099,19 +1114,22 @@ Per minimizzare la cost function può essere utilizzato l'algoritmo di GD o SGD,
 
 ### **Proprietà della softmax**
 
-Il modello Softmax è **overparametrizzato**, ovvero esistono più matrici distinte  $\Theta$  che mappano $x^{(i)} \in \mathbb{R}^d$ a  $y \in \{0, 1, ..., k - 1\}$  allo stesso identico modo. Supponiamo di avere $\psi = [\psi_0,..., \psi_k]$ e di modificare la predizione come segue:
+Il modello Softmax è **overparametrizzato**, ovvero esistono più matrici distinte  $\theta$  che mappano $x^{(i)} \in \mathbb{R}^d$ a  $y \in \{0, 1, ..., k - 1\}$  allo stesso identico modo. Supponiamo di avere $\psi = [\psi_0,..., \psi_k]$ e di modificare la predizione come segue:
 
-$$\begin{split} h_{\theta}^{(c)}(x^{(i)}) &= \frac{\exp([\theta^{(c)} - \psi]^{T}x)}{\sum_{j=0}^{k-1} \exp([\theta^{(j)} - \psi]^{T}x)} \\ &= \frac{\exp([\theta^{(c)}]^{T}x) \cdot \exp([-\psi]^{T}x)}{\exp([-\psi]^{T}x) \cdot \sum_{j=0}^{k-1} \exp([\theta^{(j)}]^{T}x)} \\ &= \frac{\exp([\theta^{(c)}]^{T}x)}{\sum_{j=0}^{k-1} \exp([\theta^{(j)}]^{T}x)} \end{split}$$
+$$\begin{split}
+h_{\theta}^{(c)}(x^{(i)}) &= \frac{\exp([\theta^{(c)} - \psi]^{T}x)}{\sum_{j=0}^{k-1} \exp([\theta^{(j)} - \psi]^{T}x)} \\
+&= \frac{\exp([\theta^{(c)}]^{T}x) \cdot \cancel{\exp([-\psi]^{T}x)}}{\cancel{\exp([-\psi]^{T}x)} \cdot \sum_{j=0}^{k-1} \exp([\theta^{(j)}]^{T}x)} \\
+&= \frac{\exp([\theta^{(c)}]^{T}x)}{\sum_{j=0}^{k-1} \exp([\theta^{(j)}]^{T}x)} \end{split}$$
 
 Ovvero sottraendo ad ogni vettore di parametri $\theta^{(c)}$ non si condiziona l'ipotesi.
 
 ### **Ridurre la softmax alla regressione logistica**
 
-Per  $k = 2$  abbiamo:
+Per  $k = 2$ abbiamo:
 
 $$h_{\theta}(x) = \begin{bmatrix} \frac{\exp(\theta^{(0)T}x)}{\exp(\theta^{(0)T}x) + \exp(\theta^{(1)T}x)} \\\\ \frac{\exp(\theta^{(1)T}x)}{\exp(\theta^{(0)T}x) + \exp(\theta^{(1)T}x)} \end{bmatrix}$$
 
-A questo punto usiamo la proprietà della softmax e sottraiamo ai vettori dei pesi il vettore  $\theta^(1)$  prima di effettuare la combinazione lineare con  $x$  (per visibilità scomponiamo le componenti):
+A questo punto usiamo la proprietà della softmax e sottraiamo ai vettori dei pesi il vettore  $\theta^{(1)}$  prima di effettuare la combinazione lineare con  $x$  (per visibilità scomponiamo le componenti):
 
 $$\frac{\exp([\theta^{(0)} - \theta^{(1)}]^T x)}{\exp([\theta^{(0)} - \theta^{(1)}]^T x) + \exp([\theta^{(1)} - \theta^{(1)}]^T x)} \quad \frac{\exp([\theta^{(1)} - \theta^{(1)}]^T x)}{\exp([\theta^{(0)} - \theta^{(1)}]^T x) + \exp([\theta^{(1)} - \theta^{(1)}]^T x)}$$
 
@@ -1119,7 +1137,7 @@ Semplifichiamo:
 
 $$\frac{\exp([\theta^{(0)} - \theta^{(1)}]^T x)}{\exp([\theta^{(0)} - \theta^{(1)}]^T x) + 1} \qquad \qquad \frac{1}{\exp([\theta^{(0)} - \theta^{(1)}]^T x) + 1}$$
 
-Poniamo  $\theta = \theta^{(v)} - \theta^{(1)}$ , osserviamo che la seconda componente è proprio  $\sigma(\theta^T x)$ , mentre la prima equivale a  $1 - \sigma(\theta^T x)$ . La seconda componente è la probabilità  $P(y = 1 | x, \Theta)$ , mentre la prima è la probabilità  $P(y = 0 | x, \Theta)$ , per cui ci siamo ricondotti alla regressione logistica.
+Poniamo  $\theta = \theta^{(0)} - \theta^{(1)}$ , osserviamo che la seconda componente è proprio  $\sigma(\theta^T x)$ , mentre la prima equivale a  $1 - \sigma(\theta^T x)$ . La seconda componente è la probabilità  $P(y = 1 | x, \theta)$ , mentre la prima è la probabilità  $P(y = 0 | x, \theta)$ , per cui ci siamo ricondotti alla regressione logistica.
 
 ## **Regolarizzazione**
 
@@ -1163,7 +1181,7 @@ Considerazioni:
 
 ## **Learning rate decay**
 
-Durante le fasi di training è spesso utile ridurre il learning rate  $\alpha$ , poiché avvicinandoci al minimo vogliamo fare passi più piccoli (anche se il gradiente si occupa già di questo). Usiamo un **learning rate scheduler** che modifica durante il training. Abbiamo diversi [tipi di schemi](https://towardsdatascience.com/learning-rate-schedules-and-adaptive-learning-rate-methods-for-deep-learning-2c8f433990d1):
+Durante le fasi di training è spesso utile ridurre il learning rate  $\alpha$, poiché avvicinandoci al minimo vogliamo fare passi più piccoli (anche se il gradiente si occupa già di questo). Usiamo un **learning rate scheduler** che modifica durante il training. Abbiamo diversi [tipi di schemi](https://towardsdatascience.com/learning-rate-schedules-and-adaptive-learning-rate-methods-for-deep-learning-2c8f433990d1):
 
 - **Constant**: opzione di default, il learning rate rimane costante
 - **Time-based**: impostiamo  $\alpha^t = \alpha^0 \cdot 1/(1 + kt)$ , dove  $t$  è l'iterazione e  $k$  è il **decay rate**
@@ -1173,7 +1191,7 @@ Durante le fasi di training è spesso utile ridurre il learning rate  $\alpha$ ,
 Il problema di utilizzare gli scheduler è che necessitano di parametri che devono essere adattati al problema che si sta risolvendo. Esistono algoritmi di ottimizzazione detti "**adaptive gradient descent**" che possono aiutare a risolvere questo problema:
 
 - **adagrad**: grandi update per parametri sparsi e piccoli update per parametri non sparsi
-- **adam**: aggiusta adagrad inserendo un differente per ognuno dei pesi
+- **adam**: aggiusta adagrad inserendo $\alpha$ un differente per ognuno dei pesi
 - **lars**: layer-wise adaptive rate scaling (x deep learning), lr separato per layer differenti
 
 ## **Valutazione classificazione**
@@ -1188,7 +1206,7 @@ Alta accuratezza: valori nella diagonale diversi da 0 e valori al di fuori della
 <center>
 
 |                  | Predetto Positivo | Predetto Negativo |
-|------------------|-------------------|-------------------|
+|------------------|:------------------:|:-----------------:|
 | Reale Positivo   | Vero Positivo (TP) | Falso Negativo (FN) |
 | Reale Negativo   | Falso Positivo (FP)| Vero Negativo (TN)  |
 
@@ -1207,13 +1225,12 @@ Alta accuratezza: valori nella diagonale diversi da 0 e valori al di fuori della
 Supponiamo di avere un dataset con due classi: una indicata come $P$ (positiva) e una come $N$ (negativa).
 Indichiamo con $Pos$ e $Neg$ l’insieme delle tuple di classe $P$ ed $N$, rispettivamente.
 
-Sulla base dell’esito della classificazione possiamo distinguere 4
-sottinsiemi di tuple:
+Sulla base dell’esito della classificazione possiamo distinguere 4 sottinsiemi di tuple:
 
-- True positive ($T_pos$): tuple di classe $P$ che sono classificate come $P$;
-- True negative ($T_neg$): tuple di classe $N$ che sono classificate come $N$;
-- False positive ($F_pos$): tuple di classe 𝑁 che sono classificate come $P$ (errore di tipo I);
-- False negative ($F_neg$): tuple di classe $P$ che sono classificate come $N$ (errore di tipo II);
+- True positive ($T_{pos}$): tuple di classe $P$ che sono classificate come $P$;
+- True negative ($T_{neg}$): tuple di classe $N$ che sono classificate come $N$;
+- False positive ($F_{pos}$): tuple di classe 𝑁 che sono classificate come $P$ (errore di tipo I);
+- False negative ($F_{neg}$): tuple di classe $P$ che sono classificate come $N$ (errore di tipo II);
 
 **Recall** o **Sensitività** o **True Positive Rate (TPR)**: $Rec(M) = TPR(M) = \frac{|T_{pos}|}{|Pos|}$
 
@@ -1281,7 +1298,7 @@ AUC = 1 denota un classificatore perfetto.
 Le motivazioni per passare dal perceptron semplice ad un multi-layer perceptron sono:
 
 1. Dobbiamo fittare dati che vivono in spazi non-lineari
-2. Vogliamo imparare una buona rappresentazione dei dati (e non farla a mano)
+2. Vogliamo imparare una buona rappresentazione dei dati (e non una fatta a mano)
 
 ## **Importante notazione**
 
@@ -1295,6 +1312,8 @@ Altra notazione utile è la seguente:
 - $a^{(l)}_j = f(z_j^{(l)})$
 
 Una Neural Network è una composizione di funzioni derivabili ed è composta da due parti: una parte (viola) utile ad apprendere una buona rappresentazione dei dati, una parte (arancione) con una softmax (o una regressione logistica nel caso binario) che prende in input le feature apprese.
+
+![](img/NN_viola_arancione.png)
 
 ## **Teorema dell'approssimazione universale**
 
