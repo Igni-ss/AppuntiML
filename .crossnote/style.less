@@ -1,0 +1,341 @@
+/* Please visit the URL below for more information: */
+/*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
+
+.markdown-preview.markdown-preview {
+  counter-reset: h1;
+  text-align: justify;
+
+  font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #555;
+  background-color: #fff;
+  overflow: initial;
+  box-sizing: border-box;
+  word-wrap: break-word;
+
+  html body>:first-child {
+    margin-top: 0
+  }
+
+  h1::before {
+    counter-increment: h1;
+    content: counter(h1) ". ";
+  }
+
+  h1 {
+    counter-reset: h2;
+  }
+
+  h2::before {
+    counter-increment: h2;
+    content: counter(h1) "." counter(h2) ". ";
+  }
+
+  h2 {
+    counter-reset: h3;
+  }
+
+  h3::before {
+    counter-increment: h3;
+    content: counter(h1) "." counter(h2) "." counter(h3) ". ";
+  }
+
+  h3 {
+    counter-reset: h4;
+  }
+
+  h4::before {
+    counter-increment: h4;
+    content: counter(h1) "." counter(h2) "." counter(h3) "." counter(h4) ". ";
+  }
+
+  img {
+    display: block;
+    float: none;
+    margin-left: auto;
+    margin-right: auto;
+    width: 80%;
+    max-width: 100%
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    line-height: 1.2;
+    margin-top: 1em;
+    margin-bottom: 16px;
+    color: #030303
+  }
+
+  h1 {
+    font-size: 2.25em;
+    font-weight: 300;
+    padding-bottom: .3em
+  }
+
+  h2 {
+    font-size: 1.75em;
+    font-weight: 400;
+    padding-bottom: .3em
+  }
+
+  h3 {
+    font-size: 1.5em;
+    font-weight: 500
+  }
+
+  h4 {
+    font-size: 1.25em;
+    font-weight: 600
+  }
+
+  h5 {
+    font-size: 1.1em;
+    font-weight: 600
+  }
+
+  h6 {
+    font-size: 1em;
+    font-weight: 600
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    font-weight: 600
+  }
+
+  h5 {
+    font-size: 1em
+  }
+
+  h6 {
+    color: #7e7e7e
+  }
+
+  strong {
+    color: #030303
+  }
+
+  del {
+    color: #7e7e7e
+  }
+
+  a:not([href]) {
+    color: inherit;
+    text-decoration: none
+  }
+
+  a {
+    color: #08c;
+    text-decoration: none
+  }
+
+  a:hover {
+    color: #00a3f5;
+    text-decoration: none
+  }
+
+  html body>p {
+    margin-top: 0;
+    margin-bottom: 16px;
+    word-wrap: break-word
+  }
+
+  html body>ol,
+  html body>ul {
+    margin-bottom: 16px
+  }
+
+  ol,
+  ul {
+    padding-left: 2em
+  }
+
+  ol.no-list,
+  ul.no-list {
+    padding: 0;
+    list-style-type: none
+  }
+
+  ol ol,
+  ol ul,
+  ul ol,
+  ul ul {
+    margin-top: 0;
+    margin-bottom: 0
+  }
+
+  li {
+    margin-bottom: 0
+  }
+
+  li.task-list-item {
+    list-style: none
+  }
+
+  li>p {
+    margin-top: 0;
+    margin-bottom: 0
+  }
+
+  .task-list-item-checkbox {
+    margin: 0 .2em .25em -1.8em;
+    vertical-align: middle
+  }
+
+  .task-list-item-checkbox:hover {
+    cursor: pointer
+  }
+
+  blockquote {
+    margin: 16px 0;
+    font-size: inherit;
+    padding: 0 15px;
+    color: #7e7e7e;
+    background-color: #f0f0f0;
+    border-left: 4px solid #d6d6d6
+  }
+
+  blockquote>:first-child {
+    margin-top: 0
+  }
+
+  blockquote>:last-child {
+    margin-bottom: 0
+  }
+
+  hr {
+    height: 4px;
+    margin: 32px 0;
+    background-color: #d6d6d6;
+    border: 0 none
+  }
+
+  table {
+    margin: 10px auto 15px auto;
+    border-collapse: collapse;
+    border-spacing: 0;
+    display: inline;
+    width: 100%;
+    overflow: auto;
+    word-break: normal;
+    word-break: keep-all
+  }
+
+  table th {
+    font-weight: 700;
+    color: #030303
+  }
+
+  table td,
+  table th {
+    border: 1px solid #d6d6d6;
+    padding: 6px 13px
+  }
+
+  dl {
+    padding: 0
+  }
+
+  dl dt {
+    padding: 0;
+    margin-top: 16px;
+    font-size: 1em;
+    font-style: italic;
+    font-weight: 700
+  }
+
+  dl dd {
+    padding: 0 16px;
+    margin-bottom: 16px
+  }
+
+  code {
+    font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
+    font-size: .85em;
+    color: #030303;
+    background-color: #f0f0f0;
+    border-radius: 3px;
+    padding: .2em 0
+  }
+
+  code::after,
+  code::before {
+    letter-spacing: -.2em;
+    content: '\00a0'
+  }
+
+  pre>code {
+    padding: 0;
+    margin: 0;
+    word-break: normal;
+    white-space: pre;
+    background: 0 0;
+    border: 0
+  }
+
+  .highlight {
+    margin-bottom: 16px
+  }
+
+  .highlight pre,
+  pre {
+    padding: 1em;
+    overflow: auto;
+    line-height: 1.45;
+    border: #d6d6d6;
+    border-radius: 3px
+  }
+
+  .highlight pre {
+    margin-bottom: 0;
+    word-break: normal
+  }
+
+  pre code,
+  pre tt {
+    display: inline;
+    max-width: initial;
+    padding: 0;
+    margin: 0;
+    overflow: initial;
+    line-height: inherit;
+    word-wrap: normal;
+    background-color: transparent;
+    border: 0
+  }
+
+  pre code:after,
+  pre code:before,
+  pre tt:after,
+  pre tt:before {
+    content: normal
+  }
+
+  blockquote,
+  dl,
+  ol,
+  p,
+  pre,
+  ul {
+    margin-top: 0;
+    margin-bottom: 16px
+  }
+
+  kbd {
+    color: #030303;
+    border: 1px solid #d6d6d6;
+    border-bottom: 2px solid #c7c7c7;
+    padding: 2px 4px;
+    background-color: #f0f0f0;
+    border-radius: 3px
+  }
+
+}
