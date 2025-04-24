@@ -51,7 +51,7 @@ Un ibrido tra supervised e unsupervised. Deriva dalla difficoltà di produrre la
 
 ## **Notazione**
 
-Si indicherà l'*i*-esimo input  $x^{(i)}$  come un vettore colonna a  $d$  dimensioni:
+Si indicherà l'$i$-esimo input  $x^{(i)}$  come un vettore colonna a  $d$  dimensioni:
 
 <span id="page-1-3"></span>
 $$x^{(i)} \in \mathbb{R}^d \qquad x^{(i)} = [x_1^{(i)}, x_2^{(i)}, \dots, x_d^{(i)}]^T$$
@@ -99,7 +99,7 @@ Quello che succede è che i dati si centrano nello zero degli assi e la deviazio
 
 ## **Modelli generativi vs discriminativi**
 
-- Nei **modelli generativi** si cerca di modellare esplicitamente la distribuzione dei dati, imparando la distribuzione della probabilità congiunta  $P(x, y)$ . Essi fanno inferenza sulla probabilità condizionata utilizzando il teorema di Bayes.
+- Nei **modelli generativi** si cerca di modellare esplicitamente la distribuzione dei dati, imparando la distribuzione della probabilità congiunta  $P(x, y)$. Essi fanno inferenza sulla probabilità condizionata utilizzando il teorema di Bayes.
 - Nei **modelli discriminativi** si trova un decision boundary che separa i dati. Il modello impara direttamente a modellare la probabilità condizionata  $P(x \mid y)$ .
 
 ![](img/_page_3_Figure_0.jpeg)
@@ -145,7 +145,7 @@ Il primo tentativo di modellare matematicamente un neurone è dovuto a McCulloch
 ![](img/McCullochs-Pitts_unit.png)
 
 Analogamente al modello di un neurone, tutti gli input e gli output sono binari. Il neurone è anche associato ad una soglia $\theta$.
-L’output può “distribuirsi” molte volte, collegandosi ad altri neuroni. Gli input 𝑥𝑖 possono provenire da altri neuroni o essere caratteristiche di un elemento di input. Ogni input è collegato al neurone tramite archi diretti (tutti vanno dall'input al neurone). Esistono due tipi di connessioni: **eccitatoria** e **inibitoria**. Per indicare gli input inibitori si mette un pallino come nelle porte logiche negate. Il neurone esegue un semplice calcolo:
+L’output può “distribuirsi” molte volte, collegandosi ad altri neuroni. Gli input $x_i$ possono provenire da altri neuroni o essere caratteristiche di un elemento di input. Ogni input è collegato al neurone tramite archi diretti (tutti vanno dall'input al neurone). Esistono due tipi di connessioni: **eccitatoria** e **inibitoria**. Per indicare gli input inibitori si mette un pallino come nelle porte logiche negate. Il neurone esegue un semplice calcolo:
 
   1. Supponiamo che il neurone ottenga $x_1,...,x_n$ input eccitatori e $y_1,...,y_m$ input inibitori.
   2. Se $m \ge 1$ e almeno uno degli input inibitori è $1$, il neurone viene inibito e il calcolo finale è $0$ (il neurone non si attiva).
@@ -278,7 +278,7 @@ $$
 \end{cases}
 $$
 
-Da cui sovviene la contraddizione:  $t$  è una soglia strettamente positiva per la dis.1, e per le dis. 2 e 3 i valori  $w_1$  e  $w_2$  sono maggiori o uguali di  $t$ . La dis.4 assume che la somma  $w_1 + w_2$  siano minore stretta di  $t$, il che è assurdo per le prime 3 disequazioni. Quindi il sistema non ammette soluzioni. Da questa dimostrazione ci accorgiamo che il Perceptron può calcolare solo **decision boundaries lineari**!
+Da cui sovviene la contraddizione:  $t$  è una soglia strettamente positiva per la dis.1, e per le dis. 2 e 3 i valori  $w_1$  e  $w_2$  sono maggiori o uguali di  $t$. La dis.4 assume che la somma  $w_1 + w_2$  siano minore stretta di  $t$, il che è assurdo per le prime 3 disequazioni. Quindi il sistema non ammette soluzioni. Da questa dimostrazione ci accorgiamo che il Perceptron può calcolare solo **decision boundaries lineari**!
 
 ![](img/XOR_schema.png)
 
@@ -401,7 +401,7 @@ Il classico esempio è quello della predizione dei prezzi delle case. Supponiamo
 
 ![](img/_page_8_Figure_9.jpeg)
 
-Sia  $m$ la dimensione del training set,  $(x, y)$ un generico campione e  $(x^{(i)}, y^{(i)})$ l'*i*-esimo campione. Il modello  $h_{\theta}$ prende anche il nome di ipotesi:
+Sia  $m$ la dimensione del training set,  $(x, y)$ un generico campione e  $(x^{(i)}, y^{(i)})$ l'$i$-esimo campione. Il modello  $h_{\theta}$ prende anche il nome di ipotesi:
 
 <span id="page-8-2"></span>
 $$h_{\theta}(x) = \theta_0 + \theta_1 x$$
@@ -463,7 +463,7 @@ Il gradient descent è un algoritmo iterativo utilizzato per trovare il minimo d
 
 $$\nabla J(\theta) = \begin{pmatrix} J_{\theta_1}(\theta) \\ \vdots \\ J_{\theta_n}(\theta) \end{pmatrix} $$
 
-Nel nostro caso, lo utilizziamo per minimizzare la funzione costo  $J$ . L'algoritmo funziona come segue:
+Nel nostro caso, lo utilizziamo per minimizzare la funzione costo  $J$. L'algoritmo funziona come segue:
 
 1. Inizializza  $\theta = (\theta_0,..., \theta_n)$  randomicamente.
 2. Aggiorna i pesi iterativamente fino a convergenza.
@@ -617,7 +617,7 @@ Supponiamo di penalizzare  $\theta_3, \theta_4$  nella funzione costo:
 
 $$J(\theta) = \frac{1}{2m} \sum_{i=1}^{m} \left[ h_{\theta}(x^{(i)}) - y^{(i)} \right]^2 + 1000\theta_3 + 1000\theta_4$$
 
-L'unico modo per minimizzare la funzione è di avere  $\theta_3 \approx 0$  e  $\theta_4 \approx 0$ . Così facendo otterremo un modello più semplice. Osserviamo il modello penalizzato (fucsia) contro il modello in overfitting (blu):
+L'unico modo per minimizzare la funzione è di avere  $\theta_3 \approx 0$  e  $\theta_4 \approx 0$. Così facendo otterremo un modello più semplice. Osserviamo il modello penalizzato (fucsia) contro il modello in overfitting (blu):
 
 ![](img/_page_14_Figure_1.png)
 
@@ -711,7 +711,7 @@ Stiamo sempre supponendo di valutare modelli di regressione, allora la funzione 
 
 ### **K-Fold cross validation**
 
-Prima si divide il dataset in 80% training set e 20% test set, dopodiché si applica la K-Fold cross validation sul training set, ovvero si decide un numero K di fold (sotto-insiemi di equa dimensione) in cui dividere il training set. A giro, una fold sarà il set di validazione mentre le rimanenti *l* saranno usate per il training, questo processo è ripetuto  $K$  volte. Al giro *i*-esimo si ottengono dei parametri  $\Theta^{(i)}$  per il modello, e viene calcolata la loss  $J_{val}^{(i)}$  sul set di validazione. Alla fine possiamo ottenere una loss media di validazione come segue:
+Prima si divide il dataset in 80% training set e 20% test set, dopodiché si applica la K-Fold cross validation sul training set, ovvero si decide un numero K di fold (sotto-insiemi di equa dimensione) in cui dividere il training set. A giro, una fold sarà il set di validazione mentre le rimanenti *l* saranno usate per il training, questo processo è ripetuto  $K$  volte. Al giro $i$-esimo si ottengono dei parametri  $\Theta^{(i)}$  per il modello, e viene calcolata la loss  $J_{val}^{(i)}$  sul set di validazione. Alla fine possiamo ottenere una loss media di validazione come segue:
 
 <span id="page-18-0"></span>
 $$\frac{1}{K} \sum_{H=1}^{K} J_{val}^{H}$$
@@ -846,7 +846,7 @@ Il problema principale sta nel fatto che le  $y \in \{0, 1\}$ mentre il modello 
 
 ## **Logistic regression**
 
-L'obiettivo è quello di creare un modello i cui output stiano nel range  $[0, 1]$ . Per fare questo utilizzeremo la funzione logistica:
+L'obiettivo è quello di creare un modello i cui output stiano nel range  $[0, 1]$. Per fare questo utilizzeremo la funzione logistica:
 
 ![](img/_page_26_Figure_0.jpeg)
 
@@ -1021,7 +1021,7 @@ L'approccio 1v1 è molto dispendioso, dato che con  $K$  classi dovremmo allenar
 
 ## **Softmax**
 
-La softmax è una generalizzazione della funzione logistica adatta alla classificazione multiclasse. Supponendo che ci siano  $k$  classi, il modello torna in output un vettore di lunghezza  $k$, dove l'$i$-esima componente esprime la probabilità condizionata  $P(y = i \mid x; \theta)$ , con  $\theta$  matrice dei pesi del modello:
+La softmax è una generalizzazione della funzione logistica adatta alla classificazione multiclasse. Supponendo che ci siano  $k$  classi, il modello torna in output un vettore di lunghezza  $k$, dove l'$i$-esima componente esprime la probabilità condizionata  $P(y = i \mid x; \theta)$, con  $\theta$  matrice dei pesi del modello:
 
 $$h_{\theta}(x) = \begin{bmatrix}
 P_{\theta^{(0)}}(y = 0 \mid x) \\
@@ -1030,7 +1030,7 @@ P_{\theta^{(1)}}(y = 1 \mid x) \\
 P_{\theta^{(k-1)}}(y = k - 1 \mid x)
 \end{bmatrix}$$
 
-Notasi che  $\theta$  è una matrice dei pesi $(d + 1) \times k$  (supponendo che  $x \in \mathbb{R}^{d}$ , più la costante di bias, per ognuno dei  $k$  output).
+Notasi che  $\theta$  è una matrice dei pesi $(d + 1) \times k$  (supponendo che  $x \in \mathbb{R}^{d}$, più la costante di bias, per ognuno dei  $k$  output).
 
 $$
 \theta = \begin{bmatrix}
@@ -1041,7 +1041,7 @@ $$
 \end{bmatrix}
 $$
 
-Con  $\theta^{(i)}$ indicheremo la colonna $i$-esima di  $\theta$. Nella pratica, la componente *i*-esima del modello viene calcolata come segue:
+Con  $\theta^{(i)}$ indicheremo la colonna $i$-esima di  $\theta$. Nella pratica, la componente $i$-esima del modello viene calcolata come segue:
 
 $$h_{\theta}^{(i)}(x) = P(y = i \mid x) = \frac{\exp(\theta^{(i)T}x)}{\sum_{j=0}^{k-1} \exp(\theta^{(j)T}x)}$$
 
@@ -1080,7 +1080,7 @@ Semplifichiamo:
 
 $$\frac{\exp([\theta^{(0)} - \theta^{(1)}]^T x)}{\exp([\theta^{(0)} - \theta^{(1)}]^T x) + 1} \qquad \qquad \frac{1}{\exp([\theta^{(0)} - \theta^{(1)}]^T x) + 1}$$
 
-Poniamo  $\theta = \theta^{(0)} - \theta^{(1)}$ , osserviamo che la seconda componente è proprio  $\sigma(\theta^T x)$ , mentre la prima equivale a  $1 - \sigma(\theta^T x)$ . La seconda componente è la probabilità  $P(y = 1 | x, \theta)$ , mentre la prima è la probabilità  $P(y = 0 | x, \theta)$ , per cui ci siamo ricondotti alla regressione logistica.
+Poniamo  $\theta = \theta^{(0)} - \theta^{(1)}$, osserviamo che la seconda componente è proprio  $\sigma(\theta^T x)$, mentre la prima equivale a  $1 - \sigma(\theta^T x)$. La seconda componente è la probabilità  $P(y = 1 | x, \theta)$, mentre la prima è la probabilità  $P(y = 0 | x, \theta)$, per cui ci siamo ricondotti alla regressione logistica.
 
 ## **Regolarizzazione**
 
@@ -1127,7 +1127,7 @@ Considerazioni:
 Durante le fasi di training è spesso utile ridurre il learning rate  $\alpha$, poiché avvicinandoci al minimo vogliamo fare passi più piccoli (anche se il gradiente si occupa già di questo). Usiamo un **learning rate scheduler** che modifica durante il training. Abbiamo diversi [tipi di schemi](https://towardsdatascience.com/learning-rate-schedules-and-adaptive-learning-rate-methods-for-deep-learning-2c8f433990d1):
 
 - **Constant**: opzione di default, il learning rate rimane costante
-- **Time-based**: impostiamo  $\alpha^t = \alpha^0 \cdot 1/(1 + kt)$ , dove  $t$  è l'iterazione e  $k$  è il **decay rate**
+- **Time-based**: impostiamo  $\alpha^t = \alpha^0 \cdot 1/(1 + kt)$, dove  $t$  è l'iterazione e  $k$  è il **decay rate**
 - **Stop decay**: si riduce di un fattore costante ogni  $k$  epoche
 - **Exponential decay**: si aggiorna con  $\alpha^t = \alpha^0 \cdot e^{-kt}$
 
@@ -1245,7 +1245,7 @@ Le motivazioni per passare dal perceptron semplice ad un multi-layer perceptron 
 
 ## **Importante notazione**
 
-Tra un layer  $l$  ed il suo successivo  $l + 1$  è definita la matrice dei pesi  $\theta$  che collega i nodi del primo a quelli del secondo. Supponendo che  $l$  abbia  $r$  nodi, mentre  $l + 1$  ne abbia  $s$ , allora la matrice  $\theta$  sarà di dimensione  $s \times r$ . In generale, il peso  $\theta_{ij}^{(l)}$  si interpreta come il peso che collega l'*i*-esimo nodo del layer  $l$  al *j*-esimo nodo del layer  $l + 1$ . Con  $a_i^{(l)}$  indichiamo invece l'attivazione dell'*i*esimo nodo del layer  $l$ , mentre con  $a^{(l)}$  indichiamo il vettore di attivazioni del layer  $l$ .
+Tra un layer  $l$  ed il suo successivo  $l + 1$  è definita la matrice dei pesi  $\theta$  che collega i nodi del primo a quelli del secondo. Supponendo che  $l$  abbia  $r$  nodi, mentre  $l + 1$  ne abbia  $s$, allora la matrice  $\theta$  sarà di dimensione  $s \times r$. In generale, il peso  $\theta_{ij}^{(l)}$  si interpreta come il peso che collega l'$i$-esimo nodo del layer  $l$  al $j$-esimo nodo del layer  $l + 1$. Con  $a_i^{(l)}$  indichiamo invece l'attivazione dell'*i*esimo nodo del layer  $l$, mentre con  $a^{(l)}$  indichiamo il vettore di attivazioni del layer  $l$ .
 
 Altra notazione utile è la seguente:
 
@@ -1326,7 +1326,7 @@ In un problema di learning si vuole minimizzare una certa cost function  $J(\the
 
 La definizione generica di feed-forward network è quella di un computational graph, i cui nodi sono computational units e gli archi diretti trasmettono informazioni numeriche da nodo a nodo. Ogni computing unit è capace di calcolare una funzione primitiva sul suo input. Di fatto, la network è rappresentata da una composizione di funzioni primitive (network function) che trasformano l'input in un vettore di output (chiamato pattern). Il problema del learning consiste nel trovare una combinazione ottimale di pesi tale che la network function  $\varphi$  approssimi una data funzione *f* al meglio. Tuttavia, la funzione *f* non è nota, ma sono noti alcuni esempi.
 
-Consideriamo una rete feed-forward con $n$ input e  $m$ unità di output, formata da un arbitrario numero di hidden layer. Sia  $\{(x_1, t_1),..., (x_p, t_p)\}$  un training set formato da $p$ coppie ordinate di vettori di  $n$ ed  $m$ dimensioni (input e output patterns). Siano le funzioni calcolate su ogni computation unit continue e differenziabili. I pesi degli archi sono numeri random. Quando l'input $i$ è presentato alla network, essa produrrà un output  $o_i$ , che generalmente è diverso dal target  $t$ . . Vogliamo far diventare  $o_i$  identico a  $t_i$  per  $i = 1,..., p$ , utilizzando un algoritmo di learning. Più precisamente, vogliamo minimizzare una funzione di errore, definita come:
+Consideriamo una rete feed-forward con $n$ input e  $m$ unità di output, formata da un arbitrario numero di hidden layer. Sia  $\{(x_1, t_1),..., (x_p, t_p)\}$  un training set formato da $p$ coppie ordinate di vettori di  $n$ ed  $m$ dimensioni (input e output patterns). Siano le funzioni calcolate su ogni computation unit continue e differenziabili. I pesi degli archi sono numeri random. Quando l'input $i$ è presentato alla network, essa produrrà un output  $o_i$, che generalmente è diverso dal target  $t_i$. Vogliamo far diventare  $o_i$  identico a  $t_i$  per  $i = 1,..., p$, utilizzando un algoritmo di learning. Più precisamente, vogliamo minimizzare una funzione di errore, definita come:
 
 $$E = \frac{1}{2} \sum_{i=1}^{p} ||o_i - t_i||^2$$
 
@@ -1334,7 +1334,7 @@ Dopo aver minimizzato tale funzione, presentiamo nuovi input pattern alla networ
 
 ![](img/_page_42_Figure_0.jpeg)
 
-Come descritto nell'immagine, il primo step è quello di estendere la network con la funzione di errore, così da calcolarla direttamente. Ogni componente  $j$ dell'output è collegata ad un nodo che calcola la funzione  $\frac{1}{2}(o_{ij} - t_{ij})^2$, dove  $o_{ij}$  e  $t_{ij}$  sono rispettivamente la  $j$-esima componente dell'output vector  $o_i$  e del target  $t_i$ . Gli output sono poi sommati dall'ultimo nodo, che ritorna l'errore  $E_i$  (sul campione  $i$-esimo). La stessa estensione deve essere calcolata per ogni pattern  $t$  per  $i = 1,..., p$ . Alla fine, una computing unit sommerà tutti questi errori andando a calcolare l'errore totale  $E$ . Gli unici parametri modificabili per far diminuire l'errore  $E$  sono i pesi della rete. Essendo calcolata da funzioni continue e differenziabili, anche  $E$  è continua e differenziabile rispetto agli  $l$  pesi della rete  $w_1, ..., w_l$, per cui è possibile calcolare il gradiente:
+Come descritto nell'immagine, il primo step è quello di estendere la network con la funzione di errore, così da calcolarla direttamente. Ogni componente  $j$ dell'output è collegata ad un nodo che calcola la funzione  $\frac{1}{2}(o_{ij} - t_{ij})^2$, dove  $o_{ij}$  e  $t_{ij}$  sono rispettivamente la  $j$-esima componente dell'output vector  $o_i$  e del target  $t_i$. Gli output sono poi sommati dall'ultimo nodo, che ritorna l'errore  $E_i$  (sul campione  $i$-esimo). La stessa estensione deve essere calcolata per ogni pattern  $t$  per  $i = 1,..., p$. Alla fine, una computing unit sommerà tutti questi errori andando a calcolare l'errore totale  $E$. Gli unici parametri modificabili per far diminuire l'errore  $E$  sono i pesi della rete. Essendo calcolata da funzioni continue e differenziabili, anche  $E$  è continua e differenziabile rispetto agli  $l$  pesi della rete  $w_1, ..., w_l$, per cui è possibile calcolare il gradiente:
 
 $$\nabla E = \left(\frac{\partial E}{\partial w_1}, \dots, \frac{\partial E}{\partial w_l}\right)$$
 
@@ -1351,18 +1351,20 @@ Dove  $\gamma$  è il learning rate e stabilisce la lunghezza del passo nella di
 Dato che la network è una complessa funzione composta, la chain rule (**regola della catena**) avrà un ruolo importante nella computazione del gradiente. Il primo step è dividere i nodi del grafo computazione (computation units) in due parti: a destra conserveremo il risultato della calcolo della funzione primitiva, mentre a sinistra conserveremo il calcolo della sua derivata rispetto agli input. Questo tipo di diagramma prende il nome di **B-diagram** (backpropagation diagram).
 
 ![](img/_page_43_Figure_0.jpeg)
+*Le due parti di una computing unit*
 
 ![](img/_page_43_Figure_2.jpeg)
+*Separazione della funzione di integrazione e di attivazione*
 
 Allo scopo di semplificare la trattazione, ogni computing unit è considerata come due nodi distinti (figura subito sopra), il primo nodo applica una combinazione lineare degli input, mentre il nodo seguente applica la funzione di attivazione. La network è valutata in due stage: il primo stage è il **feedforward step**, dove le informazioni viaggiano da sinistra verso destra e vengono valutate sia le funzioni primitive  $f$  che le rispettive derivate  $f'$, ma solo le prime vengono trasmesse in avanti. I risultati sono conservati all'interno delle unità. Il secondo stage è il **backpropagation step**, consiste nel percorrere la network all'indietro, utilizzando le derivate conservate. Dobbiamo considerare tre casi principali:
 
 ### **Caso 1: function composition**
 
-Consideriamo la funzione composta  $f(g(x))$, che viene rappresentata da due nodi nella rete feed forward: il primo computa  $g(x)$  e passa il risultato ad  $f$, che calcola  $f(g(x))$, come descritto nella figura sottostante:
+Consideriamo la funzione composta  $f(g(x))$, che viene rappresentata da due nodi nella rete feed forward: il primo computa $g(x)$  e passa il risultato ad  $f$, che calcola  $f(g(x))$, come descritto nella figura sottostante:
 
 ![](img/_page_43_Figure_7.jpeg)
 
-La regola della catena ci dice che la derivata di tale funzione composta è  $f'(g(x))g'(x)$ . Il risultato dello step di feed forward è presentato nella seguente figura:
+La regola della catena ci dice che la derivata di tale funzione composta è  $f'(g(x))g'(x)$. Il risultato dello step di feed forward è presentato nella seguente figura:
 
 ![](img/_page_43_Figure_10.jpeg)
 
@@ -1372,17 +1374,17 @@ Notiamo che per ottenere la derivata, basta moltiplicare  $f'(g(x))$  contenuto 
 
 ### **Caso 2: function addition**
 
-Consideriamo l'addizione di due funzioni primitive. La figura sottostante mostra una rete che addiziona i risultati di  $f_1$  e  $f_2$ .
+Consideriamo l'addizione di due funzioni primitive. La figura sottostante mostra una rete che addiziona i risultati di  $f_1$  e  $f_2$.
 
 ![](img/_page_44_Figure_4.jpeg)
 
-La derivata parziale dell'addizione rispetto ad ognuno dei due input è 1. Nello step feed-forward si calcola  $f_1(x) + f_2(x)$ . Chiamiamo  $A$  il nodo di somma, nello step di backpropagation, tutto ciò che arriva da destra a sinistra ad  $A$  viene moltiplicato per 1 e viene spedito ai nodi  $f'_1$  ed  $f'_2$, che moltiplicheranno l'output. Quando le due derivate si incontrano su, vengono sommate. Considerando questa rete, dovremmo ottenere in output dallo step di backpropagation la derivata, il che è mostrato dall'immagine sottostante:
+La derivata parziale dell'addizione rispetto ad ognuno dei due input è 1. Nello step feed-forward si calcola  $f_1(x) + f_2(x)$. Chiamiamo  $A$  il nodo di somma, nello step di backpropagation, tutto ciò che arriva da destra a sinistra ad  $A$  viene moltiplicato per 1 e viene spedito ai nodi  $f'_1$  ed  $f'_2$, che moltiplicheranno l'output. Quando le due derivate si incontrano su, vengono sommate. Considerando questa rete, dovremmo ottenere in output dallo step di backpropagation la derivata $f_1'(x) + f_2'(x)$, il che è mostrato dall'immagine sottostante:
 
 ![](img/_page_44_Figure_7.jpeg)
 
 ### **Caso 3: weighted edges**
 
-Nello step feed-forward l'informazione entrante  $x$  viene moltiplicata per il peso  $w$  dell'arco, il risultato è  $wx$ . Nello step di backpropagation, il valore 1 che corrisponde alla derivata di  $x$, viene moltiplicato per  $w$, ed il risultato è  $w$  (che è proprio la derivata di  $wx$  rispetto a  $x$ ). In entrambi gli step il peso dell'arco agisce nello stesso modo: viene moltiplicato all'informazione passante per l'arco.
+Nello step feed-forward l'informazione entrante  $x$  viene moltiplicata per il peso  $w$  dell'arco, il risultato è  $wx$. Nello step di backpropagation, il valore 1 che corrisponde alla derivata di  $x$, viene moltiplicato per  $w$, ed il risultato è  $w$  (che è proprio la derivata di  $wx$  rispetto a  $x$ ). In entrambi gli step il peso dell'arco agisce nello stesso modo: viene moltiplicato all'informazione passante per l'arco.
 
 ![](img/_page_45_Figure_2.jpeg)
 
@@ -1391,9 +1393,9 @@ Nello step feed-forward l'informazione entrante  $x$  viene moltiplicata per il 
 Si consideri una network con un solo valore reale  $x$  ed una network function  $F$, la derivata  $F'$  è calcolata in due fasi:
 
 - Feed-forward: l'input è inserito nella network. Vengono valutate le funzioni primitive e le loro derivate, e quest'ultime vengono conservate.
-- Backpropagation: la costante 1 è inserita nell'output unit e la network è eseguita nella direzione opposta. Più informazioni che convergono su un nodo vengono sommate, poi moltiplicate alla derivata contenuta nel nodo, ed il risultato viaggia verso sinistra. Il risultato collezionato nell'unità di input corrisponderà alla derivata  $F''$  rispetto ad  $x$ .
+- Backpropagation: la costante 1 è inserita nell'output unit e la network è eseguita nella direzione opposta. Più informazioni che convergono su un nodo vengono sommate, poi moltiplicate alla derivata contenuta nel nodo, ed il risultato viaggia verso sinistra. Il risultato collezionato nell'unità di input corrisponderà alla derivata  $F''$  rispetto ad  $x$.
 
-**Proposizione.** L'algoritmo calcola la derivata  $F''$  della network function  $F'$  rispetto all'input  $x$ . correttamente (la dimostrazione è costruita per induzione).
+**Proposizione.** L'algoritmo calcola la derivata  $F''$  della network function  $F'$  rispetto all'input  $x$. correttamente (la dimostrazione è costruita per induzione).
 
 ## **Learning with backpropagation**
 
@@ -1411,23 +1413,23 @@ Una volta calcolate tutte le derivate parziali aggiorniamo i pesi come visto pre
 
 ![](img/_page_46_Figure_4.jpeg)
 
-Scopriamo come effettuare la backpropagation intelligentemente su una network con dei layer. Supponiamo di avere 3 layer, un layer di input con *n* input sites, un hidden layer con *k* unità, un output layer con *m* unità. Il peso tra l'*i*-esimo input ed il *j*-esimo hidden node è chiamato  $w_{ij}^{(1)}$ . Il peso tra l'*i*-esimo hidden node ed il *j*-esimo nodo di output è chiamato  $w_{ij}^{(2)}$ . Il bias  $-\theta$  di ogni unità è implementato come peso di un arco collegato ad un input costante di valore 1 (stessa cosa per nell'output layer). Per generalizzare, il bias tra la costante 1 e l'hidden node *j*-esimo è chiamato  $w_{k+1,i}^{(1)}$, mentre quello tra la costante 1 e l'output node *j*-esimo è chiamato  $w_{k+1,i}^{(L)}$ .
+Scopriamo come effettuare la backpropagation intelligentemente su una network con dei layer. Supponiamo di avere 3 layer, un layer di input con $n$ input sites, un hidden layer con $k$ unità, un output layer con $m$ unità. Il peso tra l'$i$-esimo input ed il $j$-esimo hidden node è chiamato  $w_{ij}^{(1)}$. Il peso tra l'$i$-esimo hidden node ed il $j$-esimo nodo di output è chiamato  $w_{ij}^{(2)}$. Il bias  $-\theta$  di ogni unità è implementato come peso di un arco collegato ad un input costante di valore 1 (stessa cosa per nell'output layer). Per generalizzare, il bias tra la costante 1 e l'hidden node $j$-esimo è chiamato  $w_{n+1,j}^{(1)}$, mentre quello tra la costante 1 e l'output node $j$-esimo è chiamato  $w_{k+1,j}^{(L)}$.
 
-Ci sono  $(n + 1) \times k$  pesi tra l'input layer e l'hidden layer, e  $(k + 1) \times m$  pesi tra l'hidden layer e l'output layer. Rappresentiamoli attraverso due matrici, rispettivamente  $W_1$  la matrice  $k$  il cui generico elemento è  $w_{ji}^{(1)}$, e  $W_2$  la matrice  $(k + 1) \times m$  il cui generico elemento è  $w_{ji}^{(L)}$ .
+Ci sono  $(n + 1) \times k$  pesi tra l'input layer e l'hidden layer, e  $(k + 1) \times m$  pesi tra l'hidden layer e l'output layer. Rappresentiamoli attraverso due matrici, rispettivamente  $\bar{W_1}$  la matrice  $k$  il cui generico elemento è  $w_{ji}^{(1)}$, e  $\bar{W_2}$  la matrice  $(k + 1) \times m$  il cui generico elemento è  $w_{ji}^{(L)}$.
 
-L'input vector *n*-dimensionale  $o = (o_1,...,o_n)$  è trasformato in un vettore a  $n + 1$  dimensioni, che chiamiamo  $\hat{o} = (o_1,..., o_n, 1)$ . Con  $net_j$  indichiamo l'excitment accumulato nel *j*-esimo hidden node, ed è calcolato come:
+L'input vector $n$-dimensionale  $o = (o_1,...,o_n)$  è trasformato in un vettore a  $n + 1$  dimensioni, che chiamiamo  $\hat{o} = (o_1,..., o_n, 1)$. Con  $net_j$  indichiamo l'excitment accumulato nel $j$-esimo hidden node, ed è calcolato come:
 
 $$net_j = \sum_{i=0}^{n+1} w_{ij}^{(1)} \hat{o}_i$$
 
-La funzione di attivazione è una sigmoid function *s* e l'output  $o_j^{(1)}$  della *j*-esima hidden unit è calcolato come:
+La funzione di attivazione è una sigmoid function *s* e l'output  $o_j^{(1)}$  della $j$-esima hidden unit è calcolato come:
 
 $$o_j^{(1)} = s \left( \sum_{i=0}^{n+1} w_{ij}^{(1)} \hat{o}_i \right)$$
 
-Possiamo calcolare la su ogni unità dell'hidden layer attraverso la moltiplicazione vettorematrice  $\hat{o}W_1$ . Il vettore di output dell'hidden  $o^{(1)}$  layer può essere calcolato come segue:
+Possiamo calcolare la su ogni unità dell'hidden layer attraverso la moltiplicazione vettorematrice  $\hat{o}W_1$. Il vettore di output dell'hidden  $o^{(1)}$  layer può essere calcolato come segue:
 
-$$o^{(1)} = s(\hat{o}\vec{W}_1)$$
+$$o^{(1)} = s(\hat{o}\bar{W}_1)$$
 
-Dove stiamo supponendo che la funzione sigmoidea venga applicata ad ogni componente del vettore. Il vettore di output sarà di dimensione  $k$, anche qui consideriamo una versione modificata del vettore  $\hat{o}^{(1)} = (o_1,..., o_n, 1)$ . L'output dell'output layer sarà un vettore  $m$ -dimensionale calcolato come segue:
+Dove stiamo supponendo che la funzione sigmoidea venga applicata ad ogni componente del vettore. Il vettore di output sarà di dimensione  $k$, anche qui consideriamo una versione modificata del vettore  $\hat{o}^{(1)} = (o_1,..., o_n, 1)$. L'output dell'output layer sarà un vettore  $m$ -dimensionale calcolato come segue:
 
 $$o^{(2)} = s(\hat{o}^{(1)}\bar{W}_2)$$
 
@@ -1437,7 +1439,7 @@ Queste formule possono essere generalizzate per un numero arbitrario di layer.
 
 ![](img/_page_47_Figure_8.jpeg)
 
-Per semplicità supponiamo di avere un input  $(o, t)$, dopodiché generalizzeremo per un training set di dimensione  $p$ . La network è estesa con un altro layer di unità, il cui scopo è quello di calcolare la deviazione quadratica  $\frac{1}{2}(o_i^{\prime} - t_i)^2$  per ogni componente  $i$  del vettore di output, la parte sinistra conserverà la derivata  $(o_i^{\prime} - t_i)$ . Sommare tutte le deviazioni quadratiche fornisce l'errore  $E'$ . La funzione di errore su un training set di cardinalità  $p$  è calcolata andando a connettere  $p$  reti come quella mostrata e sommando gli errori per calcolare l'errore totale sul training set.
+Per semplicità supponiamo di avere un input  $(o, t)$, dopodiché generalizzeremo per un training set di dimensione  $p$. La network è estesa con un altro layer di unità, il cui scopo è quello di calcolare la deviazione quadratica  $\frac{1}{2}(o_i^{(2)} - t_i)^2$  per ogni componente  $i$  del vettore di output, la parte sinistra conserverà la derivata  $(o_i^{(2)} - t_i)$. Sommare tutte le deviazioni quadratiche fornisce l'errore  $E$. La funzione di errore su un training set di cardinalità  $p$  è calcolata andando a connettere  $p$  reti come quella mostrata e sommando gli errori per calcolare l'errore totale sul training set.
 
 Dopo aver inizializzato randomicamente i pesi della rete, l'algoritmo di backpropagation è utilizzato per calcolare le correzioni necessarie. Può essere suddiviso in 4 step:
 
@@ -1450,21 +1452,21 @@ L'algoritmo si ferma quando l'errore diventa sufficientemente piccolo.
 
 ### **Step 1: Feed forward computation**
 
-Il vettore di input  $o$  è presentato alla network. I vettori  $o^{(1)}$  e  $o^{(4)}$  sono calcolati e conservati, insieme alle relative derivate.
+Il vettore di input  $o$  è presentato alla network. I vettori  $o^{(1)}$  e  $o^{(2)}$  sono calcolati e conservati, insieme alle relative derivate.
 
 ### **Step 2. Backpropagation to the output layer**
 
-Vogliamo ottenere il primo gruppo di derivate parziali  $\frac{\partial E}{\partial o_i^{(z)}}$ . Il cammino della backpropagation dall'output della network fino all'unità *j*-esima è mostrato nella figura sottostante:
+Vogliamo ottenere il primo gruppo di derivate parziali  $\frac{\partial E}{\partial w_{ij}^{(2)}}$. Il cammino della backpropagation dall'output della network fino all'unità $j$-esima è mostrato nella figura sottostante:
 
 ![](img/_page_48_Figure_4.jpeg)
 
-Da questo percorso possiamo calcolarci il backpropagated error  $\delta_j^{(z)}$  accumulato sul *j*-esimo nodo dell'output layer:
+Da questo percorso possiamo calcolarci il backpropagated error  $\delta_j^{(z)}$  accumulato sul $j$-esimo nodo dell'output layer:
 
 $$
 \delta_j^{(2)} = o_j^{(2)} (1 - o_j^{(2)}) (o_j^{(2)} - t_j)
 $$
 
-E dopodiché calcolarci la derivata parziale rispetto ai  $k + 1$  pesi collegati al *j*-esimo nodo come segue:
+E dopodiché calcolarci la derivata parziale rispetto ai  $k + 1$  pesi collegati al $j$-esimo nodo come segue:
 
 $$\frac{\partial E}{\partial w_{ij}^{(2)}} = o_i^{(1)} \delta_j^{(2)} \qquad i = 1, \ldots, k+1$$
 
@@ -1476,7 +1478,7 @@ backpropagated error
 
 ![](img/_page_49_Figure_2.jpeg)
 
-Vogliamo fare la stessa cosa con i pesi che collegano l'input layer con l'hidden layer, ma stavolta è più complesso. Prendiamo in considerazione il *j*-esimo nodo dell'hidden layer, l'output di questo è preso in considerazione in tutti i nodi del layer di output. Questo vuol dire che quando andiamo a calcolare il backpropagated error, dobbiamo considerare ogni possibile cammino dall'output al nodo *j* (vedasi immagine). Di fatto, il backpropagated error  $\delta_j^{(\ell)}$  viene calcolato come segue:
+Vogliamo fare la stessa cosa con i pesi che collegano l'input layer con l'hidden layer, ma stavolta è più complesso. Prendiamo in considerazione il $j$-esimo nodo dell'hidden layer, l'output di questo è preso in considerazione in tutti i nodi del layer di output. Questo vuol dire che quando andiamo a calcolare il backpropagated error, dobbiamo considerare ogni possibile cammino dall'output al nodo *j* (vedasi immagine). Di fatto, il backpropagated error  $\delta_j^{(\ell)}$  viene calcolato come segue:
 
 $$
 \delta_j^{(1)} = o_j^{(1)} (1 - o_j^{(1)}) \cdot \sum_{q=1}^m w_{jq}^{(2)} \delta_q^{(2)}.
@@ -1494,11 +1496,11 @@ Dopo aver calcolato tutte le derivate parziali, i pesi della network vengono agg
 
 $$\begin{aligned} \Delta w_{ij}^{(2)} &= -\gamma o_i^{(1)} \delta_j^{(2)} \text{ per } i = 1, \dots, k+1; j = 1, \dots, m\\ \Delta w_{ij}^{(1)} &= -\gamma o_i \delta_j^{(1)} \quad \text{per } i = 1, \dots, n+1; j = 1, \dots, k \end{aligned}$$
 
-Utilizzando la convenzione che  $o_{n+1} = o_{k+1}^{(\ell)} = 1$ .
+Utilizzando la convenzione che  $o_{n+1} = o_{k+1}^{(1)} = 1$.
 
 ## **Applicazione su training set**
 
-Questa procedura verrà molto probabilmente applicata su un training set di cardinalità *p*, e l'errore verrà calcolato sommando l'errore su tutte le osservazioni. In questo caso, potremo calcolare per l'*i*-esima osservazione la correzione  $\Delta_i w_{j,i}^{(\ell)}$  e  $\Delta_i w_{i,i}^{(\ell')}$, andando ad estendere la network come descritto prima. Nel passo di aggiornamento vengono sommate tutte le correzioni in una sola come segue:
+Questa procedura verrà molto probabilmente applicata su un training set di cardinalità *p*, e l'errore verrà calcolato sommando l'errore su tutte le osservazioni. In questo caso, potremo calcolare per l'$i$-esima osservazione la correzione  $\Delta_i w_{i,j}^{(1)}$  e  $\Delta_i w_{i,j}^{(2)}$, andando ad estendere la network come descritto prima. Nel passo di aggiornamento vengono sommate tutte le correzioni in una sola come segue:
 
 $$\begin{aligned} \Delta w_{ij}^{(1)} &= \Delta_1 w_{ij}^{(1)} + \dots + \Delta_p w_{ij}^{(1)} \\ \Delta w_{ij}^{(2)} &= \Delta_1 w_{ij}^{(2)} + \dots + \Delta_p w_{ij}^{(2)} \end{aligned}$$
 
@@ -1506,29 +1508,29 @@ Questa tecnica è chiamata **aggiornamento batch** o **offline**. Altre tecniche
 
 ## **Matrix version**
 
-Nel caso di layered network è possibile introdurre una notazione matriciale molto conveniente nel caso in cui si utilizzi hardware particolarmente ottimizzato. Nel caso precedente le unità nei layer erano  $(n, k, m)$ . L'output viene calcolato come  $o^{(2)} = s(\hat{o}^{(1)} W_2)$  dove  $o^{(1)} = s(\hat{o} W_1)$ .
+Nel caso di layered network è possibile introdurre una notazione matriciale molto conveniente nel caso in cui si utilizzi hardware particolarmente ottimizzato. Nel caso precedente le unità nei layer erano  $(n, k, m)$. L'output viene calcolato come  $o^{(2)} = s(\hat{o}^{(1)} \bar{W}_2)$  dove  $o^{(1)} = s(\hat{o} \bar{W}_1)$.
 
 Per adesso consideriamo le seguenti due matrici:
 
-- ottenuta eliminando l'ultima riga di  $\ell$
-- ottenuta eliminando l'ultima riga di  $\ell$
+- $W_2 \in \mathbb{R}^{k \times m}$ ottenuta eliminando l'ultima riga di  $\bar{W}_2 \in R^{(k+1) \times m}$
+- $W_1 \in \mathbb{R}^{n \times k}$ ottenuta eliminando l'ultima riga di  $\bar{W}_1 \in R^{(n+1) \times k}$
 
 Eliminiamo l'ultima riga poiché corrisponde all'input costante (1) posto nell'input layer e nell'hidden layer, ma che non deve propagare nulla all'indietro. Questo non vuol dire che non calcoleremo l'incremento per il bias (lo vedremo dopo). Ricordiamo che:
 
-Il vettore è input di un layer e non contiene l'1 alla fine, mentre si.
+Il vettore $o$ è input di un layer e non contiene l'1 alla fine, mentre si.
 
 Consideriamo:
 
-- la matrice diagonale contenente le derivate della funzione di attivazione del layer di output calcolate durante lo step di feed forward.
-- la matrice diagonale contenente le derivate della funzione di attivazione dell'hidden layer calcolate durante lo step di feed forward.
+- $D_2 \in \mathbb{R}^{m \times m}$ la matrice diagonale contenente le derivate della funzione di attivazione del layer di output calcolate durante lo step di feed forward.
+- $D_1 \in \mathbb{R}^{k \times k}$ la matrice diagonale contenente le derivate della funzione di attivazione dell'hidden layer calcolate durante lo step di feed forward.
 
-$$\mathbf{D}_{2} = \begin{pmatrix} o_{1}^{(2)}(1-o_{1}^{(2)}) & 0 & \cdots & 0\\ 0 & o_{2}^{(2)}(1-o_{2}^{(2)}) \cdot \cdots & 0\\ \vdots & \vdots & \ddots & \vdots\\ 0 & 0 & \cdots & o_{m}^{(2)}(1-o_{m}^{(2)}) \end{pmatrix}, \qquad \mathbf{D}_{1} = \begin{pmatrix} o_{1}^{(1)}(1-o_{1}^{(1)}) & 0 & \cdots & 0\\ 0 & o_{2}^{(1)}(1-o_{2}^{(1)}) \cdot \cdots & 0\\ \vdots & \vdots & \ddots & \vdots\\ 0 & 0 & \cdots & o_{k}^{(1)}(1-o_{k}^{(1)}) \end{pmatrix}.$$
+$$\mathbf{D}_{2} = \begin{pmatrix} o_{1}^{(2)}(1-o_{1}^{(2)}) & 0 & \cdots & 0\\ 0 & o_{2}^{(2)}(1-o_{2}^{(2)}) \cdot \cdots & 0\\ \vdots & \vdots & \ddots & \vdots\\ 0 & 0 & \cdots & o_{m}^{(2)}(1-o_{m}^{(2)}) \end{pmatrix},\\ \mathbf{D}_{1} = \begin{pmatrix} o_{1}^{(1)}(1-o_{1}^{(1)}) & 0 & \cdots & 0\\ 0 & o_{2}^{(1)}(1-o_{2}^{(1)}) \cdot \cdots & 0\\ \vdots & \vdots & \ddots & \vdots\\ 0 & 0 & \cdots & o_{k}^{(1)}(1-o_{k}^{(1)}) \end{pmatrix}.$$
 
-Definiamo il vettore contenente tutte le derivate dei quadratic deviations (errori singoli):
+Definiamo il vettore $e$ contenente tutte le derivate dei quadratic deviations (errori singoli):
 
 $$\mathbf{e} = \begin{pmatrix} (o_1^{(2)} - t_1) \\ (o_2^{(2)} - t_2) \\ \vdots \\ (o_m^{(2)} - t_m) \end{pmatrix}$$
 
-Allora il vettore  $m$ -dimensionale  $\delta^{(l)}$  contenente tutti i backpropagated error fino all'output layer è calcolato come segue:
+Allora il vettore  $m$-dimensionale  $\delta^{(2)}$  contenente tutti i backpropagated error fino all'output layer è calcolato come segue:
 
 $$
 \delta^{(2)} = D_2 e
@@ -1540,7 +1542,7 @@ $$
 \delta^{(1)} = D_1 W_2 \delta^{(2)}
 $$
 
-Adesso è molto importante notare che le correzioni vengono calcolate attraverso gli output con il cappello, quindi vengono considerati anche i bias! Di fatto le matrici di correzioni avranno una dimensione  $\Delta W_2 \in \mathbb{R}^{(\kappa+1)\times m}$  e  $\Delta W_1 \in \mathbb{R}^{(\kappa+1)\times \kappa}$ . Vediamo le formule per calcolarle:
+Adesso è molto importante notare che le correzioni vengono calcolate attraverso gli output con il cappello, quindi vengono considerati anche i bias! Di fatto le matrici di correzioni avranno una dimensione  $\Delta \bar{W}_2 \in \mathbb{R}^{(k+1)\times m}$  e  $\Delta \bar{W}_1 \in \mathbb{R}^{(n+1)\times k}$. Vediamo le formule per calcolarle:
 
 $$
 \Delta \bar{W}_2 = -\gamma \delta^{(2)} \hat{o}^1
@@ -1553,10 +1555,10 @@ $$
 Esplicitando i calcoli ci accorgeremo che è identico a quanto mostrato prima. La generalizzazione è molto semplice. Supponendo di avere esattamente  $l$  layer, con il layer 1 di input ed il layer  $l$  di output, abbiamo che:
 
 $$
-\delta^{(l)} = D_{l\ell}
+\delta^{(l)} = D_{l}e
 $$
 
-Mentre l'*i*-esimo vettore di backpropagated errors è calcolato come:
+Mentre l'$i$-esimo vettore di backpropagated errors è calcolato come:
 
 $$
 \delta^{(i)} = DW_{i+1} \delta^{(i+1)}
@@ -1581,17 +1583,17 @@ Il modello prodotto dovrebbe essere invariante per posizione. Se lo scopo del mo
 
 ## **Constraining the MLP**
 
-Supponiamo di avere un'immagine  $X$  in input e di darla in pasto ad un Multilayer Perceptron con i nodi disposti a griglia. La hidden representation di  $X$  sarà  $H$  e supponiamo sia della stessa dimensione di  $X$ . In pratica, nell'hidden layer abbiamo un percettrone per ogni pixel in input. Supponiamo che l'hidden layer sia collegato in modo denso all'input, quindi ogni percettrone è collegato ad ogni pixel di input. In questo modo, i pesi saranno conservati in un tensore a quattro dimensioni  $(i, j, k, l)$  dove  $(i, j)$  identifica il percettrone nella griglia e  $(k, l)$  identifica il peso del collegamento tra il percettrone e il pixel in posizione  $(k, l)$  in  $X$ . Supponiamo che la matrice  $U$  contenga i bias per ogni percettrone, allora la hidden representation è calcolata come segue:
+Supponiamo di avere un'immagine  $X$  in input e di darla in pasto ad un Multilayer Perceptron con i nodi disposti a griglia. La hidden representation di  $X$  sarà  $H$  e supponiamo sia della stessa dimensione di  $X$. In pratica, nell'hidden layer abbiamo un percettrone per ogni pixel in input. Supponiamo che l'hidden layer sia collegato in modo denso all'input, quindi ogni percettrone è collegato ad ogni pixel di input. In questo modo, i pesi saranno conservati in un tensore a quattro dimensioni  $(i, j, k, l)$  dove  $(i, j)$  identifica il percettrone nella griglia e  $(k, l)$  identifica il peso del collegamento tra il percettrone e il pixel in posizione  $(k, l)$  in  $X$. Supponiamo che la matrice  $U$  contenga i bias per ogni percettrone, allora la hidden representation è calcolata come segue:
 
 $$H_{ij} = U_{ij} + \sum_{k} \sum_{l} W_{ijkl} \cdot X_{kl}$$
 
-Consideriamo  $k = i + a$  e  $l = j + b$, consideriamo  $V$  ottenuta da un reindexing di  $V$ , che possa contenere indici negativi. Possiamo calcolare gli elementi di  $H$  in questo modo:
+Consideriamo  $k = i + a$  e  $l = j + b$, consideriamo  $V$  ottenuta da un reindexing di  $V$, che possa contenere indici negativi. Possiamo calcolare gli elementi di  $H$  in questo modo:
 
 $$H_{ij} = U_{ij} + \sum_{a} \sum_{b} V_{ijab} \cdot X_{i+a, j+b}$$
 
 ## **Invarianza per traslazione**
 
-L'invarianza per traslazione (*translation invariance*) implica che uno shift dell'immagine di input  $X$  dovrebbe provocare unicamente uno shift dell'hidden representation  $H$ . Questo è possibile se e solo se il tensore  $V$  (dei pesi) e la matrice  $U$  (dei bias) non dipendono dalla posizione  $(i, j)$, ovvero se  $V_{ijab} = V_{ab}$  ed  $U$  è una costante  $u$ . Di conseguenza, la hidden representation è data da:
+L'invarianza per traslazione (*translation invariance*) implica che uno shift dell'immagine di input  $X$  dovrebbe provocare unicamente uno shift dell'hidden representation  $H$. Questo è possibile se e solo se il tensore  $V$  (dei pesi) e la matrice  $U$  (dei bias) non dipendono dalla posizione  $(i, j)$, ovvero se  $V_{ijab} = V_{ab}$  ed  $U$  è una costante  $u$. Di conseguenza, la hidden representation è data da:
 
 $$H_{ij} = u + \sum_{a} \sum_{b} V_{ab} \cdot X_{i+a, j+b}$$
 
@@ -1799,7 +1801,7 @@ Leggere meglio nel documento linkato, ma TL;DR:
 
 ## **Xavier initialization**
 
-L'inizializzazione di Xavier consiste nel inizializzare i pesi del layer *l*-esimo randomicamente da una distribuzione normale con media  $\mu = 0$  e varianza  $\sigma^2 = \frac{1}{n^{[l-1]}}$, dove  $n^{[l-1]}$  è il numero di unità nel layer *l* - 1. La giustificazione matematica è presentata nel link soprastante, ma in generale questo porta ad avere:
+L'inizializzazione di Xavier consiste nel inizializzare i pesi del layer $l$-esimo randomicamente da una distribuzione normale con media  $\mu = 0$  e varianza  $\sigma^2 = \frac{1}{n^{[l-1]}}$, dove  $n^{[l-1]}$  è il numero di unità nel layer *l* - 1. La giustificazione matematica è presentata nel link soprastante, ma in generale questo porta ad avere:
 
 - La media delle attivazioni pari a 0
 - La varianza delle attivazioni pari ad 1
@@ -1943,7 +1945,7 @@ Durante il training delle reti neurali, il training set è suddiviso in sottoins
   1. La rete neurale abbia  $L$  layer (da 1 ad  $L$ )
   2. $L$  è l'output layer, mentre 1 è l'input layer.
   3. Con  $W^{(l)}$  indicheremo la matrice dei pesi che collega i layer (
-  4. Con  $w_{ij}^{(l)}$  indicheremo il peso che collega la *i*-esima unità di  $l$  alla *j*-esima di  $l$
+  4. Con  $w_{ij}^{(l)}$  indicheremo il peso che collega la $i$-esima unità di  $l$  alla $j$-esima di  $l$
   5. Con  $a^{(l)}$  indicheremo il vettore delle attivazioni del layer  $l$
   6. Con  $z^{(l)}$  indicheremo il vettore delle combinazioni lineari del layer  $l$  prima dell'attivazione
 
