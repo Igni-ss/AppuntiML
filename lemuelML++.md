@@ -711,7 +711,7 @@ Stiamo sempre supponendo di valutare modelli di regressione, allora la funzione 
 
 ### **K-Fold cross validation**
 
-Prima si divide il dataset in 80% training set e 20% test set, dopodiché si applica la K-Fold cross validation sul training set, ovvero si decide un numero K di fold (sotto-insiemi di equa dimensione) in cui dividere il training set. A giro, una fold sarà il set di validazione mentre le rimanenti *l* saranno usate per il training, questo processo è ripetuto  $K$  volte. Al giro $i$-esimo si ottengono dei parametri  $\Theta^{(i)}$  per il modello, e viene calcolata la loss  $J_{val}^{(i)}$  sul set di validazione. Alla fine possiamo ottenere una loss media di validazione come segue:
+Prima si divide il dataset in 80% training set e 20% test set, dopodiché si applica la K-Fold cross validation sul training set, ovvero si decide un numero K di fold (sotto-insiemi di equa dimensione) in cui dividere il training set. A giro, una fold sarà il set di validazione mentre le rimanenti $l$ saranno usate per il training, questo processo è ripetuto  $K$  volte. Al giro $i$-esimo si ottengono dei parametri  $\Theta^{(i)}$  per il modello, e viene calcolata la loss  $J_{val}^{(i)}$  sul set di validazione. Alla fine possiamo ottenere una loss media di validazione come segue:
 
 <span id="page-18-0"></span>
 $$\frac{1}{K} \sum_{H=1}^{K} J_{val}^{H}$$
@@ -1801,7 +1801,7 @@ Leggere meglio nel documento linkato, ma TL;DR:
 
 ## **Xavier initialization**
 
-L'inizializzazione di Xavier consiste nel inizializzare i pesi del layer $l$-esimo randomicamente da una distribuzione normale con media  $\mu = 0$  e varianza  $\sigma^2 = \frac{1}{n^{[l-1]}}$, dove  $n^{[l-1]}$  è il numero di unità nel layer *l* - 1. La giustificazione matematica è presentata nel link soprastante, ma in generale questo porta ad avere:
+L'inizializzazione di Xavier consiste nel inizializzare i pesi del layer $l$-esimo randomicamente da una distribuzione normale con media  $\mu = 0$  e varianza  $\sigma^2 = \frac{1}{n^{[l-1]}}$, dove  $n^{[l-1]}$  è il numero di unità nel layer $l$ - 1. La giustificazione matematica è presentata nel link soprastante, ma in generale questo porta ad avere:
 
 - La media delle attivazioni pari a 0
 - La varianza delle attivazioni pari ad 1
