@@ -1611,7 +1611,7 @@ Quest'equazione è più o meno quella di un **layer di convoluzione**. Formalmen
 
 La convoluzione tra due funzioni  $f, g : \mathbb{R}^a \rightarrow \mathbb{R}$  è definita come segue:
 
-$$(f\*g)(x) = \int_{-\infty}^{+\infty} f(z)g(x-z)dz$$
+$$(f \ast g)(x) = \int_{-\infty}^{+\infty} f(z)g(x-z)dz$$
 
 Il che misura la sovrapposizione delle aree delle funzioni  $f$  e  $g$  quando  $g$  è flippata e shiftata di  $x$ . Discretizzando l'espressione otteniamo:
 
