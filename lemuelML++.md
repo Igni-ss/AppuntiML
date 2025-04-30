@@ -1092,14 +1092,14 @@ La discesa del gradiente computa  $J$  su tutti i campioni del training set. La 
 
 > $m = 10000$ campioni,  $d = 100$  feature implicano  $1000000$  operazioni ad ogni iterazione. Calcolando su  $n$  iterazioni di GD abbiamo  $n \times 1000000$  operazioni.
 
-Un approccio stocastico ci fa risparmiare tempo, da cui nasce lo Stochastic Gradient Descent (SGD). L'idea è quella di campionare random dal training set un insieme di  $p \ll m$  punti, che chiameremo mini-batch, ed eseguire un'iterazione del GD sui punti campionati.
+Un approccio stocastico ci fa risparmiare tempo, da cui nasce lo Stochastic Gradient Descent (SGD). L'idea è quella di campionare random dal training set un insieme di  $p \ll m$  punti, che chiameremo mini-batch, ed eseguire un'iterazione del GD sui punti campionati. L'errore viene però considerato su tutti i campioni.
 
 ## **Momentum**
 
 MUST READ: *[Why momentum really works](https://distill.pub/2017/momentum/)*
 
 La tecnica del momentum fornisce uno speed-up quadratico al learning. Si sceglie un parametro  $\beta$ solitamente settato a $0.9$ e si effettua l'aggiornamento tenendo uno stato $z$:
-$$\begin{aligned} \theta^{new} &= \theta^{old} - \alpha z^{new} \\ z^{new} &= \beta z^{old} + \nabla J(\theta^{old}) \end{aligned}$$
+$$\begin{aligned} z^{new} &= \beta z^{old} + \nabla J(\theta^{old}) \\ \theta^{new} &= \theta^{old} - \alpha z^{new} \end{aligned}$$
 
 Impostando  $\beta = 0$  si ottiene il gradient descent classico.
 
@@ -1112,15 +1112,16 @@ Impostiamo i seguenti parametri:
 - $\beta$ momentum
 - $e$ numero di epoche (iterazioni SGD)
 - $m$ cardinalità training set
-- $\frac{m}{b}$ numero di mini-batch ad ogni epoca > iterazioni per epoca
+- $\lfloor\frac{m}{b}\rfloor$ numero di mini-batch ad ogni epoca > iterazioni per epoca
 
-Il numero di iterazioni **totali** corrisponde a  $e \cdot m / b$ .
+Il numero di iterazioni **totali** corrisponde a  $e \cdot \frac{m}{b}$ .
 
 Considerazioni:
 
-- Mini-batch grandi permettono di stimare meglio il gradiente
-- Più grande è il mini-batch più è stabile lo step da fare nel gradiente
-- Più grande è il rapporto  $\alpha/b$  e migliore è la condizione per raggiungere il minimo
+- Mini-batch grandi permettono di stimare meglio il gradiente.
+- Più grande è il mini-batch più è stabile lo step da fare nel gradiente.
+- Più grande è il rapporto  $\alpha/b$  e migliore è la condizione per raggiungere il minimo.
+- Aumentando linearmente $b$ possiamo aumentare linearmente $k$ ($b*k \Rightarrow \alpha*k$ o $\alpha*\sqrt{k}$)
 
 ## **Learning rate decay**
 
@@ -1139,19 +1140,22 @@ Il problema di utilizzare gli scheduler è che necessitano di parametri che devo
 
 ## **Valutazione classificazione**
 
-### Matrice d iconfusione
+### Matrice di confusione
 
 Permette di rappresentare l’accuratezza della classificazione.
 Ogni riga contiene valori reali, mentre ogni colonna valori predetti.
 L’elemento alla riga $i$-esima e colonna $j$-esima contiene il numero di casi in cui il classificatore ha classificato la classe vera $C_i$ come classe $C_j$.
 Alta accuratezza: valori nella diagonale diversi da 0 e valori al di fuori della diagonale uguali a 0.
+Se ho un valore di TP molto alto ma un TN non molto alto potrei avere un dataset sbilanciato. Questo dall'accuracy non si può notare per questo è importante guardare la matrice di confusione.
 
-<center>
+Caso binario
 
 |                  | Predetto Positivo | Predetto Negativo |
 |------------------|:------------------:|:-----------------:|
 | Reale Positivo   | Vero Positivo (TP) | Falso Negativo (FN) |
 | Reale Negativo   | Falso Positivo (FP)| Vero Negativo (TN)  |
+
+Caso multiclasse
 
 |               |           | **Predetti**                     |                   |       |       |
 |---------------|-----------|----------------------------------|-------------------|-------|-------|
@@ -1161,7 +1165,6 @@ Alta accuratezza: valori nella diagonale diversi da 0 e valori al di fuori della
 |               | **Coniglio** | 0                             | 1                 | 11           | 12    |
 | **Somma**     |           | 8                                | 6                 | 13           | 27    |
 
-</center>
 
 ### Misure di accuratezza con due classi
 
@@ -1319,6 +1322,7 @@ Letture istruttive:
 - [computational graphs constructed in pytorch](https://pytorch.org/blog/computational-graphs-constructed-in-pytorch/)
 - [overview of pytorch autograd engine](https://pytorch.org/blog/overview-of-pytorch-autograd-engine/)
 - resource-1 dalla lezione 9
+- fare esercizi ed esempi presenti in Lezione 8 - A
 
 In un problema di learning si vuole minimizzare una certa cost function  $J(\theta)$, dove  $\theta$  sono i parametri del nostro modello, e per fare ciò spesso si utilizza l'algoritmo di discesa del gradiente (o le sue varianti). Quest'ultimo richiede il calcolo del gradiente della funzione costo rispetto ad ognuno dei parametri. In una deep neural network, questo calcolo risulta molto complesso. Subentra l'algoritmo di backpropagation. Affinché si possa calcolare il gradiente, la funzione costo deve essere differenziabile e continua. Ma la funzione include il calcolo dell'inferenza, e quindi intrinsecamente anche le funzioni di attivazione utilizzate devono essere differenziabili e continue (es. sigmoid function).
 
