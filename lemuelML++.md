@@ -109,7 +109,7 @@ Quello che succede è che i dati si centrano nello zero degli assi e la deviazio
 See [Chapter 10 of "Dive into Data Mining".](https://github.com/LemuelPuglisi/DiveIntoDataMining/blob/main/10_Reti_neurali.md) Di seguito la storyline:
 
 - <span id="page-3-0"></span>1958, Rosenblat: *Perceptron*
-- 1960, Widrow Hoff: *Adeline*
+- 1960, Widrow Hoff: *Adaline*
 - 1969, Minksy Papert: *Perceptrons*
 - 1970 1976, Linnainmaa / Werbros / Rumelhart Hinton Williams: *Backpropagation*
 - 1997, Hochreiter Schmidhuber: *LSTM*
@@ -193,7 +193,7 @@ Perceptron
     Introduzione
     Perceptron training
     Evaluation during training
-    ADELINE variation in training
+    ADALINE variation in training
     XOR Problem 
         Linear Separability
         Non Linear Separability
@@ -238,7 +238,6 @@ L'algoritmo di training originale del Perceptron è il seguente:
 
 Possiamo scrivere matematicamente il passo di aggiornamento dei pesi come segue:
 
-<span id="page-5-0"></span>
 $$
 \theta_j^{new} = \theta_j^{old} + \eta(y^{(i)} - \hat{y}^{(i)}) \cdot x_j^{(i)}
 $$
@@ -252,14 +251,18 @@ Per valutare le performance del modello impostiamo una **loss function** / **cos
 <span id="page-5-1"></span>
 $$ \text{cost function} = \frac{\#\text{errors }\hat{y}^{(i)} \neq y^{(i)}}{|X_{train}|} $$
 
-### **ADELINE variation in training**
+### **ADALINE variation in training**
 
-ADELINE è una variante del classico Perceptron. Durante il training, mentre il Perceptron aggiorna i pesi basandosi sull'output della funzione DOPO la sogliatura, quindi confrontando due valori binari, ADELINE aggiorna i pesi sfruttando il valore della combinazione lineare, quindi prima della sogliatura.
+ADALINE è una variante del classico Perceptron. Durante il training, mentre il Perceptron aggiorna i pesi basandosi sull'output della funzione DOPO la sogliatura, quindi confrontando due valori binari, ADALINE aggiorna i pesi sfruttando il valore della combinazione lineare, quindi prima della sogliatura.
 
-<span id="page-6-1"></span><span id="page-6-0"></span>
 $$
-\theta_j^{new} = \theta_j^{old} + \eta\left( y^{(i)} - \sum_{j=1}^d x_j^{(i)} \theta_j \right) \cdot x_j^{(i)}.
+\theta_j^{new} = \theta_j^{old} + \eta\left( y^{(i)} - \sum_{k=1}^d x_k^{(i)} \theta_k \right) \cdot x_j^{(i)}.
 $$
+
+Dove:
+
+- $i$ è l'indice dei record
+- $j$ è l'indice delle feature
 
 ## **XOR Problem**
 
@@ -288,14 +291,14 @@ Questo esempio suggerisce che i percettroni non possono risolvere tutti i tipi d
 
 ## **Linear Separability**
 
-Due insiemi di punti  $A$  e  $B$  in uno spazio  $n$-dimensionale vengono detti linearmente separabili se esistono  $n + 1$  numeri reali  $w_1, w_1,..., w_{n+1}$  tali che ogni punto  $(x_1,..., x_n) \in A$  soddisfa la disequazione:
+Due insiemi di punti  $A$  e  $B$  in uno spazio  $n$-dimensionale vengono detti linearmente separabili se esistono  $n + 1$  numeri reali  $w_1, w_1,..., w_{n+1}$  tali che ogni punto  $x = (x_1,..., x_n) \in A$  soddisfa la disequazione:
 
 <span id="page-7-2"></span><span id="page-7-1"></span><span id="page-7-0"></span>
-$$\forall (x_1, \ldots, x_n) \in A \Longrightarrow \sum_{i=1}^n x_i w_i \geq x_{n+1}$$
+$$\forall x \in A \Longrightarrow \sum_{i=1}^n x_i w_i \geq w  _{n+1}$$
 
-$$\forall (x_1, \ldots, x_n) \in B \Longrightarrow \sum_{i=1}^n x_i w_i < x_{n+1}$$
+$$\forall x \in B \Longrightarrow \sum_{i=1}^n x_i w_i < w_{n+1}$$
 
-$x_{n+1}$ è $b$, di solito si dice che se la $sommatoria + b > 0$ allora $x \in A$ altrimenti $x \in B$
+$w_{n+1}$ è $b$, di solito si dice che se la $sommatoria + b > 0$ allora $x \in A$ altrimenti $x \in B$
 
 ## **Non Linear Separability**
 
@@ -344,7 +347,7 @@ Anche se le reti XOR possono risolvere il problema XOR, l’algoritmo di apprend
 ## **Resources**
 
 - <span id="page-7-3"></span>[Chapter 3 from "Neural Networks - A Systematic Introduction"](https://page.mi.fu-berlin.de/rojas/neural/chapter/K3.pdf)
-- [StackExchange Difference between ADELINE and Perceptron](https://datascience.stackexchange.com/questions/36368/what-is-the-difference-between-perceptron-and-adaline)
+- [StackExchange Difference between ADALINE and Perceptron](https://datascience.stackexchange.com/questions/36368/what-is-the-difference-between-perceptron-and-adaline)
 
 # **Regressione**
 
@@ -358,7 +361,8 @@ Anche se le reti XOR possono risolvere il problema XOR, l’algoritmo di apprend
 
 Per regressione si intende la determinazione di una funzione  $y = h_\theta(x)$ che si adatta (fitting) ad un insieme di punti  $T = {\{(x^{(i)}, y^{(i)}), i = 1, ..., m, x^{(i)} \in \mathbb{R}^d, y^{(i)} \in \mathbb{R}\}}$. La funzione dipende da un insieme di parametri sconosciuto  $\theta = [\theta_1,...,\theta_n]^T$.
 
-Il problema è di tipo supervised e l'inferenza viene fatta su valori continui. È definito come segue: dato un training set  $T$ ed alcune ipotesi su  $h_{\theta}(x)$, stimare dei parametri  $\theta$ per  $h_{\theta}$ usando  $T$. Una volta determinati i parametri, è possibile utilizzare  $h_{\theta}$ per stimare i valori  $y$ per nuove  $x$.
+Il problema è di tipo supervised e l'inferenza viene fatta su valori continui. È definito come segue: 
+> Dato un training set  $T$ ed alcune ipotesi su  $h_{\theta}(x)$, stimare dei parametri  $\theta$ per  $h_{\theta}$ usando  $T$. Una volta determinati i parametri, è possibile utilizzare  $h_{\theta}$ per stimare i valori  $y$ per nuove  $x$.
 
 ## Tipi di regressione
 
@@ -414,8 +418,7 @@ Impostando diversi parametri  $\theta_1, \theta_2$ otteniamo diverse ipotesi:
 
 ## Regressione lineare multipla
 
-Possiamo facilmente estendere il modello di regressione lineare semplice al caso della regressione multipla, ovvero al caso in cui
-vogliamo trovare una funzione:
+Possiamo facilmente estendere il modello di regressione lineare semplice al caso della regressione multipla, ovvero al caso in cui vogliamo trovare una funzione:
 
 $$f: \mathfrak{R}^n → \mathfrak{R}$$
 
@@ -537,6 +540,7 @@ $$f(x) = \theta_0 + \theta_1 x$$
 diventa:
 $$f(x) = \theta_0 + \theta_1 x + \theta_2x^2 + \dots + \theta_d x^d$$
 
+Quindi la funzione di mapping a partire da una $x$ monodimensionale restituisce un vettore $\bar{x} = (x, x^2, ..., x^d)$, ma per quanto concerne il regressore questo è solo un problema di regressione lineare con più di 1 feature. Noi sappiamo che esse sono state generate a partire dalla stessa $x$ ma per il regressore sono semplici valori.
 Se la regressione è multipla, ripetiamo lo stesso processo per ciascuna delle feature e includiamo i termini di interazione. Ad esempio, il problema di regressione multipla:
 $$f(x) = \theta_0 + \theta_1x_1 + \theta_2x_2$$
 si trasforma in:
@@ -667,11 +671,11 @@ $$\theta_j \leftarrow \theta_j \left( 1 - \alpha \frac{\lambda}{m} \right) - \al
 Il MAE può essere utile in alcuni problemi per dare un significato semantico all'errore. Es. il numero di macchine di differenza tra il valore predetto e quello vero.
 
 <span id="page-16-1"></span>
-$$ \text{MAE} = \frac{1}{m} \sum_{i=1}^{m} \left| h_{\theta} (x^{(i)} - y^{(i)}) \right| $$
+$$ \text{MAE} = \frac{1}{m} \sum_{i=1}^{m} \left| h_{\theta} (x^{(i)}) - y^{(i)} \right| $$
 
 ### **Mean Squared Error (MSE)**
 
-$$\text{MSE} = \frac{1}{m} \sum_{i=1}^{m} \left[ h_{\theta} (x^{(i)} - y^{(i)}) \right]^2$$
+$$\text{MSE} = \frac{1}{m} \sum_{i=1}^{m} \left[ h_{\theta} (x^{(i)}) - y^{(i)} \right]^2$$
 
 ### **Root Mean Squared Error (RMSE)**
 
