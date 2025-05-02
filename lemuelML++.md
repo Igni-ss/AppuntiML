@@ -686,12 +686,31 @@ $$\text{RMSE} = \sqrt{\text{MSE}}$$
 
 ### **Curva REC**
 
-La curva REC grafica la tolleranza dell'errore (error tolerance) nell'asse x e l'accuratezza della funzione di regressione nell'asse y. L'AOC (area-over-the-curve) è una stima distorta (biased estimate) dell'errore atteso.
-> Supponiamo che per ogni valore di test valutiamo il valore di errore. Li riordiniamo e li mettiamo l'asse orizzontale mentre l'asse verticale indica il numero di elementi (normalizzato) che hanno errore minore dell'I-esimo elemento. Quindi alla fine l'ultimo elemento ha valore 1 perchè tutti gli altri hanno errore minore. Una curva di un algoritmo buono deve crescere molto velocemente perchè più errori bassi ho più cresce velocemente
+La curva REC (Regression Error Characteristic) grafica la tolleranza dell'errore (error tolerance) nell'asse x e l'accuratezza della funzione di regressione nell'asse y. L'AOC (area-over-the-curve) è una stima distorta (biased estimate) dell'errore atteso.
+
+Serve a capire: "quanto è buono il modello se accettiamo un certo margine di errore?"
+
+**Come si costruisce una curva REC**:
+
+1. Calcola l'errore assoluto per ciascun punto del dataset:
+$$e_i=|y^{(i)} - h_{\theta} (x^{(i)})|$$
+2. Ordina questi errori in ordine crescente.
+3. Per una serie di soglie $\epsilon$ crescenti (tolleranza d'errore, che possono corrispondere agli errori ottenuti nel calcolo precedente) calcola la frazione di predizioni con errore inferiore a $\epsilon$:
+$$\frac{\text{num di } e_i \leq \epsilon}{\text{num totale di punti}}$$
+4. Traccia la curva:
+    - Asse X: $\epsilon$ (soglia d'errore assoluto)
+    - Asse Y: frazione di predizioni "accettabili" (cioè con errore $\leq \epsilon$)
+
+**Interpretazione**
+
+- La curva parte da (0, 0) e tende a (massimo errore, 1).
+- Una curva che cresce rapidamente verso l'alto indica un modello preciso: molte predizioni hanno un errore basso.
+- L’area sotto la curva REC è collegata (inversamente) all’errore medio assoluto (MAE): più l’area è grande, più l’errore è piccolo.
+- L'ultimo elemento dell'asse X avrà sempre valore 1 perchè tutti gli altri errori sono minori di lui
 
 ![](img/_page_17_Figure_0.png)
 
-<span id="page-17-0"></span>Come costruire il grafico? Prendiamo  $k$  tolleranze ordinate in ordine crescente  $\epsilon_1, ..., \epsilon_k$  e per ognuna delle tolleranze contiamo quanti dei dati testati hanno un risultato il cui errore è minore della tolleranza  $\epsilon_i$ .
+<span id="page-17-0"></span>Come costruire il grafico? Prendiamo  $k$  tolleranze ordinate in ordine crescente  $\epsilon_1, ..., \epsilon_k$  e per ognuna delle tolleranze contiamo quanti dei dati testati hanno un risultato il cui errore è minore della tolleranza  $\epsilon_i$.
 
 ## **Machine Learning algorithm design**
 
