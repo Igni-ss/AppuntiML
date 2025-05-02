@@ -965,8 +965,8 @@ Potremmo usare la loss utilizzata per la regressione, ma la presenza di una funz
 
 Vogliamo una funzione che sia **derivabile** e **convessa**, ed inoltre che:
 
-- Il costo sia pari a 0 nel caso in cui l'etichetta di training  $y$  associata all'input  $x$  sia pari ad 1 ed il nostro modello produca  $h_{\theta}(x) = 1$
-- Il costo assuma un valore alto quando il modello produce  $h_\theta(x) = 0$  ma l'etichetta di  $x$  è $y=1$.
+- Il costo sia pari a 0 nel caso in cui l'etichetta di training  $y$  associata all'input  $x$  sia pari ad 1 ed il nostro modello produca  $h_{\theta}(x) = 1$ (predizione corretta).
+- Il costo assuma un valore alto quando il modello produce  $h_\theta(x) = 0$  ma l'etichetta di  $x$  è $y=1$ (predizione errata).
 
 Che succede se impostiamo la loss come segue?
 
@@ -1020,7 +1020,7 @@ Analizziamo il task di classificazione quando un campione del dataset può appar
 
 ## **One-vs-all (one-vs-rest)**
 
-La tecnica del one-vs-all consiste nel allenare  $K$  classificatori, dove l' $i$ -esimo modello è un classificatore binario che distingue la classe dal resto, ovvero predirà la probabilità $P(y=i|x,\theta^i)$. Quando si deve classificare un nuovo elemento  $x^{new}$ bisognerà prendere la classe corrispondente al classificatore  $h_{\theta}^{j}$  che ha probabilità maggiore:
+La tecnica del one-vs-all consiste nel allenare  $K$  classificatori, dove l' $i$-esimo modello è un classificatore binario che distingue la classe dal resto, ovvero predirà la probabilità $P(y=i|x,\theta^i)$. Quando si deve classificare un nuovo elemento  $x^{new}$ bisognerà prendere la classe corrispondente al classificatore  $h_{\theta}^{j}$  che ha probabilità maggiore:
 
 $$
 \hat{k} = max_kh_{\theta}^{j}(x^{new})
@@ -1044,7 +1044,7 @@ L'approccio 1v1 è molto dispendioso, dato che con  $K$  classi dovremmo allenar
 
 ## **Softmax**
 
-La softmax è una generalizzazione della funzione logistica adatta alla classificazione multiclasse. Supponendo che ci siano  $k$  classi, il modello torna in output un vettore di lunghezza  $k$, dove l'$i$-esima componente esprime la probabilità condizionata  $P(y = i \mid x; \theta)$, con  $\theta$  matrice dei pesi del modello:
+La softmax è una generalizzazione della funzione logistica adatta alla classificazione multiclasse. Supponendo che ci siano  $k$  classi, il modello restituisce in output un vettore di lunghezza $k$, dove l'$i$-esima componente esprime la probabilità condizionata  $P(y = i \mid x; \theta)$, con  $\theta$  matrice dei pesi del modello:
 
 $$h_{\theta}(x) = \begin{bmatrix}
 P_{\theta^{(0)}}(y = 0 \mid x) \\
@@ -1066,11 +1066,11 @@ $$
 
 Con  $\theta^{(i)}$ indicheremo la colonna $i$-esima di  $\theta$. Nella pratica, la componente $i$-esima del modello viene calcolata come segue:
 
-$$h_{\theta}^{(i)}(x) = P(y = i \mid x) = \frac{\exp(\theta^{(i)T}x)}{\sum_{j=0}^{k-1} \exp(\theta^{(j)T}x)}$$
+$$h_{\theta}^{(i)}(x) = P(y = i \mid x, \theta) = \frac{\exp(\theta^{(i)T}x)}{\sum_{j=0}^{k-1} \exp(\theta^{(j)T}x)}$$
 
 Dove il denominatore serve a normalizzare la componente in $[0,1]$, e cosicché la somma delle componenti faccia 1. Come funzione costo è possibile utilizzare la Cross-Entropy loss più il termine di regolarizzazione:
 
-$$J(\Theta) = -\frac{1}{m} \left[ \sum_{i=1}^{m} \sum_{c=0}^{k-1} 1\{y^{(i)} = c\} \log \left( h_{\theta}^{(c)}(x) \right) \right] + \frac{\lambda}{2m} \sum_{c=0}^{k-1} \sum_{j=1}^{d} \left[ \theta_j^{(c)} \right]^2$$
+$$J(\theta) = -\frac{1}{m} \left[ \sum_{i=1}^{m} \sum_{c=0}^{k-1} 1\{y^{(i)} = c\} \log \left( h_{\theta}^{(c)}(x) \right) \right] + \frac{\lambda}{2m} \sum_{c=0}^{k-1} \sum_{j=1}^{d} \left[ \theta_j^{(c)} \right]^2$$
 
 Dove il predicato è definito come segue:
 
@@ -1144,7 +1144,7 @@ Considerazioni:
 - Mini-batch grandi permettono di stimare meglio il gradiente.
 - Più grande è il mini-batch più è stabile lo step da fare nel gradiente.
 - Più grande è il rapporto  $\alpha/b$  e migliore è la condizione per raggiungere il minimo.
-- Aumentando linearmente $b$ possiamo aumentare linearmente $k$ ($b*k \Rightarrow \alpha*k$ o $\alpha*\sqrt{k}$)
+- Aumentando linearmente $b$ possiamo aumentare linearmente $\alpha$ (se $b \Rightarrow \alpha$ allora $b*k \Rightarrow \alpha*k$ o $\alpha*\sqrt{k}$)
 
 ## **Learning rate decay**
 
@@ -1271,7 +1271,7 @@ Le motivazioni per passare dal perceptron semplice ad un multi-layer perceptron 
 
 ## **Importante notazione**
 
-Tra un layer  $l$  ed il suo successivo  $l + 1$  è definita la matrice dei pesi  $\theta$  che collega i nodi del primo a quelli del secondo. Supponendo che  $l$  abbia  $r$  nodi, mentre  $l + 1$  ne abbia  $s$, allora la matrice  $\theta$  sarà di dimensione  $s \times r$. In generale, il peso  $\theta_{ij}^{(l)}$  si interpreta come il peso che collega l'$i$-esimo nodo del layer  $l$  al $j$-esimo nodo del layer  $l + 1$. Con  $a_i^{(l)}$  indichiamo invece l'attivazione dell'*i*esimo nodo del layer  $l$, mentre con  $a^{(l)}$  indichiamo il vettore di attivazioni del layer  $l$ .
+Tra un layer  $l$  ed il suo successivo  $l + 1$  è definita la matrice dei pesi  $\theta$  che collega i nodi del primo a quelli del secondo. Supponendo che  $l$  abbia  $r$  nodi, mentre  $l + 1$  ne abbia  $s$, allora la matrice  $\theta$  sarà di dimensione  $s \times r$. In generale, il peso  $\theta_{ij}^{(l)}$  si interpreta come il peso che collega l'$i$-esimo nodo del layer  $l$  al $j$-esimo nodo del layer  $l + 1$. Con  $a_i^{(l)}$  indichiamo invece l'attivazione dell'$i$-esimo nodo del layer  $l$, mentre con  $a^{(l)}$  indichiamo il vettore di attivazioni del layer  $l$ .
 
 Altra notazione utile è la seguente:
 
