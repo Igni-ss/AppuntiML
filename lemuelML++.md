@@ -1357,7 +1357,7 @@ Consideriamo una rete feed-forward con $n$ input e  $m$ unità di output, format
 
 $$E = \frac{1}{2} \sum_{i=1}^{p} ||o_i - t_i||^2$$
 
-Dopo aver minimizzato tale funzione, presentiamo nuovi input pattern alla network e ci aspettiamo che essa li interpoli ($o=t$). La network dovrà riconoscere se l'input presentato è simile a qualche pattern appreso, e produrre un output simile. L'algoritmo di backpropagation è utilizzato allo scopo di trovare un minimo locale della funzione di errore. L'obiettivo è quello di calcolare il gradiente nella network in maniera ricorsiva:
+Dopo aver minimizzato tale funzione, presentiamo nuovi input pattern alla network e ci aspettiamo che essa li interpoli ($o=t$). La network dovrà riconoscere se l'input presentato è simile a qualche pattern appreso, e produrre un output simile. L'algoritmo di backpropagation è utilizzato allo scopo di trovare un minimo locale della funzione di errore. Il gradiente della funzione di errore viene calcolato e utilizzato per correggere i pesi iniziali. Il nostro compito è calcolare questo gradiente ricorsivamente.
 
 ![](img/_page_42_Figure_0.jpeg)
 
@@ -1415,26 +1415,52 @@ Nello step feed-forward l'informazione entrante  $x$  viene moltiplicata per il 
 
 ![](img/_page_45_Figure_2.jpeg)
 
+### Add gate
+
+L'add gate prende sempre il gradiente del suo output e lo distribuisce equamente a tutti i suoi input, indipendentemente dai loro valori durante il passaggio feed-forward. Ciò deriva dal fatto che il gradiente locale per l'operazione di add è semplicemente $+1$, quindi i gradienti su tutti gli input saranno esattamente uguali ai gradienti in uscita perché saranno moltiplicati per $1$ (e rimarranno invariati). Nel circuito di esempio sotto, si noti che la porta + ha indirizzato il gradiente di 2,00 a entrambi i suoi input, equamente e invariato.
+
+![](img/add_gate.png)
+
+### Max gate
+
+Il max gate indirizza il gradiente. A differenza dell'add gate che ridistribuisce il gradiente invariato a tutti i suoi input, il max gate distribuisce il gradiente (invariato) esattamente a uno dei suoi input (l'ingresso che aveva il valore più alto durante il passaggio feed-forward). Questo perché il gradiente locale per una porta max è $1$ per il valore più alto e $0$ per tutti gli altri valori. Nel circuito di esempio sotto, l'operazione max ha indirizzato il gradiente di 2,00 alla variabile z, che aveva un valore maggiore di w, e il gradiente su w rimane zero.
+
+![](img/max_gate.png)
+
+### Multiply gate
+
+il multiply gate è un po' meno facile da interpretare. I suoi gradienti locali sono i valori di input (ma scambiati), moltiplicati per il gradiente sul suo output durante l'applicazione della regola della catena. Nell'esempio sotto, il gradiente su x è -8,00, che è -4,00 x 2,00.
+
+![](img/mul_gate.png)
+
+![](img/backpropagation_gates.png)
+
 ## **Formalizzazione dell'algoritmo**
 
 Si consideri una network con un solo valore reale  $x$  ed una network function  $F$, la derivata  $F'$  è calcolata in due fasi:
 
-- Feed-forward: l'input è inserito nella network. Vengono valutate le funzioni primitive e le loro derivate, e quest'ultime vengono conservate.
-- Backpropagation: la costante 1 è inserita nell'output unit e la network è eseguita nella direzione opposta. Più informazioni che convergono su un nodo vengono sommate, poi moltiplicate alla derivata contenuta nel nodo, ed il risultato viaggia verso sinistra. Il risultato collezionato nell'unità di input corrisponderà alla derivata  $F''$  rispetto ad  $x$.
+- **Feed-forward**: l'input è inserito nella network. Vengono valutate le funzioni primitive e le loro derivate, e quest'ultime vengono conservate.
+- **Backpropagation**: la costante 1 è inserita nell'output unit e la network è eseguita nella direzione opposta. Più informazioni che convergono su un nodo vengono sommate, poi moltiplicate alla derivata contenuta nel nodo, ed il risultato viaggia verso sinistra. Il risultato collezionato nell'unità di input corrisponderà alla derivata  $F''$  rispetto ad  $x$.
 
 **Proposizione.** L'algoritmo calcola la derivata  $F''$  della network function  $F'$  rispetto all'input  $x$. correttamente (la dimostrazione è costruita per induzione).
 
 ## **Learning with backpropagation**
 
-Dato che vogliamo minimizzare l'error function  $E$, che dipende dai nodi della rete, dobbiamo concentrarci su questi. In particolare, poniamo l'attenzione sul peso  $w_{ij}$  dell'arco che connette il nodo *i* al nodo *j* della rete. Consideriamo la sottorete fatta da tutti i percorsi che iniziano da  $w_{ij}$  e finiscono nel nodo di output. L'informazione inserita in questa sottorete è  $o_i w_{ij}$, dove  $o_i$  è l'output del nodo *i*. Lo step di backpropagation calcola  $\partial E/\partial o_i w_{ij}$, e dato che l'output  $o_i$  è considerato costante, abbiamo che:
+Dato che vogliamo minimizzare l'error function  $E$, che dipende dai nodi della rete, dobbiamo concentrarci su questi. In particolare, poniamo l'attenzione sul peso  $w_{ij}$  dell'arco che connette il nodo $i$ al nodo $j$ della rete. Consideriamo la sottorete fatta da tutti i percorsi che iniziano da  $w_{ij}$  e finiscono nel nodo di output. L'informazione inserita in questa sottorete è  $o_i w_{ij}$, dove  $o_i$  è l'output del nodo $i$. Lo step di backpropagation calcola  $\partial E/\partial o_i w_{ij}$, e dato che l'output  $o_i$  è considerato costante, abbiamo che:
 
 $$\frac{\partial E}{\partial w_{ij}} = o_i \cdot \frac{\partial E}{\partial o_{ij} w_{ij}}$$
 
-Tutte le sottoreti rispettive a ciascun peso vengono calcolate simultaneamente, rimarcando l'importanza di conservare l'output della primitiva nello step di feed-forward, oltre che alla sua derivata. L'informazione che arriva dal nodo *j* durante la backpropagation prende il nome di backpropagation error  $\delta_j$, e ci permette di calcolare la derivata parziale dell'errore rispetto al peso come segue:
+Tutte le sottoreti relative a ciascun peso vengono calcolate simultaneamente, ed in ogni nodo venfono anche conservate:
+
+1. L'output della primitiva nello step di feed-forward.
+2. Il risultato cumulativo del calcolo a ritroso nella fase di backpropagation fino a questo nodo. Chiamiamo questa quantità backpropagation error  $\delta_j$, e ci permette di calcolare la derivata parziale dell'errore rispetto al peso come segue:
 
 $$\frac{\partial E}{\partial w_{ij}} = o_i \cdot \delta_j$$
 
-Una volta calcolate tutte le derivate parziali aggiorniamo i pesi come visto precedentemente.
+Una volta calcolate tutte le derivate parziali aggiorniamo i pesi effettuando la discesa del gradiente aggiungeto ad ogni peso l'incremento
+$$
+\Delta w_i = -\gamma o_i \delta_j
+$$
 
 ## **The case of layered networks**
 
@@ -1444,15 +1470,15 @@ Scopriamo come effettuare la backpropagation intelligentemente su una network co
 
 Ci sono  $(n + 1) \times k$  pesi tra l'input layer e l'hidden layer, e  $(k + 1) \times m$  pesi tra l'hidden layer e l'output layer. Rappresentiamoli attraverso due matrici, rispettivamente  $\bar{W_1}$  la matrice  $k$  il cui generico elemento è  $w_{ji}^{(1)}$, e  $\bar{W_2}$  la matrice  $(k + 1) \times m$  il cui generico elemento è  $w_{ji}^{(L)}$.
 
-L'input vector $n$-dimensionale  $o = (o_1,...,o_n)$  è trasformato in un vettore a  $n + 1$  dimensioni, che chiamiamo  $\hat{o} = (o_1,..., o_n, 1)$. Con  $net_j$  indichiamo l'excitment accumulato nel $j$-esimo hidden node, ed è calcolato come:
+L'input vector $n$-dimensionale  $o = (o_1,...,o_n)$  è trasformato in un vettore a  $n + 1$  dimensioni, che chiamiamo  $\hat{o} = (o_1,..., o_n, 1)$. Con  $net_j$  indichiamo l'eccitazione accumulata nel $j$-esimo hidden node, ed è calcolata come:
 
 $$net_j = \sum_{i=0}^{n+1} w_{ij}^{(1)} \hat{o}_i$$
 
-La funzione di attivazione è una sigmoid function *s* e l'output  $o_j^{(1)}$  della $j$-esima hidden unit è calcolato come:
+La funzione di attivazione è una sigmoid function $s$ e l'output  $o_j^{(1)}$  della $j$-esima hidden unit è calcolato come:
 
 $$o_j^{(1)} = s \left( \sum_{i=0}^{n+1} w_{ij}^{(1)} \hat{o}_i \right)$$
 
-Possiamo calcolare la su ogni unità dell'hidden layer attraverso la moltiplicazione vettorematrice  $\hat{o}W_1$. Il vettore di output dell'hidden  $o^{(1)}$  layer può essere calcolato come segue:
+Possiamo calcolare la $net$ su ogni unità dell'hidden layer attraverso la moltiplicazione vettore-matrice  $\hat{o}W_1$. Il vettore di output dell'hidden  $o^{(1)}$  layer può essere calcolato come segue:
 
 $$o^{(1)} = s(\hat{o}\bar{W}_1)$$
 
@@ -1466,7 +1492,7 @@ Queste formule possono essere generalizzate per un numero arbitrario di layer.
 
 ![](img/_page_47_Figure_8.jpeg)
 
-Per semplicità supponiamo di avere un input  $(o, t)$, dopodiché generalizzeremo per un training set di dimensione  $p$. La network è estesa con un altro layer di unità, il cui scopo è quello di calcolare la deviazione quadratica  $\frac{1}{2}(o_i^{(2)} - t_i)^2$  per ogni componente  $i$  del vettore di output, la parte sinistra conserverà la derivata  $(o_i^{(2)} - t_i)$. Sommare tutte le deviazioni quadratiche fornisce l'errore  $E$. La funzione di errore su un training set di cardinalità  $p$  è calcolata andando a connettere  $p$  reti come quella mostrata e sommando gli errori per calcolare l'errore totale sul training set.
+Per semplicità supponiamo di avere un input  $(o, t)$, dopodiché generalizzeremo per un training set di dimensione  $p$. La network è estesa con un altro layer di unità, il cui scopo è quello di calcolare la deviazione quadratica  $\frac{1}{2}(o_i^{(2)} - t_i)^2$  per ogni componente  $i$  del vettore di output, la parte sinistra conserverà la derivata  $(o_i^{(2)} - t_i)$. La somma di tutte le deviazioni quadratiche fornisce l'errore  $E$. La funzione di errore su un training set di cardinalità  $p$  è calcolata andando a connettere  $p$  reti come quella mostrata e sommando gli errori per calcolare l'errore totale sul training set.
 
 Dopo aver inizializzato randomicamente i pesi della rete, l'algoritmo di backpropagation è utilizzato per calcolare le correzioni necessarie. Può essere suddiviso in 4 step:
 
@@ -1499,13 +1525,11 @@ $$\frac{\partial E}{\partial w_{ij}^{(2)}} = o_i^{(1)} \delta_j^{(2)} \qquad i =
 
 Osserviamo che in tale passaggio consideriamo il peso  $w_{ij}^{(z)}$  come la variabile e  $o_i$  come una costante.
 
-### **Step 2. Backpropagation to the hidden layer**
+### **Step 3. Backpropagation to the hidden layer**r
 
-backpropagated error
+![](img/_page_49_Figure_2.png)
 
-![](img/_page_49_Figure_2.jpeg)
-
-Vogliamo fare la stessa cosa con i pesi che collegano l'input layer con l'hidden layer, ma stavolta è più complesso. Prendiamo in considerazione il $j$-esimo nodo dell'hidden layer, l'output di questo è preso in considerazione in tutti i nodi del layer di output. Questo vuol dire che quando andiamo a calcolare il backpropagated error, dobbiamo considerare ogni possibile cammino dall'output al nodo *j* (vedasi immagine). Di fatto, il backpropagated error  $\delta_j^{(\ell)}$  viene calcolato come segue:
+Vogliamo fare la stessa cosa con i pesi che collegano l'input layer con l'hidden layer, ma stavolta è più complesso. Prendiamo in considerazione il $j$-esimo nodo dell'hidden layer, l'output di questo è preso in considerazione in tutti i nodi del layer di output. Questo vuol dire che quando andiamo a calcolare il backpropagated error, dobbiamo considerare ogni possibile cammino dall'output al nodo $j$ (vedasi immagine). Di fatto, il backpropagated error  $\delta_j^{(\ell)}$  viene calcolato come segue:
 
 $$
 \delta_j^{(1)} = o_j^{(1)} (1 - o_j^{(1)}) \cdot \sum_{q=1}^m w_{jq}^{(2)} \delta_q^{(2)}.
@@ -1527,7 +1551,7 @@ Utilizzando la convenzione che  $o_{n+1} = o_{k+1}^{(1)} = 1$.
 
 ## **Applicazione su training set**
 
-Questa procedura verrà molto probabilmente applicata su un training set di cardinalità *p*, e l'errore verrà calcolato sommando l'errore su tutte le osservazioni. In questo caso, potremo calcolare per l'$i$-esima osservazione la correzione  $\Delta_i w_{i,j}^{(1)}$  e  $\Delta_i w_{i,j}^{(2)}$, andando ad estendere la network come descritto prima. Nel passo di aggiornamento vengono sommate tutte le correzioni in una sola come segue:
+Questa procedura verrà molto probabilmente applicata su un training set di cardinalità $p$, e l'errore verrà calcolato sommando l'errore su tutte le osservazioni. In questo caso, potremo calcolare per l'$i$-esima osservazione la correzione  $\Delta_i w_{i,j}^{(1)}$  e  $\Delta_i w_{i,j}^{(2)}$, andando ad estendere la network come descritto prima. Nel passo di aggiornamento vengono sommate tutte le correzioni in una sola come segue:
 
 $$\begin{aligned} \Delta w_{ij}^{(1)} &= \Delta_1 w_{ij}^{(1)} + \dots + \Delta_p w_{ij}^{(1)} \\ \Delta w_{ij}^{(2)} &= \Delta_1 w_{ij}^{(2)} + \dots + \Delta_p w_{ij}^{(2)} \end{aligned}$$
 
@@ -2087,7 +2111,7 @@ $$\frac{\partial}{\partial \theta_j} \tilde{J}(\theta) = \frac{\partial}{\partia
 
 Altri metodi di regolarizzazione visti a lezione durante lo studio delle CNN sono il Dropout e la batch normalization.
 
-Il dropout consiste nel disattivare alcuni nodi random durante il training. I nodi disattivati cambiano ad ogni epoca. Se il modello è robusto, allora riuscirà a mantenere performance simili anche con i nodi disattivati. Nella pratica, durante il training si assegna una probabilità *p* ad ogni nodo di disabilitarsi durante l'epoca o meno. Durante la fase di test, tutti i nodi sono attivi.
+Il dropout consiste nel disattivare alcuni nodi random durante il training. I nodi disattivati cambiano ad ogni epoca. Se il modello è robusto, allora riuscirà a mantenere performance simili anche con i nodi disattivati. Nella pratica, durante il training si assegna una probabilità $p$ ad ogni nodo di disabilitarsi durante l'epoca o meno. Durante la fase di test, tutti i nodi sono attivi.
 
 La Batch Normalization permette di ridurre la varianza delle attivazioni dei layer intermedi. Consiste nel normalizzare le attivazioni di un layer shiftandole di un barametro  $\beta$  e scalandole di un parametro . Questi parametri vengono appresi durante il learning.
 
@@ -2121,11 +2145,11 @@ In generale  $\hat{y}_i = P(y = i \mid x; \theta)$ .
 
 Per testare se la softmax stia funzionando o meno, possiamo considerare come funzione costo una "distanza" tra la distribuzione stimata e la distribuzione reale dei dati. La distribuzione reale è nota essendo che la classe  $y$  del dato è conosciuta. Possiamo rappresentarla attraverso la tecnica one-hot vector, ovvero un vettore di dimensione  $K$  la cui componente  $j$  che equivale alla classe di appartenenza è posta ad 1, mentre tutte le altre sono 0. Anche questo vettore rispetta le proprietà di una distribuzione di probabilità discreta.
 
-Sia  $p$  la distribuzione reale dei dati, e  $q$  quella stimata dal modello. La cross-entropy misura il numero medio di bit necessario ad identificare gli eventi che seguono la distribuzione *p*, se li descrivessimo con la distribuzione stimata *q*. Se la distribuzione *q* approssima bene la distribuzione *p*, allora la cross-entropy dovrebbe scendere fino al valore minimo, ovvero l'entropia di *p*. L'entropia  $H(p)$  e la cross-entropy  $H(p | q)$  si calcolano come segue:
+Sia  $p$  la distribuzione reale dei dati, e  $q$  quella stimata dal modello. La cross-entropy misura il numero medio di bit necessario ad identificare gli eventi che seguono la distribuzione $p$, se li descrivessimo con la distribuzione stimata $q$. Se la distribuzione $q$ approssima bene la distribuzione $p$, allora la cross-entropy dovrebbe scendere fino al valore minimo, ovvero l'entropia di $p$. L'entropia  $H(p)$  e la cross-entropy  $H(p | q)$  si calcolano come segue:
 
 $$H(p) = -\sum_{i=1}^{K} p_i \log p_i \qquad\qquad H(p \mid q) = -\sum_{i=1}^{K} p_i \log q_i$$
 
-La divergenza KL misura la differenza tra la cross-entropy e l'entropia di *p*. Durante il training, vorremmo minimizzare tale divergenza. Dato che l'entropia  $H(p)$  dipende dai dati e non dai parametri, possiamo direttamente minimizzare la cross-entropy. La cross-entropy loss minimizza la cross-entropy media calcolata su tutti i dati nel training set / batch:
+La divergenza KL misura la differenza tra la cross-entropy e l'entropia di $p$. Durante il training, vorremmo minimizzare tale divergenza. Dato che l'entropia  $H(p)$  dipende dai dati e non dai parametri, possiamo direttamente minimizzare la cross-entropy. La cross-entropy loss minimizza la cross-entropy media calcolata su tutti i dati nel training set / batch:
 
 $$J(\theta) = -\frac{1}{m} \sum_{i=1}^{m} \sum_{k=1}^{K} y_k^{(i)} \log h_{\theta}(x^{(i)})_k$$
 
