@@ -361,7 +361,7 @@ Anche se le reti XOR possono risolvere il problema XOR, l’algoritmo di apprend
 
 Per regressione si intende la determinazione di una funzione  $y = h_\theta(x)$ che si adatta (fitting) ad un insieme di punti  $T = {\{(x^{(i)}, y^{(i)}), i = 1, ..., m, x^{(i)} \in \mathbb{R}^d, y^{(i)} \in \mathbb{R}\}}$. La funzione dipende da un insieme di parametri sconosciuto  $\theta = [\theta_1,...,\theta_n]^T$.
 
-Il problema è di tipo supervised e l'inferenza viene fatta su valori continui. È definito come segue: 
+Il problema è di tipo supervised e l'inferenza viene fatta su valori continui. È definito come segue:
 > Dato un training set  $T$ ed alcune ipotesi su  $h_{\theta}(x)$, stimare dei parametri  $\theta$ per  $h_{\theta}$ usando  $T$. Una volta determinati i parametri, è possibile utilizzare  $h_{\theta}$ per stimare i valori  $y$ per nuove  $x$.
 
 ## Tipi di regressione
@@ -544,7 +544,7 @@ Quindi la funzione di mapping a partire da una $x$ monodimensionale restituisce 
 Se la regressione è multipla, ripetiamo lo stesso processo per ciascuna delle feature e includiamo i termini di interazione. Ad esempio, il problema di regressione multipla:
 $$f(x) = \theta_0 + \theta_1x_1 + \theta_2x_2$$
 si trasforma in:
-$$f(x) = \theta_0 + \theta_1x_1 + \theta_2x_2 \theta_3x_1^2 + \theta_4x_1x_2 + \theta_5x_2^2$$
+$$f(x) = \theta_0 + \theta_1x_1 + \theta_2x_2 + \theta_3x_1^2 + \theta_4x_1x_2 + \theta_5x_2^2$$
 A causa della presenza dei termini di interazione, il calcolo può diventare molto pesante quando si hanno molte feature in input.
 
 ## **Metodo dell'equazione normale**
@@ -595,6 +595,7 @@ Se il modello che utilizziamo come ipotesi è molto complesso (es. polinomio di 
 Ovvero il modello non generalizza su nuovi esempi mai visti prima. Tale fenomeno prende il nome di overfitting. Se il modello generato è troppo semplice rispetto alla distribuzione dei dati, allora si parla di underfitting.
 
 ![](img/_page_13_Figure_5.jpeg)
+
 > Nel primo si ha errore alto sia nel training che nel test, nel secondo si ha errore basso in entrambi, nel terzo si ha errore basso nel training e uno alto nel testing.
 (1° caso high bias, 3° caso high variance. Vedi dopo)
 
@@ -609,9 +610,9 @@ La soluzione all'overfitting risiede nella **regolarizzazione**.
 
 Anche se il numero di features è alto, la regolarizzazione continua a considerarle tutte ma riduce il modulo (norma) dei parametri:
 
-$$||\theta_p|| = \left(\sum_{i=0}^d |\theta_j|^p\right)^{1/p}$$
-$$\text{norma 1:} \quad ||\theta_p||_1 = \sum_{i=0}^d |\theta_j|$$
-$$\text{norma 2:} \quad ||\theta_p||_2 = \sqrt{\sum_{i=0}^d \theta_j^2}$$
+$$||\theta||_p = \left(\sum_{j=0}^d |\theta_j|^p\right)^\frac{1}{p}$$
+$$\text{norma 1:} \quad ||\theta||_1 = \sum_{j=0}^d |\theta_j|$$
+$$\text{norma 2:} \quad ||\theta||_2 = \sqrt{\sum_{j=0}^d \theta_j^2}$$
 
 Questo accorgimento aiuterà a semplificare i modelli complessi al fine di permettere la generalizzazione. Osserviamo il seguente esempio di overfitting:
 
@@ -642,9 +643,9 @@ Cosa da osservare:
 
 Calcoliamoci la derivata della funzione costo con regolarizzazione:
 
-$$\frac{\partial}{\partial \theta_0} J(\theta) = \frac{1}{m} \sum_{i=1}^{m} \left[ h_{\theta}(x^{\langle i \rangle}) - y^{\langle i \rangle} \right] \cdot x_0^{\langle i \rangle}$$
+$$\frac{\partial}{\partial \theta_0} J(\theta) = \frac{1}{m} \sum_{i=1}^{m} \left[ h_{\theta}(x^{( i )}) - y^{( i )} \right] \cdot x_0^{( i )}$$
 
-$$\frac{\partial}{\partial \theta_j} J(\theta) = \frac{1}{m} \sum_{i=1}^{m} \left[ h_{\theta}(x^{\langle i \rangle}) - y^{\langle i \rangle} \right] \cdot x_j^{\langle i \rangle} + 2\lambda \theta_j$$
+$$\frac{\partial}{\partial \theta_j} J(\theta) = \frac{1}{m} \sum_{i=1}^{m} \left[ h_{\theta}(x^{( i )}) - y^{( i )} \right] \cdot x_j^{( i )} + 2\lambda \theta_j$$
 
 Possiamo applicare un piccolo tweak a  $J(\theta)$  per agevolare l'aggiornamento dei pesi, modifichiamola:
 
@@ -654,9 +655,29 @@ Quindi la derivata per  $j > 0$  diventerebbe:
 
 $$\frac{\partial}{\partial \theta_j} J(\theta) = \frac{1}{m} \sum_{i=1}^{m} \left[ h_{\theta}(x^{(i)}) - y^{(i)} \right] \cdot x_j^{(i)} + \frac{\lambda}{m} \theta_j$$
 
-Scriviamo il passo di aggiornamento ( $j > 0$ )
+Il passo di aggiornamento tramite discesa del gradiente è:
 
-$$\theta_j \leftarrow \theta_j \left( 1 - \alpha \frac{\lambda}{m} \right) - \alpha \cdot \frac{1}{m} \sum_{i=1}^{m} \left[ h_{\theta} (x^{(i)}) - y^{(i)} \right] \cdot x_j^{(i)}$$
+$$
+\theta_j \leftarrow \theta_j - \alpha \cdot \frac{\partial}{\partial \theta_j} J(\theta)
+$$
+
+Sostituendo la derivata:
+
+$$
+\theta_j \leftarrow \theta_j - \alpha \left( \frac{1}{m} \sum_{i=1}^{m} \left[ h_{\theta}(x^{(i)}) - y^{(i)} \right] x_j^{(i)} + \frac{\lambda}{m} \theta_j \right)
+$$
+
+Distribuiamo $\alpha$:
+
+$$
+\theta_j \leftarrow \theta_j - \alpha \cdot \frac{1}{m} \sum_{i=1}^{m} \left[ h_{\theta}(x^{(i)}) - y^{(i)} \right] x_j^{(i)} - \alpha \cdot \frac{\lambda}{m} \theta_j
+$$
+
+Ora raccogliamo $\theta_j$, dal primo e terzo addendo, ottenendo il passo di aggiornamento:
+
+$$
+\theta_j \leftarrow \theta_j \left(1 - \alpha \cdot \frac{\lambda}{m}\right) - \alpha \cdot \frac{1}{m} \sum_{i=1}^{m} \left[ h_{\theta}(x^{(i)}) - y^{(i)} \right] x_j^{(i)}
+$$
 
 # **Evaluation della regressione**
 
@@ -771,7 +792,7 @@ Possiamo associare un fenomeno di **high bias** all'**underfitting**.
 
 La variance (varianza) indica la variabilità delle predizioni del modello rispetto ad un singolo dato, il che ci dice quanto i nostri dati siano sparsi. I modelli con alta varianza prestano molta attenzione al training, ma non sono generalizzati nei dati mai visti prima. Come risultato, tali modelli performano bene sul training set e male sul test set.
 
-Se la varianza su un punto suppongo sia calcolata rimpiazzando la media nella formula della varianza con il valore nel punto. Se la varianza è alta abbiamo dati molto sparsi.
+> Se la varianza su un punto suppongo sia calcolata rimpiazzando la media nella formula della varianza con il valore $y$ nel punto. Se la varianza è alta abbiamo dati molto sparsi.
 
 Possiamo associare un fenomeno di **high variance** all'**overfitting**.
 
@@ -846,6 +867,7 @@ In presenza di high bias, aumentare le dimensioni del training set non serve a m
 Nel seguente esempio un dataset grande  $m = 17$, il generico campione è rappresentato da due features  $x^{(i)} = (x_1^{(i)}, x_2^{(i)})$, quindi  $d = 2$, e le labels appartengono ad un insieme numerabile di classi {🔴, 🔵}. Vogliamo trovare un decision boundary (curva verde) che separi i dati di classi differenti.
 
 ![](img/_page_24_Figure_3.jpeg)
+
 > Nota 1. Nell'esempio, il numero di campioni è bilanciato.  
 > Nota 2. La costruzione del training set deve rispettare la popolazione delle classi.
 
@@ -1002,7 +1024,7 @@ La prima e l'ultima hanno un valore di entropia pari a 0, essendo che la probabi
 
 ![](img/_page_30_Figure_11.jpeg)
 
-La [cross-entropy](https://en.wikipedia.org/wiki/Cross_entropy) indica il numero medio di bit necessario per identificare eventi $x$ che seguono una probabilità $p$ se li descriviamo con la probabilità stimata $q$. La cross entropy raggiunge il suo minimo quando $p$ e $q$ sono uguali. In tal caso, la cross-entropy corrisponde all'entropia di $p$. La divergenza KL è la differenza tra $H(p,q)$ e $H(p)$, ed in un certo senso misura la "distanza" tra le due distribuzioni. Dato che l'entropia dei nostri dati non dipende dai parametri del modello, allora minimizzare la divergenza KL è analogo a minimizzare la cross-entropy, dove $p$ è la distribuzione reale delle classi e $q$ è la distribuzione data dal classificatore. La cross-entropy è definita come segue:
+La [cross-entropy](https://en.wikipedia.org/wiki/Cross_entropy) indica il numero medio di bit necessario per identificare eventi $x$ che seguono una probabilità $p$ se li descriviamo con la probabilità stimata $q$. La cross entropy raggiunge il suo minimo quando $p$ e $q$ sono uguali. In tal caso, la cross-entropy corrisponde all'entropia di $p$. La **divergenza KL** è la differenza tra $H(p,q)$ e $H(p)$, ed in un certo senso misura la "distanza" tra le due distribuzioni. Dato che l'entropia dei nostri dati non dipende dai parametri del modello, allora minimizzare la divergenza KL è analogo a minimizzare la cross-entropy, dove $p$ è la distribuzione reale delle classi e $q$ è la distribuzione data dal classificatore. La cross-entropy è definita come segue:
 
 $$H(p,q) = -\sum_{k=1}^{K} p_k \log q_k$$
 
@@ -1213,7 +1235,7 @@ Sulla base dell’esito della classificazione possiamo distinguere 4 sottinsiemi
 
 **Accuratezza**: $Acc(M) = \frac{|T_{pos}| + |T_{neg}|}{|Pos + Neg|}$
 
-**F1 score** (compreso tra 0 e 1) $F1(M) = 2 \times \frac{Prec(M)\times Rec{M}}{Prec(M)+ Rec{M}}$
+**F1 score** (compreso tra 0 e 1) $F1(M) = 2 \times \frac{Prec(M)\times Rec(M)}{Prec(M)+ Rec(M)}$
 
 ## Soglia discriminativa in un classificatore binario
 
