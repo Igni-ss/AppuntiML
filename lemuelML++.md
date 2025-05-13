@@ -1210,7 +1210,6 @@ Caso multiclasse
 |               | **Coniglio** | 0                             | 1                 | 11           | 12    |
 | **Somma**     |           | 8                                | 6                 | 13           | 27    |
 
-
 ### Misure di accuratezza con due classi
 
 Supponiamo di avere un dataset con due classi: una indicata come $P$ (positiva) e una come $N$ (negativa).
@@ -1639,7 +1638,7 @@ $$
 
 Quindi è definito ricorsivamente (bisogna prima calcolare  $\delta^{i+1}$ ).
 
-# **12. Convolutional Neural Networks**
+# **Convolutional Neural Networks**
 
 ## Da [Dive Into Deep Learning](https://d2l.ai/d2l-en.pdf)
 
