@@ -957,7 +957,7 @@ Nell'immagine a sx i punti delle due classi non sono linearmente separabili, poi
 
 Bisogna definire una loss function/cost function che faccia al caso nostro:
 
-$$J(\theta) = \frac{1}{m} \sum_{i=1}^{m} \text{Loss} \{ h_{\theta}(x^{(i)}), y^{(i)} \} $$
+$$J(\theta) = \frac{1}{m} \sum_{i=1}^{m} \text{Loss}(h_{\theta}(x^{(i)}), y^{(i)})$$
 
 L'ideale è che sia una **funzione convessa**, così da poter usare senza problemi l'algoritmo di discesa del gradiente per trovare un minimo globale. Per adesso non diciamo nulla su come viene ricavata la funzione loss, dedicheremo il prossimo capitolo esclusivamente a questo. La seguente loss prende il nome di binary cross-entropy loss:
 
@@ -1034,7 +1034,7 @@ $$\begin{aligned} J(\theta) &= \frac{1}{m} \sum_{i=1}^m \left[ -\sum_{k=1}^K p_k
 
 Notiamo che all'interno della sommatoria, il termine $y_k^{(i)}$ sarà sempre nullo tranne che nella componente che rappresenta la classe di $x^{(i)}$, nella pratica questo step si può semplificare tenendo in considerazione solo tale componente. Supponendo che $y_j^{(i)}=1$, allora
 
-$$J(\theta) = \frac{1}{m} \sum_{i} \left[ y_j^{(i)} \log h_{\theta}(x^{(i)})_k \right]$$
+$$J(\theta) = \frac{1}{m} \sum_{i=1}^m \left[ y_j^{(i)} \log h_{\theta}(x^{(i)})_j \right]$$
 
 # **Multi-class classification**
 
@@ -1042,31 +1042,31 @@ Analizziamo il task di classificazione quando un campione del dataset può appar
 
 ## **One-vs-all (one-vs-rest)**
 
-La tecnica del one-vs-all consiste nel allenare  $K$  classificatori, dove l' $i$-esimo modello è un classificatore binario che distingue la classe dal resto, ovvero predirà la probabilità $P(y=i|x,\theta^i)$. Quando si deve classificare un nuovo elemento  $x^{new}$ bisognerà prendere la classe corrispondente al classificatore  $h_{\theta}^{j}$  che ha probabilità maggiore:
+La tecnica del one-vs-all consiste nel allenare  $K$  classificatori, dove l' $k$-esimo modello è un classificatore binario che distingue la classe $k$-esima dal resto, ovvero predirà la probabilità $P(y=k|x,\theta^k)$. Quando si deve classificare un nuovo elemento  $x^{new}$ bisognerà prendere la classe corrispondente al classificatore  $h_{\theta}^{k}$  che ha probabilità maggiore:
 
 $$
-\hat{k} = max_kh_{\theta}^{j}(x^{new})
+\hat{k} = \max_{k} h_{\theta}^{k}(x^{new})
 $$
 
 ![](img/_page_32_Figure_4.jpeg)
 > Quindi per ogni iterazione prendo il dataset e lo rietichetto, ci saranno elementi di classe 1 (i triangoli per esempio) e problemi di classe 0 che sono tutti gli altri
 
 Il problema associato a questo metodo è che potrebbero crearsi delle aree di incertezza, come il triangolo in figura. All'interno di tale area si seleziona il boundary più vicino.
-La somma delle probabilità di tutti gli $h_{\theta}^{i}$ non è 1 perchè sono classificatori separati.
+La somma delle probabilità di tutti gli $h_{\theta}^{k}$ non è 1 perchè sono classificatori separati.
 
 ![](img/_page_33_Figure_0.jpeg)
 
 Se tutte le probabilità sono minori di 0.5 assegnamo comunque la maggiore. Ma ha senso?
-Se mi trovo in una delle aree di incertezza esterne  vince il boundary più lontano perchè all'allontanarsi aumenta la probabilità di appartenenza alla classe del boundary specifico.
+Se mi trovo in una delle aree di incertezza esterne vince il boundary più lontano perchè all'allontanarsi aumenta la probabilità di appartenenza alla classe del boundary specifico.
 In quella interna vince il più vicino.
 
 ## **One-vs-One**
 
-L'approccio 1v1 è molto dispendioso, dato che con  $K$  classi dovremmo allenare  $l$  classificatori. Tuttavia, non risente del problema precedente. Ogni classificatore separa una classe da un'altra, quindi "vota" una certa classe. Vince la classe con più voti.
+L'approccio 1v1 è molto dispendioso, dato che con  $K$  classi dovremmo allenare  $l = \frac{K(K-1)}{2}$  classificatori. Tuttavia, non risente del problema precedente. Ogni classificatore separa una classe da un'altra, quindi "vota" una certa classe. Vince la classe con più voti.
 
 ## **Softmax**
 
-La softmax è una generalizzazione della funzione logistica adatta alla classificazione multiclasse. Supponendo che ci siano  $k$  classi, il modello restituisce in output un vettore di lunghezza $k$, dove l'$i$-esima componente esprime la probabilità condizionata  $P(y = i \mid x; \theta)$, con  $\theta$  matrice dei pesi del modello:
+La softmax è una generalizzazione della funzione logistica adatta alla classificazione multiclasse. Supponendo che ci siano  $k$  classi, il modello restituisce in output un vettore di lunghezza $k$, dove l'$c$-esima componente esprime la probabilità condizionata  $P(y = c \mid x, \theta)$, con  $\theta$  matrice dei pesi del modello:
 
 $$h_{\theta}(x) = \begin{bmatrix}
 P_{\theta^{(0)}}(y = 0 \mid x) \\
@@ -1075,7 +1075,7 @@ P_{\theta^{(1)}}(y = 1 \mid x) \\
 P_{\theta^{(k-1)}}(y = k - 1 \mid x)
 \end{bmatrix}$$
 
-Notasi che  $\theta$  è una matrice dei pesi $(d + 1) \times k$  (supponendo che  $x \in \mathbb{R}^{d}$, più la costante di bias, per ognuno dei  $k$  output).
+Si noti che  $\theta$  è una matrice dei pesi $(d + 1) \times k$  (supponendo che  $x \in \mathbb{R}^{d}$, più la costante di bias, per ognuno dei  $k$  output).
 
 $$
 \theta = \begin{bmatrix}
@@ -1086,9 +1086,9 @@ $$
 \end{bmatrix}
 $$
 
-Con  $\theta^{(i)}$ indicheremo la colonna $i$-esima di  $\theta$. Nella pratica, la componente $i$-esima del modello viene calcolata come segue:
+Con  $\theta^{(c)}$ indicheremo la colonna $c$-esima di  $\theta$. Nella pratica, la componente $c$-esima del modello viene calcolata come segue:
 
-$$h_{\theta}^{(i)}(x) = P(y = i \mid x, \theta) = \frac{\exp(\theta^{(i)T}x)}{\sum_{j=0}^{k-1} \exp(\theta^{(j)T}x)}$$
+$$h_{\theta}^{(c)}(x) = P(y = c \mid x, \theta) = \frac{\exp(\theta^{(c)T}x)}{\sum_{j=0}^{k-1} \exp(\theta^{(j)T}x)}$$
 
 Dove il denominatore serve a normalizzare la componente in $[0,1]$, e cosicché la somma delle componenti faccia 1. Come funzione costo è possibile utilizzare la Cross-Entropy loss più il termine di regolarizzazione:
 
@@ -1174,7 +1174,7 @@ Durante le fasi di training è spesso utile ridurre il learning rate  $\alpha$, 
 
 - **Constant**: opzione di default, il learning rate rimane costante
 - **Time-based**: impostiamo  $\alpha^t = \alpha^0 \cdot 1/(1 + kt)$, dove  $t$  è l'iterazione e  $k$  è il **decay rate**
-- **Stop decay**: si riduce di un fattore costante ogni  $k$  epoche
+- **Step decay**: si riduce di un fattore costante ogni  $k$  epoche
 - **Exponential decay**: si aggiorna con  $\alpha^t = \alpha^0 \cdot e^{-kt}$
 
 Il problema di utilizzare gli scheduler è che necessitano di parametri che devono essere adattati al problema che si sta risolvendo. Esistono algoritmi di ottimizzazione detti "**adaptive gradient descent**" che possono aiutare a risolvere questo problema:
