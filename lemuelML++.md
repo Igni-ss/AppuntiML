@@ -1655,7 +1655,20 @@ Quindi è definito ricorsivamente (bisogna prima calcolare  $\delta^{i+1}$ ).
 
 ## Da [Dive Into Deep Learning](https://d2l.ai/d2l-en.pdf)
 
-I MLP, essendo invarianti per l'ordine delle features, ignorano l'informazione correlata alla struttura dell'immagine stessa. Le CNN sono progettate esattamente allo scopo di sfruttare tale informazione. In poche parole le CNN:
+I MLP, essendo invarianti per l'ordine delle features, ignorano l'informazione correlata alla struttura dell'immagine stessa. Inoltre le immagini sono formate da un numero molto alto di pixel e per estrarre le loro feature molto spesso c'è bisogno di più layer. Utilizzare un MLP fa esplodere molto velocemente il numero di parametri da addestrare. Per esempio possiamo prendere un'immagine dal MNIST Handwritten Digits
+Classification Problem and Dataset. Supponiamo di avere una rete con 3 layer:
+
+1. Input layer: un'immagine $28 \times 28 = 784$ pixel, trasformata in un vettore $784 \times 1$.
+2. Hidden layer: uno strato nascosto con $500$ neuroni.
+3. Output layer: $10$ neuroni, uno per ciascuna classe (0-9).
+
+I parametri da addestrare saranno:
+- $500 \times 784 = 392,000$ connessioni dal primo al secondo layer $+ 500$ bias (uno per ogni neurone del secondo layer)
+- $10 \times 500$ connessioni tra il secondo layer e quello di output $+ 10$ bias
+
+Il totale sarà di 397,510$ pesi da addestrare.
+
+Le CNN sono progettate per essere più veloci degli MLP e sfruttare le informazioni che si possono estrarre dalla struttura dell'immagine. In poche parole le CNN:
 
 - Producono modelli più accurati
 - Sono più leggere (minor numero di parametri)
@@ -1690,11 +1703,11 @@ Per il principio di località, per rilevare informazioni rilevanti sul pixel (*i
 
 $$H_{ij} = u + \sum_{a=-\Delta}^{\Delta} \sum_{b=-\Delta}^{\Delta} V_{ab} \cdot X_{i+a,j+b}$$
 
-Quest'equazione è più o meno quella di un **layer di convoluzione**. Formalmente,  $V$  prende il nome di **convolution kernel** (filtro o pesi). Quando il kernel  $\Delta$  è molto più piccolo rispetto all'input, il numero di parametri da stimare è di gran lunga minore rispetto a dei fully connected layers. Il trade-off sta nell'assumere che l'input sia translation invariant (questo tipo di assunzioni prendono il nome di **inductive bias** o **learning bias**)
+Quest'equazione è più o meno quella di un **layer di convoluzione**. Formalmente,  $V$  prende il nome di **convolution kernel** (filtro oppure pesi del layer che sono parametri apprendibili). Quando il kernel  $\Delta$  è molto più piccolo rispetto all'input, il numero di parametri da stimare è di gran lunga minore rispetto a dei fully connected layers. Il trade-off sta nell'assumere che l'input sia translation invariant (questo tipo di assunzioni prendono il nome di **inductive bias** o **learning bias**)
 
 ## **Convoluzioni**
 
-La convoluzione tra due funzioni  $f, g : \mathbb{R}^a \rightarrow \mathbb{R}$  è definita come segue:
+La convoluzione tra due funzioni  $f, g : \mathbb{R}^d \rightarrow \mathbb{R}$  è definita come segue:
 
 $$(f \ast g)(x) = \int_{-\infty}^{+\infty} f(z)g(x-z)dz$$
 
@@ -1706,7 +1719,7 @@ Per matrici (tensori bidimensionali) l'espressione muta nel seguente modo:
 
 $$(f \ast g)(i, j) = \sum_{a} \sum_{b} f(a, b)g(i - a, j - b)$$
 
-L'espressione è molto simile a quella ottenuta nel paragrafo precedente, ad esclusione del segno in  $g(i - a, j - b)$ .
+L'espressione è molto simile a quella ottenuta nel paragrafo precedente, ad esclusione del segno in  $g(i - a, j - b)$. Quella definizione originale descrive più propriamente una correlazione incrociata.
 
 ## **Channels [ CORE CONCEPT ]**
 
@@ -1787,10 +1800,10 @@ $$
 
 Con le seguenti specifiche:
 
-- Input di dimensione.
-- Kernel di dimensione.
-- Padding.
-- Stride orizzontale  $S_w$  e stride verticale.
+- Input di dimensione $W \times H$.
+- Kernel di dimensione $F_w \times F_h$.
+- Padding $P$.
+- Stride orizzontale  $S_w$  e stride verticale$S_h$.
 
 Allora le dimensioni di output sono:
 
@@ -1798,7 +1811,7 @@ $$W' = \frac{W - F_w + 2P}{S_w} + 1 \qquad\qquad H' = \frac{W - F_h + 2P}{S_h} +
 
 ## **1x1 kernels**
 
-Supponiamo di avere un'immagine a  $c_i$  canali, e di voler ridurre i canali a  $c_o$ . Questo può essere fatto attraverso un kernel di dimensione  $1 \times 1$ . Questo kernel non gode del principio di località, essendo che si prende in considerazione un solo pixel, e non il suo vicinato.
+Supponiamo di avere un'immagine a  $c_i$  canali, e di voler ridurre i canali a  $c_o$ . Questo può essere fatto attraverso un kernel di dimensione  $1 \times 1$ . Questo kernel non sfrutta il principio di località, essendo che si prende in considerazione un solo pixel, e non il suo vicinato.
 
 ## **Informazioni contenute sulle slides**
 
@@ -1857,7 +1870,7 @@ I progressi nel campo della ricerca hanno dimostrato che:
 - il max pooling funziona meglio dell'avg pooling
 - Le ReLU sono più robuste delle attivazioni Tanh
 
-# **13. Ulteriori tecniche**
+# **Ulteriori tecniche**
 
 ## **General rule of thumbs**
 
@@ -1902,11 +1915,11 @@ $$n^{[l-1]}Var(W^{[l]}) \begin{cases} < 1 & \implies \text{Vanishing Signal} \\ 
 ### **Che attivazione utilizzare?**
 
 - Con attivazioni tanh si può utilizzare la xavier initialization
-- Con attivazioni ReLU si può utilizzare la He initialization ([link al paper\)](https://arxiv.org/pdf/1502.01852.pdf)
+- Con attivazioni ReLU si può utilizzare la He initialization ([link al paper](https://arxiv.org/pdf/1502.01852.pdf))
 
 ## **Dropout**
 
-### [Link to the original paper.](https://jmlr.org/papers/volume15/srivastava14a/srivastava14a.pdf)
+> [Link to the original paper.](https://jmlr.org/papers/volume15/srivastava14a/srivastava14a.pdf)
 
 Il dropout è un metodo di regolarizzazione, ovvero di prevenzione dell'overfitting. L'idea chiave è che se il modello è solido, allora "spegnendo" alcuni dei pesi esso dovrebbe continuare a funzionare. Quello che si fa nella pratica durante il training è che ogni nodo si spegne con una certa probabilità, e ad ogni epoca si cambiano i nodi spenti. Il dropout **non si applica** durante il testing.
 
@@ -1914,9 +1927,9 @@ Il dropout è un metodo di regolarizzazione, ovvero di prevenzione dell'overfitt
 
 ![](img/_page_61_Picture_16.jpeg)
 
-### **Batch normalization**
+## **Batch normalization**
 
-#### [Link to the original paper.](http://proceedings.mlr.press/v37/ioffe15.pdf)
+> [Link to the original paper.](http://proceedings.mlr.press/v37/ioffe15.pdf)
 
 Consiste nel normalizzare i dati del batch scalandoli attraverso un parametro  $\gamma$  e shiftandoli attraverso un parametro  $\beta$, entrambi da apprendere. L'effetto della batch normalization è quello di accelerare il training (alcuni dicono risolvendo il problema dell'internal covariate shift, anche se è stata smentita da alcuni paper di Microsoft research), ed inoltre ha un piccolo effetto di regolarizzazione contro l'overfitting.
 
@@ -1942,7 +1955,7 @@ Normalizza il risultato con i parametri (in realtà il Batch Normalization è **
 
 $$y_i = \gamma \hat{x}_i + \beta$$
 
-### **Data augmentation**
+## **Data augmentation**
 
 La data augmentation consiste nel generare dati "nuovi" dai dati esistenti nel dataset, semplicemente applicando delle trasformazioni affini (es. shift, zoom, rotazione, flip, etc), dando la stessa label dell'immagine originale. In un certo senso, anche questo è uno **schema di regolarizzazione**.
 
@@ -1991,7 +2004,7 @@ During testing, target images are mapped with the target encoder to the shared f
 
 ### **Image-to-image transformation**
 
-#### [Reference to CycleGAN](https://junyanz.github.io/CycleGAN/)
+> [Reference to CycleGAN](https://junyanz.github.io/CycleGAN/)
 
 L'Image-to-image transformation è un secondo approccio per la domain adaption. Abbiamo due funzioni di mapping  $G: X \rightarrow Y$  e  $F: Y \rightarrow X$, e due discriminatori  $D_X$  e  $D_Y$ . Il discriminatore *G* incoraggia *G* a tradurre *X* in output indistinguibili dal dominio *Y*, e viceversa  $D_X$  ed *F*. Per regolarizzare meglio questi mapping, vengono introdotte due **cycle consistency losses** che catturano l'intuizione che se mappiamo da un dominio all'altro e poi torniamo indietro, dovremmo arrivare dove abbiamo iniziato.
 
