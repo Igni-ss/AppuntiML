@@ -1173,8 +1173,8 @@ Considerazioni:
 Durante le fasi di training è spesso utile ridurre il learning rate  $\alpha$, poiché avvicinandoci al minimo vogliamo fare passi più piccoli (anche se il gradiente si occupa già di questo). Usiamo un **learning rate scheduler** che modifica durante il training. Abbiamo diversi [tipi di schemi](https://towardsdatascience.com/learning-rate-schedules-and-adaptive-learning-rate-methods-for-deep-learning-2c8f433990d1):
 
 - **Constant**: opzione di default, il learning rate rimane costante
-- **Time-based**: impostiamo  $\alpha^t = \alpha^0 \cdot 1/(1 + kt)$, dove  $t$  è l'iterazione e  $k$  è il **decay rate**
-- **Step decay**: si riduce di un fattore costante ogni  $k$  epoche
+- **Time-based**: impostiamo  $\alpha^t = \alpha^0 \cdot \frac{1}{1 + kt}$, dove  $t$  è l'iterazione e  $k$  è il **decay rate**
+- **Step decay**: si riduce di un fattore costante ogni  $k$  epoche: $\alpha^{new}=\alpha^0 \cdot \frac{1}{2^d}$ dove $d=\lfloor\frac{epoch}{k}\rfloor$.
 - **Exponential decay**: si aggiorna con  $\alpha^t = \alpha^0 \cdot e^{-kt}$
 
 Il problema di utilizzare gli scheduler è che necessitano di parametri che devono essere adattati al problema che si sta risolvendo. Esistono algoritmi di ottimizzazione detti "**adaptive gradient descent**" che possono aiutare a risolvere questo problema:
@@ -1238,16 +1238,14 @@ Sulla base dell’esito della classificazione possiamo distinguere 4 sottinsiemi
 
 ## Soglia discriminativa in un classificatore binario
 
-In alcuni casi, la distinzione tra due classi in un classificatore binario è fatta sulla base di un valore soglia 𝜎, che può anche essere il risultato di un modello di regressione.
-Esempio: uso la regressione per predire uno score associato ad una mail e fisso una soglia per stabilire se la mail è spam oppure no.
-In questi casi, le performance del classificatore vanno valutate al variare
-della soglia discriminativa $\sigma$.
+In alcuni casi, la distinzione tra due classi in un classificatore binario è fatta sulla base di un valore soglia 𝜎, che può anche essere il risultato di un modello di regressione. Per esempio: uso la regressione per predire uno score associato ad una mail e fisso una soglia per stabilire se la mail è spam oppure no.
+In questi casi, le performance del classificatore vanno valutate al variare della soglia discriminativa $\sigma$.
 
 Tipicamente si costruiscono dei plot, tra cui la **curva ROC** e la **curva di Precision-Recall**.
 
 ### Curva ROC
 
-La curva ROC rappresenta il True Positive Rate (TPR) in funzione del False Positive Rate (FPR), al variare di $\sigma$.
+La curva ROC (Receiver Operating Characteristic) rappresenta il True Positive Rate (TPR) in funzione del False Positive Rate (FPR), al variare di $\sigma$.
 
 Se la soglia è talmente alta che tutte le tuple sono classificate come «negative», allora nessuna tupla negativa è classificata come positiva (FPR=0) e nessuna tupla positiva è classificata come positiva (TPR=0);
 
@@ -1292,7 +1290,7 @@ Le motivazioni per passare dal perceptron semplice ad un multi-layer perceptron 
 
 ## **Importante notazione**
 
-Tra un layer  $l$  ed il suo successivo  $l + 1$  è definita la matrice dei pesi  $\theta$  che collega i nodi del primo a quelli del secondo. Supponendo che  $l$  abbia  $r$  nodi, mentre  $l + 1$  ne abbia  $s$, allora la matrice  $\theta$  sarà di dimensione  $s \times r$. In generale, il peso  $\theta_{ij}^{(l)}$  si interpreta come il peso che collega l'$i$-esimo nodo del layer  $l$  al $j$-esimo nodo del layer  $l + 1$. Con  $a_i^{(l)}$  indichiamo invece l'attivazione dell'$i$-esimo nodo del layer  $l$, mentre con  $a^{(l)}$  indichiamo il vettore di attivazioni del layer  $l$ .
+Tra un layer  $l$  ed il suo successivo  $l + 1$  è definita la matrice dei pesi  $\theta$  che collega i nodi del primo a quelli del secondo. Supponendo che  $l$  abbia  $r$  nodi, mentre  $l + 1$  ne abbia  $s$, allora la matrice  $\theta$  sarà di dimensione  $s \times r$. In generale, il peso  $\theta_{ij}^{(l)}$  si interpreta come il peso che collega l'$i$-esimo nodo del layer  $l$  al $j$-esimo nodo del layer  $l + 1$. Con  $a_i^{(l)}$  indichiamo invece l'attivazione dell'$i$-esimo nodo del layer  $l$, mentre con  $a^{(l)}$  indichiamo il vettore di attivazioni del layer  $l$.
 
 Altra notazione utile è la seguente:
 
@@ -1327,9 +1325,7 @@ Anziché aggiungere unità allo stesso layer, il deep learning concatena più la
 
 Le funzioni di attivazione più comuni e le loro derivate:
 
-![](img/_page_38_Figure_3.jpeg)
-
-![](img/_page_38_Figure_4.jpeg)
+![](img/_page_38_Figure_3.png)
 
 ## **Regressione e classificazione**
 
@@ -1372,7 +1368,7 @@ In un problema di learning si vuole minimizzare una certa cost function  $J(\the
 
 ## **General feed forward networks**
 
-La definizione generica di feed-forward network è quella di un computational graph, i cui nodi sono computational units e gli archi diretti trasmettono informazioni numeriche da nodo a nodo. Ogni computing unit è capace di calcolare una funzione primitiva sul suo input. Di fatto, la network è rappresentata da una composizione di funzioni primitive (network function) che trasformano l'input in un vettore di output (chiamato pattern). Il problema del learning consiste nel trovare una combinazione ottimale di pesi tale che la network function  $\varphi$  approssimi una data funzione *f* al meglio. Tuttavia, la funzione *f* non è nota, ma sono noti alcuni esempi.
+La definizione generica di feed-forward network è quella di un computational graph, i cui nodi sono computational units e gli archi diretti trasmettono informazioni numeriche da nodo a nodo. Ogni computing unit è capace di calcolare una funzione primitiva sul suo input. Di fatto, la network è rappresentata da una composizione di funzioni primitive (network function) che trasformano l'input in un vettore di output (chiamato pattern). Il **problema del learning** consiste nel trovare una combinazione ottimale di pesi tale che la network function  $\varphi$  approssimi una data funzione $f$ al meglio. Tuttavia, la funzione $f$ non è nota, ma sono noti alcuni esempi.
 
 Consideriamo una rete feed-forward con $n$ input e  $m$ unità di output, formata da un arbitrario numero di hidden layer. Sia  $\{(x_1, t_1),..., (x_p, t_p)\}$  un training set formato da $p$ coppie ordinate di vettori di  $n$ ed  $m$ dimensioni (input e output patterns). Siano le funzioni calcolate su ogni computation unit continue e differenziabili. I pesi degli archi sono numeri random. Quando l'input $i$ è presentato alla network, essa produrrà un output  $o_i$, che generalmente è diverso dal target  $t_i$. Vogliamo far diventare  $o_i$  identico a  $t_i$  per  $i = 1,..., p$, utilizzando un algoritmo di learning. Più precisamente, vogliamo minimizzare una funzione di errore, definita come:
 
@@ -1396,7 +1392,12 @@ Dove  $\gamma$  è il learning rate e stabilisce la lunghezza del passo nella di
 
 ### **The B-diagram**
 
-Dato che la network è una complessa funzione composta, la chain rule (**regola della catena**) avrà un ruolo importante nella computazione del gradiente. Il primo step è dividere i nodi del grafo computazione (computation units) in due parti: a destra conserveremo il risultato della calcolo della funzione primitiva, mentre a sinistra conserveremo il calcolo della sua derivata rispetto agli input. Questo tipo di diagramma prende il nome di **B-diagram** (backpropagation diagram).
+Dato che la network è una complessa funzione composta, la chain rule (**regola della catena**) avrà un ruolo importante nella computazione del gradiente. Il primo step è dividere i nodi del grafo computazione (computation units) in due parti:
+
+- a **destra** conserveremo il risultato della **calcolo della funzione primitiva**,
+- a **sinistra** conserveremo il calcolo della sua **derivata rispetto agli input**.
+
+Questo tipo di diagramma prende il nome di **B-diagram** (backpropagation diagram).
 
 ![](img/_page_43_Figure_0.jpeg)
 *Le due parti di una computing unit*
@@ -1404,9 +1405,15 @@ Dato che la network è una complessa funzione composta, la chain rule (**regola 
 ![](img/_page_43_Figure_2.jpeg)
 *Separazione della funzione di integrazione e di attivazione*
 
-Allo scopo di semplificare la trattazione, ogni computing unit è considerata come due nodi distinti (figura subito sopra), il primo nodo applica una combinazione lineare degli input, mentre il nodo seguente applica la funzione di attivazione. La network è valutata in due stage: il primo stage è il **feedforward step**, dove le informazioni viaggiano da sinistra verso destra e vengono valutate sia le funzioni primitive  $f$  che le rispettive derivate  $f'$, ma solo le prime vengono trasmesse in avanti. I risultati sono conservati all'interno delle unità. Il secondo stage è il **backpropagation step**, consiste nel percorrere la network all'indietro, utilizzando le derivate conservate. Dobbiamo considerare tre casi principali:
+Allo scopo di semplificare la trattazione, ogni computing unit è considerata come due nodi distinti (figura subito sopra), il primo nodo applica una combinazione lineare degli input, mentre il nodo seguente applica la funzione di attivazione. La network è valutata in due stage:
+1. il primo stage è il **feedforward step**, dove le informazioni viaggiano da sinistra verso destra e vengono valutate sia le funzioni primitive  $f$  che le rispettive derivate  $f'$, ma solo le prime vengono trasmesse in avanti. I risultati sono conservati all'interno delle unità. 
+2. Il secondo stage è il **backpropagation step**, consiste nel percorrere la network all'indietro, utilizzando le derivate conservate. 
 
-### **Caso 1: function composition**
+Ci sono dei casi da considerare.
+
+### Funzioni con una sola variabile in input
+
+**Caso 1: function composition**
 
 Consideriamo la funzione composta  $f(g(x))$, che viene rappresentata da due nodi nella rete feed forward: il primo computa $g(x)$  e passa il risultato ad  $f$, che calcola  $f(g(x))$, come descritto nella figura sottostante:
 
@@ -1420,7 +1427,7 @@ Notiamo che per ottenere la derivata, basta moltiplicare  $f'(g(x))$  contenuto 
 
 ![](img/_page_44_Figure_0.jpeg)
 
-### **Caso 2: function addition**
+**Caso 2: function addition**
 
 Consideriamo l'addizione di due funzioni primitive. La figura sottostante mostra una rete che addiziona i risultati di  $f_1$  e  $f_2$.
 
@@ -1430,27 +1437,33 @@ La derivata parziale dell'addizione rispetto ad ognuno dei due input è 1. Nello
 
 ![](img/_page_44_Figure_7.jpeg)
 
-### **Caso 3: weighted edges**
+**Caso 3: weighted edges**
 
 Nello step feed-forward l'informazione entrante  $x$  viene moltiplicata per il peso  $w$  dell'arco, il risultato è  $wx$. Nello step di backpropagation, il valore 1 che corrisponde alla derivata di  $x$, viene moltiplicato per  $w$, ed il risultato è  $w$  (che è proprio la derivata di  $wx$  rispetto a  $x$ ). In entrambi gli step il peso dell'arco agisce nello stesso modo: viene moltiplicato all'informazione passante per l'arco.
 
 ![](img/_page_45_Figure_2.jpeg)
 
-### Add gate
+### Funzioni con più variabili in input
 
-L'add gate prende sempre il gradiente del suo output e lo distribuisce equamente a tutti i suoi input, indipendentemente dai loro valori durante il passaggio feed-forward. Ciò deriva dal fatto che il gradiente locale per l'operazione di add è semplicemente $+1$, quindi i gradienti su tutti gli input saranno esattamente uguali ai gradienti in uscita perché saranno moltiplicati per $1$ (e rimarranno invariati). Nel circuito di esempio sotto, si noti che la porta + ha indirizzato il gradiente di 2,00 a entrambi i suoi input, equamente e invariato.
+In questo caso la parte sinistra contiene la derivata parziale rispetto ad ogni input.
+
+![](img/B_diagram_2_variables.png)
+
+**Add gate**
+
+L'add gate prende sempre il gradiente del suo output e lo **distribuisce equamente a tutti** i suoi input, indipendentemente dai loro valori durante il passaggio feed-forward. Ciò deriva dal fatto che il gradiente locale per l'operazione di add è semplicemente $+1$, quindi i gradienti su tutti gli input saranno esattamente uguali ai gradienti in uscita perché saranno moltiplicati per $1$ (e rimarranno invariati). Nel circuito di esempio sotto, si noti che la porta + ha indirizzato il gradiente di $2$ a entrambi i suoi input, equamente e invariato.
 
 ![](img/add_gate.png)
 
-### Max gate
+**Max gate**
 
-Il max gate indirizza il gradiente. A differenza dell'add gate che ridistribuisce il gradiente invariato a tutti i suoi input, il max gate distribuisce il gradiente (invariato) esattamente a uno dei suoi input (l'ingresso che aveva il valore più alto durante il passaggio feed-forward). Questo perché il gradiente locale per una porta max è $1$ per il valore più alto e $0$ per tutti gli altri valori. Nel circuito di esempio sotto, l'operazione max ha indirizzato il gradiente di 2,00 alla variabile z, che aveva un valore maggiore di w, e il gradiente su w rimane zero.
+Il max gate indirizza il gradiente. A differenza dell'add gate che ridistribuisce il gradiente invariato a tutti i suoi input, il max gate **distribuisce il gradiente (invariato)** esattamente a **uno dei suoi input** (l'ingresso che aveva il valore più alto durante il passaggio feed-forward). Questo perché il gradiente locale per una porta max è $1$ per il valore più alto e $0$ per tutti gli altri valori. Nel circuito di esempio sotto, l'operazione max ha indirizzato il gradiente di $2$ alla variabile $z$, che aveva un valore maggiore di $w$, e il gradiente su $w$ rimane zero.
 
 ![](img/max_gate.png)
 
-### Multiply gate
+**Multiply gate**
 
-il multiply gate è un po' meno facile da interpretare. I suoi gradienti locali sono i valori di input (ma scambiati), moltiplicati per il gradiente sul suo output durante l'applicazione della regola della catena. Nell'esempio sotto, il gradiente su x è -8,00, che è -4,00 x 2,00.
+il multiply gate è un po' meno facile da interpretare. I suoi gradienti locali sono i valori di input (ma scambiati), moltiplicati per il gradiente sul suo output durante l'applicazione della regola della catena. Nell'esempio sotto, il gradiente su x è $-8$, che è $-4 \times 2$.
 
 ![](img/mul_gate.png)
 
@@ -1471,10 +1484,10 @@ Dato che vogliamo minimizzare l'error function  $E$, che dipende dai nodi della 
 
 $$\frac{\partial E}{\partial w_{ij}} = o_i \cdot \frac{\partial E}{\partial o_{ij} w_{ij}}$$
 
-Tutte le sottoreti relative a ciascun peso vengono calcolate simultaneamente, ed in ogni nodo venfono anche conservate:
+Tutte le sottoreti relative a ciascun peso vengono calcolate simultaneamente, ed in ogni nodo vengono anche conservate:
 
 1. L'output della primitiva nello step di feed-forward.
-2. Il risultato cumulativo del calcolo a ritroso nella fase di backpropagation fino a questo nodo. Chiamiamo questa quantità backpropagation error  $\delta_j$, e ci permette di calcolare la derivata parziale dell'errore rispetto al peso come segue:
+2. Il risultato cumulativo del calcolo a ritroso nella fase di backpropagation fino a questo nodo. Chiamiamo questa quantità *backpropagation error*  $\delta_j$, e ci permette di calcolare la derivata parziale dell'errore rispetto al peso come segue:
 
 $$\frac{\partial E}{\partial w_{ij}} = o_i \cdot \delta_j$$
 
@@ -1487,7 +1500,7 @@ $$
 
 ![](img/_page_46_Figure_4.jpeg)
 
-Scopriamo come effettuare la backpropagation intelligentemente su una network con dei layer. Supponiamo di avere 3 layer, un layer di input con $n$ input sites, un hidden layer con $k$ unità, un output layer con $m$ unità. Il peso tra l'$i$-esimo input ed il $j$-esimo hidden node è chiamato  $w_{ij}^{(1)}$. Il peso tra l'$i$-esimo hidden node ed il $j$-esimo nodo di output è chiamato  $w_{ij}^{(2)}$. Il bias  $-\theta$  di ogni unità è implementato come peso di un arco collegato ad un input costante di valore 1 (stessa cosa per nell'output layer). Per generalizzare, il bias tra la costante 1 e l'hidden node $j$-esimo è chiamato  $w_{n+1,j}^{(1)}$, mentre quello tra la costante 1 e l'output node $j$-esimo è chiamato  $w_{k+1,j}^{(L)}$.
+Scopriamo come effettuare la backpropagation intelligentemente su una network con dei layer. Supponiamo di avere 3 layer, un layer di input con $n$ input sites, un hidden layer con $k$ unità, un output layer con $m$ unità. Il peso tra l'$i$-esimo input ed il $j$-esimo hidden node è chiamato  $w_{ij}^{(1)}$. Il peso tra l'$i$-esimo hidden node ed il $j$-esimo nodo di output è chiamato  $w_{ij}^{(2)}$. Il bias  $-\theta$  di ogni unità è implementato come peso di un arco collegato ad un input costante di valore 1 (stessa cosa per nell'output layer). Per generalizzare, il bias tra la costante 1 e l'hidden node $j$-esimo è chiamato  $w_{n+1,j}^{(1)}$, mentre quello tra la costante 1 e l'output node $j$-esimo è chiamato  $w_{k+1,j}^{(2)}$.
 
 Ci sono  $(n + 1) \times k$  pesi tra l'input layer e l'hidden layer, e  $(k + 1) \times m$  pesi tra l'hidden layer e l'output layer. Rappresentiamoli attraverso due matrici, rispettivamente  $\bar{W_1}$  la matrice  $k$  il cui generico elemento è  $w_{ji}^{(1)}$, e  $\bar{W_2}$  la matrice  $(k + 1) \times m$  il cui generico elemento è  $w_{ji}^{(L)}$.
 
@@ -1572,7 +1585,7 @@ Utilizzando la convenzione che  $o_{n+1} = o_{k+1}^{(1)} = 1$.
 
 ## **Applicazione su training set**
 
-Questa procedura verrà molto probabilmente applicata su un training set di cardinalità $p$, e l'errore verrà calcolato sommando l'errore su tutte le osservazioni. In questo caso, potremo calcolare per l'$i$-esima osservazione la correzione  $\Delta_i w_{i,j}^{(1)}$  e  $\Delta_i w_{i,j}^{(2)}$, andando ad estendere la network come descritto prima. Nel passo di aggiornamento vengono sommate tutte le correzioni in una sola come segue:
+Questa procedura verrà molto probabilmente applicata su un training set di cardinalità $p$, e l'errore verrà calcolato sommando l'errore su tutte le osservazioni. In questo caso, potremo calcolare per la $k$-esima osservazione la correzione  $\Delta_k w_{i,j}^{(1)}$  e  $\Delta_k w_{i,j}^{(2)}$, andando ad estendere la network come descritto prima. Nel passo di aggiornamento vengono sommate tutte le correzioni in una sola come segue:
 
 $$\begin{aligned} \Delta w_{ij}^{(1)} &= \Delta_1 w_{ij}^{(1)} + \dots + \Delta_p w_{ij}^{(1)} \\ \Delta w_{ij}^{(2)} &= \Delta_1 w_{ij}^{(2)} + \dots + \Delta_p w_{ij}^{(2)} \end{aligned}$$
 
@@ -2174,4 +2187,4 @@ La divergenza KL misura la differenza tra la cross-entropy e l'entropia di $p$. 
 
 $$J(\theta) = -\frac{1}{m} \sum_{i=1}^{m} \sum_{k=1}^{K} y_k^{(i)} \log h_{\theta}(x^{(i)})_k$$
 
-Si può dimostrare che la binary cross-entropy loss è un caso specifico della cross-entropy loss, per .
+Si può dimostrare che la binary cross-entropy loss è un caso specifico della cross-entropy loss, per $K=2$.
