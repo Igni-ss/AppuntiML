@@ -1157,7 +1157,7 @@ Impostiamo i seguenti parametri:
 - $\beta$ momentum
 - $e$ numero di epoche (iterazioni SGD)
 - $m$ cardinalità training set
-- $\lfloor\frac{m}{b}\rfloor$ numero di mini-batch ad ogni epoca > iterazioni per epoca
+- $\lfloor\frac{m}{b}\rfloor$ numero di mini-batch da considerare ad ogni epoca (aggiorno $\lfloor\frac{m}{b}\rfloor$ i pesi)\Rarrow iterazioni per epoca
 
 Il numero di iterazioni **totali** corrisponde a  $e \cdot \frac{m}{b}$ .
 
@@ -1222,7 +1222,7 @@ Sulla base dell’esito della classificazione possiamo distinguere 4 sottinsiemi
 - False positive ($F_{pos}$): tuple di classe 𝑁 che sono classificate come $P$ (errore di tipo I);
 - False negative ($F_{neg}$): tuple di classe $P$ che sono classificate come $N$ (errore di tipo II);
 
-**Recall** o **Sensitività** o **True Positive Rate (TPR)**: $Rec(M) = TPR(M) = \frac{|T_{pos}|}{|Pos|}$
+**Recall** o **Sensitività** o **True Positive Rate (TPR)**: $Rec(M) = TPR(M) = \frac{|T_{pos}|}{|Pos|}$ (quanti dei positivi veri sono stati trovati)
 
 **Specificità** o **True Negative Rate (TNR)**: $Spec(M) = TNR(M) = \frac{|T_{neg}|}{|Neg|}$
 
@@ -1230,7 +1230,7 @@ Sulla base dell’esito della classificazione possiamo distinguere 4 sottinsiemi
 
 **False Discovery Rate (FDR)**: $FDR(M) = \frac{|F_{pos}|}{|T_{pos}| + |F_{pos}|}$
 
-**Precisione**: $Prec(M) = \frac{|T_{pos}|}{|T_{pos}| + |F_{pos}|}$
+**Precisione**: $Prec(M) = \frac{|T_{pos}|}{|T_{pos}| + |F_{pos}|}$ (quanto tra i positivi predetti lo sono davvero)
 
 **Accuratezza**: $Acc(M) = \frac{|T_{pos}| + |T_{neg}|}{|Pos + Neg|}$
 
@@ -1262,7 +1262,11 @@ La situazione ideale è quella in cui TPR aumenta fino a raggiungere il valore 1
 ### Curva di precision Recall
 
 Rappresenta la Precisione in funzione della Recall al variare di $\sigma$.
-Tipicamente la curva ROC si utilizza nel caso di dataset bilanciati (ovvero frequenza simile delle due classi), mentre la curva di Precision-Recall è preferibile nel caso di dataset sbilanciati.
+Tipicamente la curva ROC si utilizza nel caso di dataset bilanciati (ovvero frequenza simile delle due classi), mentre la curva di Precision-Recall è preferibile nel caso di dataset sbilanciati. Ogni punto sulla curva corrisponde a una diversa soglia di decisione.
+Se si aumenta il recall (cioè vuoi catturare più positivi), spesso la precisione scende, perché aumentano anche i falsi positivi.
+
+- Se si vuole **essere sicuri** allora bisogna avere un'alta precision e una bassa recall. Quindi si è sicuri che i valori classificati come Positivi lo sono.
+- Se invece **si vogliono catturare più positivi possibili** aumentiamo la recall a discapito della precisione Per esempio se bisogna scegliere a quali pazienti fare dei controlli aggiuntivi perchè si sospetta abbiano il cancro meglio avere una precisione bassa, e quindi fare il test anche a persone che non lo hanno, che farlo solo a quelli che siamo sicuri siano malati ignorando alcuni che lo sono ma di cui non siamo sicuri.
 
 ![](img/CurvaPrecRec.png)
 
@@ -2042,12 +2046,12 @@ Durante il training delle reti neurali, il training set è suddiviso in sottoins
 
   1. La rete neurale abbia  $L$  layer (da 1 ad  $L$ )
   2. $L$  è l'output layer, mentre 1 è l'input layer.
-  3. Con  $W^{(l)}$  indicheremo la matrice dei pesi che collega i layer (
-  4. Con  $w_{ij}^{(l)}$  indicheremo il peso che collega la $i$-esima unità di  $l$  alla $j$-esima di  $l$
+  3. Con  $W^{(l)}$  indicheremo la matrice dei pesi che collega i layer $(l, l+1)$
+  4. Con  $w_{ij}^{(l)}$  indicheremo il peso che collega la $i$-esima unità di  $l$  alla $j$-esima di  $l+1$
   5. Con  $a^{(l)}$  indicheremo il vettore delle attivazioni del layer  $l$
   6. Con  $z^{(l)}$  indicheremo il vettore delle combinazioni lineari del layer  $l$  prima dell'attivazione
 
-Dopo il passo di feed forward, viene calcolata la loss, che indicheremo con  $E$  per semplicità, e tutte le derivate delle funzioni primitive. Assumiamo che la derivata della loss rispetto alla  $j$ -esima attivazione del layer di output sia
+Dopo il passo di feed forward, viene calcolata la loss, che indicheremo con  $E$  per semplicità, e tutte le derivate delle funzioni primitive. Assumiamo che la derivata della loss rispetto alla  $j$-esima attivazione del layer di output sia
 
 $$\frac{\partial E}{\partial a_j^{(L)}} = (a_j^{(L)} - y_j)$$
 
