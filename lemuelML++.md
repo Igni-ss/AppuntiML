@@ -1506,7 +1506,7 @@ $$
 
 Scopriamo come effettuare la backpropagation intelligentemente su una network con dei layer. Supponiamo di avere 3 layer, un layer di input con $n$ input sites, un hidden layer con $k$ unità, un output layer con $m$ unità. Il peso tra l'$i$-esimo input ed il $j$-esimo hidden node è chiamato  $w_{ij}^{(1)}$. Il peso tra l'$i$-esimo hidden node ed il $j$-esimo nodo di output è chiamato  $w_{ij}^{(2)}$. Il bias  $-\theta$  di ogni unità è implementato come peso di un arco collegato ad un input costante di valore 1 (stessa cosa per nell'output layer). Per generalizzare, il bias tra la costante 1 e l'hidden node $j$-esimo è chiamato  $w_{n+1,j}^{(1)}$, mentre quello tra la costante 1 e l'output node $j$-esimo è chiamato  $w_{k+1,j}^{(2)}$.
 
-Ci sono  $(n + 1) \times k$  pesi tra l'input layer e l'hidden layer, e  $(k + 1) \times m$  pesi tra l'hidden layer e l'output layer. Rappresentiamoli attraverso due matrici, rispettivamente  $\bar{W_1}$  la matrice  $k$  il cui generico elemento è  $w_{ji}^{(1)}$, e  $\bar{W_2}$  la matrice  $(k + 1) \times m$  il cui generico elemento è  $w_{ji}^{(L)}$.
+Ci sono  $(n + 1) \times k$  pesi tra l'input layer e l'hidden layer, e  $(k + 1) \times m$  pesi tra l'hidden layer e l'output layer. Rappresentiamoli attraverso due matrici, rispettivamente  $\bar{W_1}$  la matrice  $k$  il cui generico elemento è  $w_{ij}^{(1)}$, e  $\bar{W_2}$  la matrice  $(k + 1) \times m$  il cui generico elemento è  $w_{ij}^{(2)}$.
 
 L'input vector $n$-dimensionale  $o = (o_1,...,o_n)$  è trasformato in un vettore a  $n + 1$  dimensioni, che chiamiamo  $\hat{o} = (o_1,..., o_n, 1)$. Con  $net_j$  indichiamo l'eccitazione accumulata nel $j$-esimo hidden node, ed è calcolata come:
 
@@ -1561,7 +1561,7 @@ E dopodiché calcolarci la derivata parziale rispetto ai  $k + 1$  pesi collegat
 
 $$\frac{\partial E}{\partial w_{ij}^{(2)}} = o_i^{(1)} \delta_j^{(2)} \qquad i = 1, \ldots, k+1$$
 
-Osserviamo che in tale passaggio consideriamo il peso  $w_{ij}^{(z)}$  come la variabile e  $o_i$  come una costante.
+Osserviamo che in tale passaggio consideriamo il peso  $w_{ij}^{(2)}$  come la variabile e  $o_i^{(1)}$  come una costante.
 
 ### **Step 3. Backpropagation to the hidden layer**r
 
@@ -1601,12 +1601,12 @@ Nel caso di layered network è possibile introdurre una notazione matriciale mol
 
 Per adesso consideriamo le seguenti due matrici:
 
-- $W_2 \in \mathbb{R}^{k \times m}$ ottenuta eliminando l'ultima riga di  $\bar{W}_2 \in R^{(k+1) \times m}$
 - $W_1 \in \mathbb{R}^{n \times k}$ ottenuta eliminando l'ultima riga di  $\bar{W}_1 \in R^{(n+1) \times k}$
+- $W_2 \in \mathbb{R}^{k \times m}$ ottenuta eliminando l'ultima riga di  $\bar{W}_2 \in R^{(k+1) \times m}$
 
 Eliminiamo l'ultima riga poiché corrisponde all'input costante (1) posto nell'input layer e nell'hidden layer, ma che non deve propagare nulla all'indietro. Questo non vuol dire che non calcoleremo l'incremento per il bias (lo vedremo dopo). Ricordiamo che:
 
-Il vettore $o$ è input di un layer e non contiene l'1 alla fine, mentre si.
+Il vettore $o$ è input di un layer e non contiene l'1 alla fine, mentre $\hat{o}$ si.
 
 Consideriamo:
 
@@ -1650,7 +1650,7 @@ $$
 Mentre l'$i$-esimo vettore di backpropagated errors è calcolato come:
 
 $$
-\delta^{(i)} = DW_{i+1} \delta^{(i+1)}
+\delta^{(i)} = D_iW_{i+1} \delta^{(i+1)}
 $$
 
 Quindi è definito ricorsivamente (bisogna prima calcolare  $\delta^{i+1}$ ).
@@ -1670,7 +1670,7 @@ I parametri da addestrare saranno:
 - $500 \times 784 = 392,000$ connessioni dal primo al secondo layer $+ 500$ bias (uno per ogni neurone del secondo layer)
 - $10 \times 500$ connessioni tra il secondo layer e quello di output $+ 10$ bias
 
-Il totale sarà di 397,510$ pesi da addestrare.
+Il totale sarà di $397,510$ pesi da addestrare.
 
 Le CNN sono progettate per essere più veloci degli MLP e sfruttare le informazioni che si possono estrarre dalla struttura dell'immagine. In poche parole le CNN:
 
@@ -1685,11 +1685,11 @@ Il modello prodotto dovrebbe essere invariante per posizione. Se lo scopo del mo
 
 ## **Constraining the MLP**
 
-Supponiamo di avere un'immagine  $X$  in input e di darla in pasto ad un Multilayer Perceptron con i nodi disposti a griglia. La hidden representation di  $X$  sarà  $H$  e supponiamo sia della stessa dimensione di  $X$. In pratica, nell'hidden layer abbiamo un percettrone per ogni pixel in input. Supponiamo che l'hidden layer sia collegato in modo denso all'input, quindi ogni percettrone è collegato ad ogni pixel di input. In questo modo, i pesi saranno conservati in un tensore a quattro dimensioni  $(i, j, k, l)$  dove  $(i, j)$  identifica il percettrone nella griglia e  $(k, l)$  identifica il peso del collegamento tra il percettrone e il pixel in posizione  $(k, l)$  in  $X$. Supponiamo che la matrice  $U$  contenga i bias per ogni percettrone, allora la hidden representation è calcolata come segue:
+Supponiamo di avere un'immagine  $X$  in input e di darla in pasto ad un Multilayer Perceptron con i nodi disposti a griglia. Indichiamo con $H$ La hidden representation immediatamente successiva a $X$. Supponiamo inlotre che essi abbiano la stessa dimensione. Siano  $X_{i,j}$ la posizione di un pixel nell'immagine di input e $H_{i,j}$ la hidden representation. In pratica, nell'hidden layer abbiamo un percettrone per ogni pixel in input. Supponiamo che l'hidden layer sia collegato in modo denso all'input, quindi ogni percettrone è collegato ad ogni pixel di input. In questo modo, i pesi saranno conservati in un tensore a quattro dimensioni  $(i, j, k, l)$  dove  $(i, j)$  identifica il percettrone nella griglia e  $(k, l)$  identifica il peso del collegamento tra il percettrone e il pixel in posizione  $(k, l)$  in  $X$. Supponiamo che la matrice  $U$  contenga i bias per ogni percettrone, allora la hidden representation è calcolata come segue:
 
 $$H_{ij} = U_{ij} + \sum_{k} \sum_{l} W_{ijkl} \cdot X_{kl}$$
 
-Consideriamo  $k = i + a$  e  $l = j + b$, consideriamo  $V$  ottenuta da un reindexing di  $V$, che possa contenere indici negativi. Possiamo calcolare gli elementi di  $H$  in questo modo:
+Consideriamo  $k = i + a$  e  $l = j + b$, consideriamo  $V$  ottenuta da un reindexing di  $W (V_{ijab}= W_{ij,k+a,l+b})$, che possa contenere indici negativi. Possiamo calcolare gli elementi di  $H$  in questo modo:
 
 $$H_{ij} = U_{ij} + \sum_{a} \sum_{b} V_{ijab} \cdot X_{i+a, j+b}$$
 
@@ -1699,11 +1699,11 @@ L'invarianza per traslazione (*translation invariance*) implica che uno shift de
 
 $$H_{ij} = u + \sum_{a} \sum_{b} V_{ab} \cdot X_{i+a, j+b}$$
 
-Questa è una **convoluzione**, e  $V$  è un kernel. Quello che stiamo facendo è pesare i pixel vicini al pixel (*i*, *j*) attraverso una matrice  $V$ . Notiamo che andando a considerare una matrice anziché un tensore a 4 dimensioni (rimuovendo di fatto la dipendenza dalla posizione) abbiamo molti meno parametri.
+Questa è una **convoluzione**, e  $V$  è un kernel. Quello che stiamo facendo è pesare i pixel vicini al pixel $(i,j)$ attraverso una matrice  $V$ . Notiamo che andando a considerare una matrice anziché un tensore a 4 dimensioni (rimuovendo di fatto la dipendenza dalla posizione) abbiamo molti meno parametri.
 
 ## **Località**
 
-Per il principio di località, per rilevare informazioni rilevanti sul pixel (*i*, *j*) possiamo analizzare contestualmente i pixel vicini, quindi scartare i pixel lontani. Formalmente, definiamo un  $\Delta$  tale che se  $|a| > \Delta$  o  $|b| > \Delta$  allora  $V_{ab} = 0$ . Quindi possiamo riscrivere la hidden representation come:
+Per il principio di località, per rilevare informazioni rilevanti sul pixel $(i,j)$ possiamo analizzare contestualmente i pixel vicini, quindi scartare i pixel lontani. Formalmente, definiamo un  $\Delta$  tale che se  $|a| > \Delta$  o  $|b| > \Delta$  allora  $V_{ab} = 0$ . Quindi possiamo riscrivere la hidden representation come:
 
 $$H_{ij} = u + \sum_{a=-\Delta}^{\Delta} \sum_{b=-\Delta}^{\Delta} V_{ab} \cdot X_{i+a,j+b}$$
 
@@ -1748,7 +1748,7 @@ Dove gli indici rappresentano:
 
 ## **L'operazione di cross-correlation**
 
-L'operazione svolta dai convolutional layer somiglia più all'operazione di cross-correlation. Ignoriamo l'esistenza dei canali e restiamo su immagini e kernel bidimensionali. Nell'esempio abbiamo un'immagine  $3 \times 3$  ed un kernel  $2 \times 2$ . Il kernel viene posizionato nel pixel  $(0, 0)$, viene effettuata una moltiplicazione puntuale tra il kernel e i pixel sovrapposti, ed i prodotti vengono sommati producendo un singolo scalare. Il procedimento segue da sinistra verso destra e dall'alto verso il basso.
+Il nome convolutional layer non è propriamente corretto perchè esso in realtà calcola una cross-correlation. Ignoriamo l'esistenza dei canali e restiamo su immagini e kernel bidimensionali. Nell'esempio abbiamo un'immagine  $3 \times 3$  ed un kernel  $2 \times 2$ . Il kernel viene posizionato nel pixel  $(0, 0)$, viene effettuata una moltiplicazione puntuale tra il kernel e i pixel sovrapposti, ed i prodotti vengono sommati producendo un singolo scalare. Il procedimento segue da sinistra verso destra e dall'alto verso il basso.
 
 ![](img/_page_54_Figure_14.jpeg)
 
@@ -1768,7 +1768,7 @@ Per effettuare esattamente l'operazione di convoluzione dovremmo shiftare e flip
 
 ## **Receptive field / dilatation**
 
-Il campo recettivo (receptive field) di un elemento di una feature map è l'insieme di elementi che possono far variare il valore dell'elemento stesso. L'immagine spiega bene il concetto: più si va avanti con i layer effettuando **dilatated convolutions**, più il campo recettivo è largo, e tale crescita è esponenziale.
+Il **campo recettivo** (**receptive field**) di un elemento di una feature map è l'insieme di elementi che possono far variare il valore dell'elemento stesso. L'immagine spiega bene il concetto: più si va avanti con i layer effettuando **dilatated convolutions**, più il campo recettivo è largo, e tale crescita è esponenziale.
 
 ![](img/_page_55_Figure_9.jpeg)
 
@@ -1815,13 +1815,13 @@ $$W' = \frac{W - F_w + 2P}{S_w} + 1 \qquad\qquad H' = \frac{W - F_h + 2P}{S_h} +
 
 ## **1x1 kernels**
 
-Supponiamo di avere un'immagine a  $c_i$  canali, e di voler ridurre i canali a  $c_o$ . Questo può essere fatto attraverso un kernel di dimensione  $1 \times 1$ . Questo kernel non sfrutta il principio di località, essendo che si prende in considerazione un solo pixel, e non il suo vicinato.
+Supponiamo di avere un'immagine a  $c_i$  canali, e di voler ridurre i canali a  $c_o$ . Questo può essere fatto attraverso un kernel di dimensione  $1 \times 1$ . Poiché viene utilizzata la finestra minima, il kernel perde la capacità che hanno i layer convoluzionali più grandi di riconoscere i pattern costituiti da interazioni tra elementi adiacenti nelle dimensioni di altezza e larghezza. L'unico calcolo della convoluzione $1 \times \$ si verifica sulla dimensione del canale.
 
 ## **Informazioni contenute sulle slides**
 
 Proprietà dei layer convoluzionali:
 
-- **Sparse connection**: il receptive field di un elemento della feature map influenza il suo valore, questo è frutto dell'adozione dei kernel convolutivi.
+- **Sparse connection**: il receptive field di un elemento della feature map influenza il suo valore, questo è frutto dell'adozione dei kernel convolutivi. Più info [qui](https://www.deeplearningbook.org/contents/convnets.html#pf5).
 - **Parameter sharing**: la convoluzione condivide i parametri (del kernel) su tutta l'immagine, mentre nelle reti fully connected questo non avviene.
 
 L'effetto dei layer convoluzionali:
@@ -1989,15 +1989,15 @@ Seguono vari consigli per l'applicazione di fine-tuning:
   4. Se il nuovo dataset è grande e diverso dal dataset originale
       - Facciamo fine-tuning sull'intera network
 
-### **Domain adaption**
+### **Domain adaptation**
 
-Il Domain adaption è un campo associato al transfer learning. Questo scenario affiora quando vogliamo che il modello impari da una certa sorgente e performi bene in una diversa sorgente (che abbia una certa relazione con la sorgente in input). Esempio: spam detector allenato sulla casella di un utente deve funzionare nella cartella di un diverso utente (pur sempre spam, ma potrebbe essere di diverso tipo).
+Il Domain adaptation è un campo associato al transfer learning. Questo scenario affiora quando vogliamo che il modello impari da una certa sorgente e performi bene in una diversa sorgente (che abbia una certa relazione con la sorgente in input). Esempio: spam detector allenato sulla casella di un utente deve funzionare nella cartella di un diverso utente (pur sempre spam, ma potrebbe essere di diverso tipo).
 
 ![](img/_page_63_Figure_15.jpeg)
 
 ### **ADDA approach**
 
-L'ADDA approach è un metodo proposto per la domain adaption e consiste nei seguenti passaggi:
+L'ADDA approach è un metodo proposto per la domain adaptation e consiste nei seguenti passaggi:
 
 - pre-train a source encoder CNN using labeled source image examples
 - perform adversarial adaptation by learning a target encoder CNN such that a discriminator that sees encoded source and target examples cannot reliably predict their domain label.
@@ -2010,7 +2010,7 @@ During testing, target images are mapped with the target encoder to the shared f
 
 > [Reference to CycleGAN](https://junyanz.github.io/CycleGAN/)
 
-L'Image-to-image transformation è un secondo approccio per la domain adaption. Abbiamo due funzioni di mapping  $G: X \rightarrow Y$  e  $F: Y \rightarrow X$, e due discriminatori  $D_X$  e  $D_Y$ . Il discriminatore *G* incoraggia *G* a tradurre *X* in output indistinguibili dal dominio *Y*, e viceversa  $D_X$  ed *F*. Per regolarizzare meglio questi mapping, vengono introdotte due **cycle consistency losses** che catturano l'intuizione che se mappiamo da un dominio all'altro e poi torniamo indietro, dovremmo arrivare dove abbiamo iniziato.
+L'Image-to-image transformation è un secondo approccio per la domain adaptation. Abbiamo due funzioni di mapping  $G: X \rightarrow Y$  e  $F: Y \rightarrow X$, e due discriminatori  $D_X$  e  $D_Y$ . Il discriminatore *D_Y* incoraggia *G* a tradurre *X* in output indistinguibili dal dominio *Y*, e viceversa  $D_X$  ed *F*. Per regolarizzare meglio questi mapping, vengono introdotte due **cycle consistency losses** che catturano l'intuizione che se mappiamo da un dominio all'altro e poi torniamo indietro, dovremmo arrivare dove abbiamo iniziato.
 
 ![](img/_page_64_Figure_5.jpeg)
 
@@ -2030,15 +2030,14 @@ I filtri ai primi livelli somigliano molto ai filtri di Gabor, che servono a ril
 
 L'algoritmo di backpropagation calcola il minimo di una cost function nello spazio dei pesi, utilizzando il metodo della discesa del gradiente. La combinazione di pesi che minimizza la cost function è considerata soluzione del problema di learning. Con la backpropagation, il calcolo del gradiente avviene in maniera automatica ed efficiente, non è necessario calcolare manualmente la derivata della funzione loss rispetto ai pesi. Si avvale della regola della catena (chain rule) e del grafo computazionale.
 
-Una rete neurale può essere vista come una composizione di funzioni derivabili. Tale composizione può essere rappresentata attraverso un grafo computazionale, dove i nodi sono computing unit, ovvero operazioni primitive di cui conosciamo la derivata, ed un arco direzionato che collega due nodi implica che l'output di un nodo diventa input di un altro nodo. Quando vengono forniti input alle computing unit, esse calcolano la funzione primitva e propagano il risultato agli archi uscenti, ed inoltre calcolano la derivata prima e la conservano al loro interno. Esempio: creiamo il grafo computazionale di  $f(x_1, x_2) = 2x_1 + 3x_2$  e diamo in input *x*
-
+Una rete neurale può essere vista come una composizione di funzioni derivabili. Tale composizione può essere rappresentata attraverso un grafo computazionale, dove i nodi sono computing unit, ovvero operazioni primitive di cui conosciamo la derivata, ed un arco direzionato che collega due nodi implica che l'output di un nodo diventa input di un altro nodo. Quando vengono forniti input alle computing unit, esse calcolano la funzione primitva e propagano il risultato agli archi uscenti, ed inoltre calcolano la derivata prima e la conservano al loro interno. Esempio: creiamo il grafo computazionale di  $f(x_1, x_2) = 2x_1 + 3x_2$  e diamo in input $x=(4,5)$
 ![](img/_page_65_Figure_4.jpeg)
 
 Tramite questo esempio spieghiamo come viene calcolato in maniera efficiente il gradiente della funzione rispetto agli input. La backpropagation sfrutta la chain rule, che afferma quanto segue: siano  $f$  e  $g$  due funzioni derivabili, sia  $y = f(x)$  e  $z = g(y)$, allora si dimostra che
 
 $$\frac{\partial z}{\partial x} = \frac{\partial z}{\partial y} \frac{\partial y}{\partial x}$$
 
-Nell'esempio vogliamo calcolare il gradiente  $\nabla y = (\frac{\partial y}{\partial x}, \frac{\partial y}{\partial x})$ . Grazie alla chain rule, ci basta moltiplicare le derivate conservate nelle computing unit, partendo dalla fine del grafo computazionale e andando all'indietro:
+Nell'esempio vogliamo calcolare il gradiente  $\nabla y = (\frac{\partial y}{\partial x_1}, \frac{\partial y}{\partial x_2})$ . Grazie alla chain rule, ci basta moltiplicare le derivate conservate nelle computing unit, partendo dalla fine del grafo computazionale e andando all'indietro:
 
 ![](img/_page_66_Figure_0.jpeg)
 
@@ -2061,7 +2060,7 @@ Calcoliamo  $\delta_i^{(l)}$, ovvero l'errore di propagazione su ogni unità  $j
 
 $$\delta_j^{(L)} = \frac{\partial E}{\partial o_j^{(L)}} \frac{\partial o_j^{(L)}}{\partial z_j^{(L)}} = (a_j^{(L)} - y_j) \cdot [a_j^{(L)}(1 - a_j^{(L)})]$$
 
-Calcolando  $\delta_i^{(L)}$  per ogni unità dell'output layer, possiamo facilmente ottenere la derivata dell'errore rispetto al peso  $w_{ji}^{(l)}$  come segue:
+Calcolando  $\delta_i^{(L)}$  per ogni unità dell'output layer, possiamo facilmente ottenere la derivata dell'errore rispetto al peso  $w_{ij}^{(l)}$  come segue:
 
 $$
 \Delta w_{j,i}^{(L-1)} = \frac{\partial E}{\partial w_{ji}^{(L-1)}} = o_i^{(L-1)} \cdot \delta_j^{(L)}
@@ -2087,19 +2086,19 @@ $$
 
 Lo pseudocodice dell'algoritmo è il seguente:
 
-Given a training set  ${(x^{(1)}, y^{(1)}), ..., (x^{(p)}, y^{(p)})}$
-
-initialize  $\Delta w_{ij}^{(l)} = 0 \quad \forall i, j, l$
-
-for  $i := 1$  up to  $p$  do:
-
-- feed forward step  $\rightarrow E$
-- Compute  $\delta^{(L)}, \delta^{(L-1)}, ..., \delta^{(2)}$
-- Compute  $\Delta w_{ij}^{(l)} := \Delta w_{ij}^{(l)} + [a_{i}^{(l-1)} \cdot \delta_{j}^{(l)}] \quad l = 1, ..., L$
-
-Compute  $D_{ij}^{(l)} = \begin{cases} \frac{1}{m} \Delta w_{ij}^{(l)} & i = 0 \text{ (bias)} \\ \frac{1}{m} \Delta w_{ij}^{(l)} + \lambda w_{ij}^{(l)} & i \neq 0 \text{ (regularize)} \end{cases}$
-
-Update  $w_{ij}^{(l)} = w_{ij}^{(l)} - \gamma D_{ij}^{(l)}$
+> Given a training set  ${(x^{(1)}, y^{(1)}), ..., (x^{(p)}, y^{(p)})}$
+>
+> initialize  $\Delta w_{ij}^{(l)} = 0 \quad \forall i, j, l$
+>
+> for  $i := 1$  up to  $p$  do:
+>
+> - feed forward step  $\rightarrow E$
+> - Compute  $\delta^{(L)}, \delta^{(L-1)}, ..., \delta^{(2)}$
+> - Compute  $\Delta w_{ij}^{(l)} := \Delta w_{ij}^{(l)} + [a_{i}^{(l-1)} \cdot \delta_{j}^{(l)}] \quad l = 1, ..., L$
+>
+> Compute  $D_{ij}^{(l)} = \begin{cases} \frac{1}{m} \Delta w_{ij}^{(l)} & i = 0 \text{ (bias)} \\ \frac{1}{m} \Delta w_{ij}^{(l)} + \lambda w_{ij}^{(l)} & i \neq 0 \text{ (regularize)} \end{cases}$
+>
+> Update  $w_{ij}^{(l)} = w_{ij}^{(l)} - \gamma D_{ij}^{(l)}$
 
 ## **Convolutional Neural networks (2021@1.1)**
 
@@ -2148,7 +2147,7 @@ Per overfitting si intende quel fenomeno per cui il modello si specializza sui d
 
 Una soluzione comune all'overfitting risiede nelle tecniche di regolarizzazione. Una tecnica molto utilizzata consiste nell'aggiungere un termine di regolarizzazione alla funzione costo, che cresca al crescere della dimensione dei pesi del modello. Parametri più piccoli producono modelli più semplici, quindi prevengono l'overfitting. Se il modello è troppo semplice, la loss aumenterà, quindi la soluzione sarà un trade-off.
 
-Facciamo un esempio con la classificazione binaria attraverso un regressore logistico }. Prendiamo in considerazione la funzione costo binary cross-entropy loss:
+Facciamo un esempio con la classificazione binaria attraverso un regressore logistico $h_\theta: \mathbb{R}^d \rightarrow {0,1}$. Prendiamo in considerazione la funzione costo binary cross-entropy loss:
 
 $$J(\theta) = -\frac{1}{m} \sum_{i=1}^{m} \left[ y^{(i)} \log \left[ h_{\theta}(x^{(i)}) \right] + (1 - y^{(i)}) \log \left[ (1 - h_{\theta}(x^{(i)})) \right] \right]$$
 
@@ -2178,7 +2177,7 @@ La necessità dell'utilizzo degli hidden layer proviene dal fatto che essi impar
 
 Il training di un MLP non può essere uguale a quello di un normale regressore logistico o di un regressore lineare a causa della distribuzione dei pesi su più layer. Per calcolare efficientemente il gradiente della funzione costo rispetto ai vari pesi, si utilizza l'algoritmo di backpropagation.
 
-Abbiamo parlato di Softmax, approfondiamo l'argomento. La softmax è una generalizzazione della regressione logistica ed è utilizzata nei task di classificazione multiclasse, in cui date *K* classi, si vuole stimare la distribuzione della probabilità condizionata  $l$  dato un certo input  $x$ . Supponendo di avere un input di dimensione  $d$, avremo una matrice di pesi di dimensione  $K \times (d+1)$  (il più uno tiene conto della costante di bias). Anziché considerare consideriamo  $\hat{x} \in \mathbb{R}^{d+1}$, dove  $x_0 = 1$  per convenzione (serve ad addizionare la costante di bias). Il prodotto riga colonna
+Abbiamo parlato di Softmax, approfondiamo l'argomento. La softmax è una generalizzazione della regressione logistica ed è utilizzata nei task di classificazione multiclasse, in cui date $K$ classi, si vuole stimare la distribuzione della probabilità condizionata  $P(y=k|x)$  dato un certo input  $x$ . Supponendo di avere un input di dimensione  $d$, avremo una matrice di pesi di dimensione  $K \times (d+1)$  (il più uno tiene conto della costante di bias). Anziché considerare $x \in \mathbb{R}^{d}$ consideriamo  $\hat{x} \in \mathbb{R}^{d+1}$, dove  $x_0 = 1$  per convenzione (serve ad addizionare la costante di bias). Il prodotto riga colonna
 
 $$z = \theta \hat{x}$$
 
@@ -2188,15 +2187,15 @@ $$\hat{y}_i = \frac{\exp(z_i)}{\sum_{j=1}^{K} \exp(z_j)}$$
 
 L'esponenziazione al numeratore risolve il problema dei numeri negativi, mentre la normalizzazione al denominatore mappa il valore nell'intervallo  $[0, 1]$ . Il vettore  $\hat{y}$  rispetta adesso le proprietà di una distribuzione di probabilità discreta:
 
-1. $\hat{y}_i \in [0, 1]$  per :
+1. $\hat{y}_i \in [0, 1]$ per: $i=1,...,K$
 
-$$2.\sum_{i=1}^{n}\hat{y}_i = 1$$
+2. $\sum_{i=1}^{K}\hat{y}_i = 1$
 
 In generale  $\hat{y}_i = P(y = i \mid x; \theta)$ .
 
 Per testare se la softmax stia funzionando o meno, possiamo considerare come funzione costo una "distanza" tra la distribuzione stimata e la distribuzione reale dei dati. La distribuzione reale è nota essendo che la classe  $y$  del dato è conosciuta. Possiamo rappresentarla attraverso la tecnica one-hot vector, ovvero un vettore di dimensione  $K$  la cui componente  $j$  che equivale alla classe di appartenenza è posta ad 1, mentre tutte le altre sono 0. Anche questo vettore rispetta le proprietà di una distribuzione di probabilità discreta.
 
-Sia  $p$  la distribuzione reale dei dati, e  $q$  quella stimata dal modello. La cross-entropy misura il numero medio di bit necessario ad identificare gli eventi che seguono la distribuzione $p$, se li descrivessimo con la distribuzione stimata $q$. Se la distribuzione $q$ approssima bene la distribuzione $p$, allora la cross-entropy dovrebbe scendere fino al valore minimo, ovvero l'entropia di $p$. L'entropia  $H(p)$  e la cross-entropy  $H(p | q)$  si calcolano come segue:
+Sia  $p$  la distribuzione reale dei dati, e  $q$  quella stimata dal modello. La cross-entropy misura il numero medio di bit necessario ad identificare gli eventi che seguono la distribuzione $p$, se li descrivessimo con la distribuzione stimata $q$. Se la distribuzione $q$ approssima bene la distribuzione $p$, allora la cross-entropy dovrebbe scendere fino al valore minimo, ovvero l'entropia di $p$. L'entropia  $H(p)$  e la cross-entropy  $H(p \mid q)$  si calcolano come segue:
 
 $$H(p) = -\sum_{i=1}^{K} p_i \log p_i \qquad\qquad H(p \mid q) = -\sum_{i=1}^{K} p_i \log q_i$$
 
