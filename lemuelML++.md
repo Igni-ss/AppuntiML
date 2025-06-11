@@ -291,7 +291,7 @@ Questo esempio suggerisce che i percettroni non possono risolvere tutti i tipi d
 
 ## **Linear Separability**
 
-Due insiemi di punti  $A$  e  $B$  in uno spazio  $n$-dimensionale vengono detti linearmente separabili se esistono  $n + 1$  numeri reali  $w_1, w_1,..., w_{n+1}$  tali che ogni punto  $x = (x_1,..., x_n) \in A$  soddisfa la disequazione:
+Due insiemi di punti  $A$  e  $B$  in uno spazio  $n$-dimensionale vengono detti linearmente separabili se esistono  $n + 1$  numeri reali  $w_1, w_2,..., w_{n+1}$  tali che ogni punto  $x = (x_1,..., x_n) \in A$  soddisfa la disequazione:
 
 <span id="page-7-2"></span><span id="page-7-1"></span><span id="page-7-0"></span>
 $$\forall x \in A \Longrightarrow \sum_{i=1}^n x_i w_i \geq w  _{n+1}$$
@@ -324,7 +324,6 @@ $$
 
 Calcoliamo i risultati di queste funzioni per tutti i possibili input:
 
-<center>
 
 | x | y | $f_1$ | $f_2$ | x XOR y |
 |:-:|:-:|:-----:|:-----:|:-------:|
@@ -333,7 +332,6 @@ Calcoliamo i risultati di queste funzioni per tutti i possibili input:
 | 1 | 0 |   1   |   0   |    1    |
 | 1 | 1 |   0   |   0   |    0    |
 
-</center>
 
 Notiamo che ora i punti dati sono linearmente separabili! Ciò è stato possibile comprimendo gli input $(0,0)$ E $(1,1)$ della stessa classe “1”, ad un unico punto $(0,0)$. Se utilizziamo i pesi del percettrone finale, possiamo tracciare il confine della decisione:
 
@@ -424,7 +422,7 @@ $$f: \mathfrak{R}^n → \mathfrak{R}$$
 
 In questo caso, utilizzeremo un parametro per ciascuna delle dimensioni della variabile di input, più un parametro per l'intercetta:
 $$f(x) = \theta_0 + \theta_1x_1 + ... + \theta_nx_n$$
-I parametri del modello sono $\theta = (\theta_0, \theta_1x, ..., \theta_n)$. Imparare il regressore significa trovare valori appropriati dei
+I parametri del modello sono $\theta = (\theta_0, \theta_1, ..., \theta_n)$. Imparare il regressore significa trovare valori appropriati dei
 parametri $\theta$.
 
 Per semplificare la notazione, possiamo porre $x_0 = 1$ e scrivere il modello lineare come segue:
@@ -637,7 +635,7 @@ Cosa da osservare:
 1. Il parametro  $\theta_0$  non è regolarizzato (la sommatoria parte da 1)
 2. $d$  è il numero di features ( $d + 1$  sono i pesi totali dato che c'è  $x_0 = 1$  per convezione)
 3. $\lambda$ è detto **parametro di regolarizzazione** e controlla i trade-off tra i due goal (minimizz. e reg.)
-4. L'intero termine sommato prende il nome di **termine di regolarizzazione**
+4. L'intero termine a destra del $+$ prende il nome di **termine di regolarizzazione**
 5. Se $\lambda$ è troppo alto si rischia l'underfitting, ovvero tutti i parametri prossimi a 0
 6. Per minimizzare  $J$  regolarizzata è ancora possibile usare il GD
 
@@ -1034,7 +1032,7 @@ $$\begin{aligned} J(\theta) &= \frac{1}{m} \sum_{i=1}^m \left[ -\sum_{k=1}^K p_k
 
 Notiamo che all'interno della sommatoria, il termine $y_k^{(i)}$ sarà sempre nullo tranne che nella componente che rappresenta la classe di $x^{(i)}$, nella pratica questo step si può semplificare tenendo in considerazione solo tale componente. Supponendo che $y_j^{(i)}=1$, allora
 
-$$J(\theta) = \frac{1}{m} \sum_{i=1}^m \left[ y_j^{(i)} \log h_{\theta}(x^{(i)})_j \right]$$
+$$J(\theta) = \frac{1}{m} \sum_{i=1}^m \left[ -y_j^{(i)} \log h_{\theta}(x^{(i)})_j \right]$$
 
 # **Multi-class classification**
 
@@ -1075,7 +1073,7 @@ P_{\theta^{(1)}}(y = 1 \mid x) \\
 P_{\theta^{(k-1)}}(y = k - 1 \mid x)
 \end{bmatrix}$$
 
-Si noti che  $\theta$  è una matrice dei pesi $(d + 1) \times k$  (supponendo che  $x \in \mathbb{R}^{d}$, più la costante di bias, per ognuno dei  $k$  output).
+Si noti che  $\theta$  è una matrice dei pesi $(d + 1) \times k$  (supponendo che  $x \in \mathbb{R}^{d}$, più la costante di bias, per ognuno dei  $k$  output) in cui ogni colonna indica i parametri dell'$i$-esimo classificatore.
 
 $$
 \theta = \begin{bmatrix}
@@ -1088,11 +1086,11 @@ $$
 
 Con  $\theta^{(c)}$ indicheremo la colonna $c$-esima di  $\theta$. Nella pratica, la componente $c$-esima del modello viene calcolata come segue:
 
-$$h_{\theta}^{(c)}(x) = P(y = c \mid x, \theta) = \frac{\exp(\theta^{(c)T}x)}{\sum_{j=0}^{k-1} \exp(\theta^{(j)T}x)}$$
+$$h_{\theta}^{(c)}(x) = P(y = c \mid x, \theta^{(c)}) = \frac{\exp(\theta^{(c)T}x)}{\sum_{j=0}^{k-1} \exp(\theta^{(j)T}x)}$$
 
 Dove il denominatore serve a normalizzare la componente in $[0,1]$, e cosicché la somma delle componenti faccia 1. Come funzione costo è possibile utilizzare la Cross-Entropy loss più il termine di regolarizzazione:
 
-$$J(\theta) = -\frac{1}{m} \left[ \sum_{i=1}^{m} \sum_{c=0}^{k-1} 1\{y^{(i)} = c\} \log \left( h_{\theta}^{(c)}(x) \right) \right] + \frac{\lambda}{2m} \sum_{c=0}^{k-1} \sum_{j=1}^{d} \left[ \theta_j^{(c)} \right]^2$$
+$$J(\theta) = -\frac{1}{m} \left[ \sum_{i=1}^{m} \sum_{c=0}^{k-1} 1\{y^{(i)} = c\} \log \left( h_{\theta}^{(c)}(x^{(i)}) \right) \right] + \frac{\lambda}{2m} \sum_{c=0}^{k-1} \sum_{j=1}^{d} \left[ \theta_j^{(c)} \right]^2$$
 
 Dove il predicato è definito come segue:
 
@@ -1125,7 +1123,11 @@ Semplifichiamo:
 
 $$\frac{\exp([\theta^{(0)} - \theta^{(1)}]^T x)}{\exp([\theta^{(0)} - \theta^{(1)}]^T x) + 1} \qquad \qquad \frac{1}{\exp([\theta^{(0)} - \theta^{(1)}]^T x) + 1}$$
 
-Poniamo  $\theta = \theta^{(0)} - \theta^{(1)}$, osserviamo che la seconda componente è proprio  $\sigma(\theta^T x)$, mentre la prima equivale a  $1 - \sigma(\theta^T x)$. La seconda componente è la probabilità  $P(y = 1 | x, \theta)$, mentre la prima è la probabilità  $P(y = 0 | x, \theta)$, per cui ci siamo ricondotti alla regressione logistica.
+Poniamo  $\theta = \theta^{(0)} - \theta^{(1)}$.
+
+$$\frac{\exp(\theta^T x)}{\exp(\theta^T x) + 1} \qquad \qquad \frac{1}{\exp(\theta^T x) + 1}$$
+
+Osserviamo che la prima componente è proprio  $\sigma(\theta^T x)$, mentre la seconda equivale a  $1 - \sigma(\theta^T x)$. La seconda componente è la probabilità  $P(y = 1 | x, \theta)$, mentre la prima è la probabilità  $P(y = 0 | x, \theta)$, per cui ci siamo ricondotti alla regressione logistica.
 
 ## **Regolarizzazione**
 
@@ -1230,11 +1232,21 @@ Sulla base dell’esito della classificazione possiamo distinguere 4 sottinsiemi
 
 **False Discovery Rate (FDR)**: $FDR(M) = \frac{|F_{pos}|}{|T_{pos}| + |F_{pos}|}$
 
-**Precisione**: $Prec(M) = \frac{|T_{pos}|}{|T_{pos}| + |F_{pos}|}$ (quanto tra i positivi predetti lo sono davvero)
+**Precisione**: $Prec(M) = \frac{|T_{pos}|}{|T_{pos}| + |F_{pos}|}$ (quanti tra i positivi predetti lo sono davvero)
 
-**Accuratezza**: $Acc(M) = \frac{|T_{pos}| + |T_{neg}|}{|Pos + Neg|}$
+**Accuratezza**: $Acc(M) = \frac{|T_{pos}| + |T_{neg}|}{|Pos + Neg|}$ (percentuale di campioni correttamente classificati)
 
 **F1 score** (compreso tra 0 e 1) $F1(M) = 2 \times \frac{Prec(M)\times Rec(M)}{Prec(M)+ Rec(M)}$
+
+F1 è un miglior indicatore rispetto alla media tra precision e recall:
+
+| Modello | Precision | Recall | Media (Prec e Rec) | F1 Score |
+|:-------:|:---------:|:------:|:--------------------------:|:--------:|
+| Model 1 | 0.5       | 0.4    | 0.45                       | 0.004    |
+| Model 2 | 0.7       | 0.1    | 0.4                        | 0.175    |
+| Model 3 | 0.02      | 1      | 0.51                       | 0.039    |
+
+Il valore massimo si ha quando entrambi sono 1, il minimo quando entrambi sono 0.
 
 ## Soglia discriminativa in un classificatore binario
 
@@ -1266,7 +1278,7 @@ Tipicamente la curva ROC si utilizza nel caso di dataset bilanciati (ovvero freq
 Se si aumenta il recall (cioè vuoi catturare più positivi), spesso la precisione scende, perché aumentano anche i falsi positivi.
 
 - Se si vuole **essere sicuri** allora bisogna avere un'alta precision e una bassa recall. Quindi si è sicuri che i valori classificati come Positivi lo sono.
-- Se invece **si vogliono catturare più positivi possibili** aumentiamo la recall a discapito della precisione Per esempio se bisogna scegliere a quali pazienti fare dei controlli aggiuntivi perchè si sospetta abbiano il cancro meglio avere una precisione bassa, e quindi fare il test anche a persone che non lo hanno, che farlo solo a quelli che siamo sicuri siano malati ignorando alcuni che lo sono ma di cui non siamo sicuri.
+- Se invece **si vogliono catturare più positivi possibili** aumentiamo la recall a discapito della precisione Per esempio se bisogna scegliere a quali pazienti fare dei controlli aggiuntivi perchè si sospetta abbiano il cancro meglio avere una precisione bassa, e quindi fare il test anche a persone che non lo hanno, che farlo solo a quelli che siamo sicuri siano malati, ignorando alcuni che lo sono ma di cui non siamo sicuri.
 
 ![](img/CurvaPrecRec.png)
 
@@ -1382,7 +1394,7 @@ Dopo aver minimizzato tale funzione, presentiamo nuovi input pattern alla networ
 
 ![](img/_page_42_Figure_0.jpeg)
 
-Come descritto nell'immagine, il primo step è quello di estendere la network con la funzione di errore, così da calcolarla direttamente. Ogni componente  $j$ dell'output è collegata ad un nodo che calcola la funzione  $\frac{1}{2}(o_{ij} - t_{ij})^2$, dove  $o_{ij}$  e  $t_{ij}$  sono rispettivamente la  $j$-esima componente dell'output vector  $o_i$  e del target  $t_i$. Gli output sono poi sommati dall'ultimo nodo, che ritorna l'errore  $E_i$  (sul campione  $i$-esimo). La stessa estensione deve essere calcolata per ogni pattern  $t$  per  $i = 1,..., p$. Alla fine, una computing unit sommerà tutti questi errori andando a calcolare l'errore totale  $E$. Gli unici parametri modificabili per far diminuire l'errore  $E$  sono i pesi della rete. Essendo calcolata da funzioni continue e differenziabili, anche  $E$  è continua e differenziabile rispetto agli  $l$  pesi della rete  $w_1, ..., w_l$, per cui è possibile calcolare il gradiente:
+Come descritto nell'immagine, **il primo step** è quello di estendere la network con la funzione di errore, così da calcolarla direttamente. Ogni componente  $j$ dell'output è collegata ad un nodo che calcola la funzione  $\frac{1}{2}(o_{ij} - t_{ij})^2$, dove  $o_{ij}$  e  $t_{ij}$  sono rispettivamente la  $j$-esima componente dell'output vector  $o_i$  e del target  $t_i$. Gli output sono poi sommati dall'ultimo nodo, che ritorna l'errore  $E_i$  (sul campione  $i$-esimo). La stessa estensione deve essere calcolata per ogni pattern  $t$  per  $i = 1,..., p$. **Alla fine**, una computing unit sommerà tutti questi errori andando a calcolare l'errore totale  $E$. Gli **unici parametri modificabili** per far diminuire l'errore  $E$  **sono i pesi della rete**. Essendo calcolata da funzioni continue e differenziabili, anche  $E$  è continua e differenziabile rispetto agli  $l$  pesi della rete  $w_1, ..., w_l$, per cui è possibile calcolare il gradiente:
 
 $$\nabla E = \left(\frac{\partial E}{\partial w_1}, \dots, \frac{\partial E}{\partial w_l}\right)$$
 
@@ -1478,9 +1490,9 @@ il multiply gate è un po' meno facile da interpretare. I suoi gradienti locali 
 Si consideri una network con un solo valore reale  $x$  ed una network function  $F$, la derivata  $F'$  è calcolata in due fasi:
 
 - **Feed-forward**: l'input è inserito nella network. Vengono valutate le funzioni primitive e le loro derivate, e quest'ultime vengono conservate.
-- **Backpropagation**: la costante 1 è inserita nell'output unit e la network è eseguita nella direzione opposta. Più informazioni che convergono su un nodo vengono sommate, poi moltiplicate alla derivata contenuta nel nodo, ed il risultato viaggia verso sinistra. Il risultato collezionato nell'unità di input corrisponderà alla derivata  $F''$  rispetto ad  $x$.
+- **Backpropagation**: la costante 1 è inserita nell'output unit e la network è eseguita nella direzione opposta. Più informazioni che convergono su un nodo vengono sommate, poi moltiplicate alla derivata contenuta nel nodo, ed il risultato viaggia verso sinistra. Il risultato collezionato nell'unità di input corrisponderà alla derivata  $F'$  rispetto ad  $x$.
 
-**Proposizione.** L'algoritmo calcola la derivata  $F''$  della network function  $F'$  rispetto all'input  $x$. correttamente (la dimostrazione è costruita per induzione).
+**Proposizione.** L'algoritmo calcola la derivata  $F'$  della network function  $F$  rispetto all'input  $x$. correttamente (la dimostrazione è costruita per induzione).
 
 ## **Learning with backpropagation**
 
@@ -1506,7 +1518,7 @@ $$
 
 Scopriamo come effettuare la backpropagation intelligentemente su una network con dei layer. Supponiamo di avere 3 layer, un layer di input con $n$ input sites, un hidden layer con $k$ unità, un output layer con $m$ unità. Il peso tra l'$i$-esimo input ed il $j$-esimo hidden node è chiamato  $w_{ij}^{(1)}$. Il peso tra l'$i$-esimo hidden node ed il $j$-esimo nodo di output è chiamato  $w_{ij}^{(2)}$. Il bias  $-\theta$  di ogni unità è implementato come peso di un arco collegato ad un input costante di valore 1 (stessa cosa per nell'output layer). Per generalizzare, il bias tra la costante 1 e l'hidden node $j$-esimo è chiamato  $w_{n+1,j}^{(1)}$, mentre quello tra la costante 1 e l'output node $j$-esimo è chiamato  $w_{k+1,j}^{(2)}$.
 
-Ci sono  $(n + 1) \times k$  pesi tra l'input layer e l'hidden layer, e  $(k + 1) \times m$  pesi tra l'hidden layer e l'output layer. Rappresentiamoli attraverso due matrici, rispettivamente  $\bar{W_1}$  la matrice  $k$  il cui generico elemento è  $w_{ij}^{(1)}$, e  $\bar{W_2}$  la matrice  $(k + 1) \times m$  il cui generico elemento è  $w_{ij}^{(2)}$.
+Ci sono  $(n + 1) \times k$  pesi tra l'input layer e l'hidden layer, e  $(k + 1) \times m$  pesi tra l'hidden layer e l'output layer. Rappresentiamoli attraverso due matrici, rispettivamente  $\bar{W_1}$  la matrice  $(n + 1) \times k$  il cui generico elemento è  $w_{ij}^{(1)}$, e  $\bar{W_2}$  la matrice  $(k + 1) \times m$  il cui generico elemento è  $w_{ij}^{(2)}$.
 
 L'input vector $n$-dimensionale  $o = (o_1,...,o_n)$  è trasformato in un vettore a  $n + 1$  dimensioni, che chiamiamo  $\hat{o} = (o_1,..., o_n, 1)$. Con  $net_j$  indichiamo l'eccitazione accumulata nel $j$-esimo hidden node, ed è calcolata come:
 
@@ -1563,17 +1575,17 @@ $$\frac{\partial E}{\partial w_{ij}^{(2)}} = o_i^{(1)} \delta_j^{(2)} \qquad i =
 
 Osserviamo che in tale passaggio consideriamo il peso  $w_{ij}^{(2)}$  come la variabile e  $o_i^{(1)}$  come una costante.
 
-### **Step 3. Backpropagation to the hidden layer**r
+### **Step 3. Backpropagation to the hidden layer**
 
 ![](img/_page_49_Figure_2.png)
 
-Vogliamo fare la stessa cosa con i pesi che collegano l'input layer con l'hidden layer, ma stavolta è più complesso. Prendiamo in considerazione il $j$-esimo nodo dell'hidden layer, l'output di questo è preso in considerazione in tutti i nodi del layer di output. Questo vuol dire che quando andiamo a calcolare il backpropagated error, dobbiamo considerare ogni possibile cammino dall'output al nodo $j$ (vedasi immagine). Di fatto, il backpropagated error  $\delta_j^{(\ell)}$  viene calcolato come segue:
+Vogliamo fare la stessa cosa con i pesi che collegano l'input layer con l'hidden layer, ma stavolta è più complesso. Prendiamo in considerazione il $j$-esimo nodo dell'hidden layer, l'output di questo è preso in considerazione in tutti i nodi del layer di output. Questo vuol dire che quando andiamo a calcolare il backpropagated error, dobbiamo considerare ogni possibile cammino dall'output al nodo $j$ (vedasi immagine). Di fatto, il backpropagated error  $\delta_j^{(1)}$  viene calcolato come segue:
 
 $$
 \delta_j^{(1)} = o_j^{(1)} (1 - o_j^{(1)}) \cdot \sum_{q=1}^m w_{jq}^{(2)} \delta_q^{(2)}.
 $$
 
-Da notare come viene sommato il backpropagated error dei nodi dell'output layer, pesato con il peso che collega il nostro nodo hidden ai nodi di output, per poi moltiplicarlo alla derivata della sigmoid function. Utilizziamo la classica formula per ottenere la derivata parziale dell'error function  $E'$  rispetto ai pesi di  $l$
+Da notare come viene sommato il backpropagated error dei nodi dell'output layer, pesato con il peso che collega il nostro nodo hidden ai nodi di output, per poi moltiplicarlo alla derivata della sigmoid function. Utilizziamo la classica formula per ottenere la derivata parziale dell'error function  $E$  rispetto ai pesi di  $\bar{W}_1$
 
 $$\frac{\partial E}{\partial w_{ij}^{(1)}} = o_i \delta_j^{(1)} \qquad i = 1, \dots, n+1$$
 
@@ -1634,14 +1646,14 @@ $$
 Adesso è molto importante notare che le correzioni vengono calcolate attraverso gli output con il cappello, quindi vengono considerati anche i bias! Di fatto le matrici di correzioni avranno una dimensione  $\Delta \bar{W}_2 \in \mathbb{R}^{(k+1)\times m}$  e  $\Delta \bar{W}_1 \in \mathbb{R}^{(n+1)\times k}$. Vediamo le formule per calcolarle:
 
 $$
-\Delta \bar{W}_2 = -\gamma \delta^{(2)} \hat{o}^1
+\Delta \bar{W}_2^T = -\gamma \delta^{(2)} \hat{o}^1
 $$
 
 $$
-\Delta \bar{W}_1 = -\gamma \delta^{(1)} \hat{o}
+\Delta \bar{W}_1^T = -\gamma \delta^{(1)} \hat{o}
 $$
 
-Esplicitando i calcoli ci accorgeremo che è identico a quanto mostrato prima. La generalizzazione è molto semplice. Supponendo di avere esattamente  $l$  layer, con il layer 1 di input ed il layer  $l$  di output, abbiamo che:
+In cui il prodotto non è riga per colonna ma il prodotto diadico (outer product). Esplicitando i calcoli ci accorgeremo che è identico a quanto mostrato prima. La generalizzazione è molto semplice. Supponendo di avere esattamente  $l$  layer, con il layer 1 di input ed il layer  $l$  di output, abbiamo che:
 
 $$
 \delta^{(l)} = D_{l}e
@@ -1689,7 +1701,7 @@ Supponiamo di avere un'immagine  $X$  in input e di darla in pasto ad un Multila
 
 $$H_{ij} = U_{ij} + \sum_{k} \sum_{l} W_{ijkl} \cdot X_{kl}$$
 
-Consideriamo  $k = i + a$  e  $l = j + b$, consideriamo  $V$  ottenuta da un reindexing di  $W (V_{ijab}= W_{ij,k+a,l+b})$, che possa contenere indici negativi. Possiamo calcolare gli elementi di  $H$  in questo modo:
+Consideriamo  $k = i + a$  e  $l = j + b$, consideriamo  $V$  ottenuta da un reindexing di  $W (V_{ijab}= W_{i,j,i+a,j+b})$, che possa contenere indici negativi. Possiamo calcolare gli elementi di  $H$  in questo modo:
 
 $$H_{ij} = U_{ij} + \sum_{a} \sum_{b} V_{ijab} \cdot X_{i+a, j+b}$$
 
@@ -1811,11 +1823,11 @@ Con le seguenti specifiche:
 
 Allora le dimensioni di output sono:
 
-$$W' = \frac{W - F_w + 2P}{S_w} + 1 \qquad\qquad H' = \frac{W - F_h + 2P}{S_h} + 1$$
+$$W' = \frac{W - F_w + 2P}{S_w} + 1 \qquad\qquad H' = \frac{H - F_h + 2P}{S_h} + 1$$
 
 ## **1x1 kernels**
 
-Supponiamo di avere un'immagine a  $c_i$  canali, e di voler ridurre i canali a  $c_o$ . Questo può essere fatto attraverso un kernel di dimensione  $1 \times 1$ . Poiché viene utilizzata la finestra minima, il kernel perde la capacità che hanno i layer convoluzionali più grandi di riconoscere i pattern costituiti da interazioni tra elementi adiacenti nelle dimensioni di altezza e larghezza. L'unico calcolo della convoluzione $1 \times \$ si verifica sulla dimensione del canale.
+Supponiamo di avere un'immagine a  $c_i$  canali, e di voler ridurre i canali a  $c_o$ . Questo può essere fatto attraverso un kernel di dimensione  $1 \times 1$ . Poiché viene utilizzata la finestra minima, il kernel perde la capacità che hanno i layer convoluzionali più grandi di riconoscere i pattern costituiti da interazioni tra elementi adiacenti nelle dimensioni di altezza e larghezza. L'unico calcolo della convoluzione $1 \times 1$ si verifica sulla dimensione del canale.
 
 ## **Informazioni contenute sulle slides**
 
@@ -1897,8 +1909,8 @@ Le seguenti osservazioni le troviamo [a questo link.](https://www.deeplearning.a
 
 Leggere meglio nel documento linkato, ma TL;DR:
 
-- Se l'inizializzazione è troppo grande si rischia l'exploding gradient (quindi divergenza)
-- Se l'inizializzazione è troppo piccola si rischia il vanishing gradient (si annulla nella backprop)
+- Se l'inizializzazione è troppo grande si rischia l'exploding gradient (quindi divergenza). Questo perchè i prodotti di valori maggiori di 1 nello step di backpropagation implicano che il risultato aumenti con ogni prodotto.
+- Se l'inizializzazione è troppo piccola si rischia il vanishing gradient (si annulla nella backprop). Situazione inversa a quella di prima, ogni prodotto diminuisce il valore del risultato perchè i pesi sono minori di 1.
 - Inizializzazione appropiata: Xavier initialization (o i metodi derivati)
 
 ## **Xavier initialization**
@@ -2010,7 +2022,7 @@ During testing, target images are mapped with the target encoder to the shared f
 
 > [Reference to CycleGAN](https://junyanz.github.io/CycleGAN/)
 
-L'Image-to-image transformation è un secondo approccio per la domain adaptation. Abbiamo due funzioni di mapping  $G: X \rightarrow Y$  e  $F: Y \rightarrow X$, e due discriminatori  $D_X$  e  $D_Y$ . Il discriminatore *D_Y* incoraggia *G* a tradurre *X* in output indistinguibili dal dominio *Y*, e viceversa  $D_X$  ed *F*. Per regolarizzare meglio questi mapping, vengono introdotte due **cycle consistency losses** che catturano l'intuizione che se mappiamo da un dominio all'altro e poi torniamo indietro, dovremmo arrivare dove abbiamo iniziato.
+L'Image-to-image transformation è un secondo approccio per la domain adaptation. Abbiamo due funzioni di mapping  $G: X \rightarrow Y$  e  $F: Y \rightarrow X$, e due discriminatori  $D_X$  e  $D_Y$ . Il discriminatore $D_Y$ incoraggia $G$ a tradurre *X* in output indistinguibili dal dominio $Y$, e viceversa  $D_X$  ed $F$. Per regolarizzare meglio questi mapping, vengono introdotte due **cycle consistency losses** che catturano l'intuizione che se mappiamo da un dominio all'altro e poi torniamo indietro, dovremmo arrivare dove abbiamo iniziato.
 
 ![](img/_page_64_Figure_5.jpeg)
 
