@@ -753,7 +753,7 @@ Stiamo sempre supponendo di valutare modelli di regressione, allora la funzione 
 
 ### **K-Fold cross validation**
 
-Prima si divide il dataset in 80% training set e 20% test set, dopodiché si applica la K-Fold cross validation sul training set, ovvero si decide un numero K di fold (sotto-insiemi di equa dimensione) in cui dividere il training set. A giro, una fold sarà il set di validazione mentre le rimanenti $l$ saranno usate per il training, questo processo è ripetuto  $K$  volte. Al giro $i$-esimo si ottengono dei parametri  $\Theta^{(i)}$  per il modello, e viene calcolata la loss  $J_{val}^{(i)}$  sul set di validazione. Alla fine possiamo ottenere una loss media di validazione come segue:
+Prima si divide il dataset in 80% training set e 20% test set, dopodiché si applica la K-Fold cross validation sul training set, ovvero si decide un numero K di fold (sotto-insiemi di equa dimensione) in cui dividere il training set. A giro, una fold sarà il set di validazione mentre le rimanenti $l$ saranno usate per il training, questo processo è ripetuto  $K$  volte. Al giro $i$-esimo si ottengono dei parametri  $\theta^{(i)}$  per il modello, e viene calcolata la loss  $J_{val}^{(i)}$  sul set di validazione. Alla fine possiamo ottenere una loss media di validazione come segue:
 
 <span id="page-18-0"></span>
 $$\frac{1}{K} \sum_{H=1}^{K} J_{val}^{H}$$
@@ -1143,9 +1143,9 @@ Un approccio stocastico ci fa risparmiare tempo, da cui nasce lo Stochastic Grad
 
 ## **Momentum**
 
-MUST READ: *[Why momentum really works](https://distill.pub/2017/momentum/)*
+MUST READ: *[Why momentum really works](https://distill.pub/2017/momentum/)*, *[Gradient Descent with Momentum](https://towardsdatascience.com/gradient-descent-with-momentum-59420f626c8f/)*
 
-La tecnica del momentum fornisce uno speed-up quadratico al learning. Si sceglie un parametro  $\beta$ solitamente settato a $0.9$ e si effettua l'aggiornamento tenendo uno stato $z$:
+La tecnica del momentum fornisce uno speed-up quadratico al learning. Esso fa in modo che quando si effettua un passo di aggiornamento non si tenga in considerazione solo il gradiente attuale ma anche quelli passati. Il contributo di un gradiente passato è minore tanto più esso è lontano da quello corrente, questo lo si fa implementando una *Exponential Moving Average(EMA)*. Si sceglie un parametro  $\beta$ solitamente settato a $0.9$ e si effettua l'aggiornamento tenendo uno stato $z$:
 $$\begin{aligned} z^{new} &= \beta z^{old} + \nabla J(\theta^{old}) \\ \theta^{new} &= \theta^{old} - \alpha z^{new} \end{aligned}$$
 
 Impostando  $\beta = 0$  si ottiene il gradient descent classico.
@@ -1159,9 +1159,9 @@ Impostiamo i seguenti parametri:
 - $\beta$ momentum
 - $e$ numero di epoche (iterazioni SGD)
 - $m$ cardinalità training set
-- $\lfloor\frac{m}{b}\rfloor$ numero di mini-batch da considerare ad ogni epoca (aggiorno $\lfloor\frac{m}{b}\rfloor$ i pesi)\Rarrow iterazioni per epoca
+- $\lfloor\frac{m}{b}\rfloor$ numero di mini-batch da considerare ad ogni epoca (aggiorno $\lfloor\frac{m}{b}\rfloor$ volte i pesi) $\Rightarrow$ iterazioni per epoca
 
-Il numero di iterazioni **totali** corrisponde a  $e \cdot \frac{m}{b}$ .
+Quindi il numero di iterazioni **totali** corrisponde a  $e \cdot \lfloor\frac{m}{b}\rfloor$ .
 
 Considerazioni:
 
@@ -1192,7 +1192,7 @@ Il problema di utilizzare gli scheduler è che necessitano di parametri che devo
 Permette di rappresentare l’accuratezza della classificazione.
 Ogni riga contiene valori reali, mentre ogni colonna valori predetti.
 L’elemento alla riga $i$-esima e colonna $j$-esima contiene il numero di casi in cui il classificatore ha classificato la classe vera $C_i$ come classe $C_j$.
-Alta accuratezza: valori nella diagonale diversi da 0 e valori al di fuori della diagonale uguali a 0.
+Si ha **alta accuratezza** quando i valori nella diagonale sono diversi da 0 e valori al di fuori della diagonale uguali a 0.
 Se ho un valore di TP molto alto ma un TN non molto alto potrei avere un dataset sbilanciato. Questo dall'accuracy non si può notare per questo è importante guardare la matrice di confusione.
 
 Caso binario
@@ -1204,13 +1204,13 @@ Caso binario
 
 Caso multiclasse
 
-|               |           | **Predetti**                     |                   |       |       |
-|---------------|-----------|----------------------------------|-------------------|-------|-------|
-|               |           | **Gatto**                        | **Cane**          | **Coniglio** | **Somma** |
-| **Reali**     | **Gatto** | 5                                | 2                 | 0            | 7     |
-|               | **Cane**  | 3                                | 3                 | 2            | 8     |
-|               | **Coniglio** | 0                             | 1                 | 11           | 12    |
-| **Somma**     |           | 8                                | 6                 | 13           | 27    |
+|           |              | **Predetti**  |           |              |           |
+|:---------:|:------------:|:-------------:|:---------:|:------------:|:---------:|
+|           |              | **Gatto**     | **Cane**  | **Coniglio** | **Somma** |
+| **Reali** | **Gatto**    | 5             | 2         | 0            | 7         |
+|           | **Cane**     | 3             | 3         | 2            | 8         |
+|           | **Coniglio** | 0             | 1         | 11           | 12        |
+|           | **Somma**    | 8             | 6         | 13           | 27        |
 
 ### Misure di accuratezza con due classi
 
@@ -1246,7 +1246,8 @@ F1 è un miglior indicatore rispetto alla media tra precision e recall:
 | Model 2 | 0.7       | 0.1    | 0.4                        | 0.175    |
 | Model 3 | 0.02      | 1      | 0.51                       | 0.039    |
 
-Il valore massimo si ha quando entrambi sono 1, il minimo quando entrambi sono 0.
+Il terzo modello ha una precision molto bassa e una recall molto alta, questo vuol dire che classifica tutti i dati che trova come positivi. Non è un classificatore migliore del secondo ma la media suggerisce così.
+Il valore massimo di F1 score si ha quando entrambi sono 1, il minimo quando entrambi sono 0.
 
 ## Soglia discriminativa in un classificatore binario
 
@@ -1274,11 +1275,11 @@ La situazione ideale è quella in cui TPR aumenta fino a raggiungere il valore 1
 ### Curva di precision Recall
 
 Rappresenta la Precisione in funzione della Recall al variare di $\sigma$.
-Tipicamente la curva ROC si utilizza nel caso di dataset bilanciati (ovvero frequenza simile delle due classi), mentre la curva di Precision-Recall è preferibile nel caso di dataset sbilanciati. Ogni punto sulla curva corrisponde a una diversa soglia di decisione.
+Tipicamente la **curva ROC** si utilizza nel caso di **dataset bilanciati** (ovvero frequenza simile delle due classi), mentre la **curva di Precision-Recall** è preferibile nel caso di **dataset sbilanciati**. Ogni punto sulla curva corrisponde a una diversa soglia di decisione.
 Se si aumenta il recall (cioè vuoi catturare più positivi), spesso la precisione scende, perché aumentano anche i falsi positivi.
 
 - Se si vuole **essere sicuri** allora bisogna avere un'alta precision e una bassa recall. Quindi si è sicuri che i valori classificati come Positivi lo sono.
-- Se invece **si vogliono catturare più positivi possibili** aumentiamo la recall a discapito della precisione Per esempio se bisogna scegliere a quali pazienti fare dei controlli aggiuntivi perchè si sospetta abbiano il cancro meglio avere una precisione bassa, e quindi fare il test anche a persone che non lo hanno, che farlo solo a quelli che siamo sicuri siano malati, ignorando alcuni che lo sono ma di cui non siamo sicuri.
+- Se invece **si vogliono catturare più positivi possibili** aumentiamo la recall a discapito della precisione. Per esempio se bisogna scegliere a quali pazienti fare dei controlli aggiuntivi perchè si sospetta abbiano il cancro meglio avere una precisione bassa, e quindi fare il test anche a persone che non lo hanno, che farlo solo a quelli che siamo sicuri siano malati, ignorando alcuni che lo sono ma di cui non siamo sicuri.
 
 ![](img/CurvaPrecRec.png)
 
@@ -1522,11 +1523,11 @@ Ci sono  $(n + 1) \times k$  pesi tra l'input layer e l'hidden layer, e  $(k + 1
 
 L'input vector $n$-dimensionale  $o = (o_1,...,o_n)$  è trasformato in un vettore a  $n + 1$  dimensioni, che chiamiamo  $\hat{o} = (o_1,..., o_n, 1)$. Con  $net_j$  indichiamo l'eccitazione accumulata nel $j$-esimo hidden node, ed è calcolata come:
 
-$$net_j = \sum_{i=0}^{n+1} w_{ij}^{(1)} \hat{o}_i$$
+$$net_j = \sum_{i=1}^{n+1} w_{ij}^{(1)} \hat{o}_i$$
 
 La funzione di attivazione è una sigmoid function $s$ e l'output  $o_j^{(1)}$  della $j$-esima hidden unit è calcolato come:
 
-$$o_j^{(1)} = s \left( \sum_{i=0}^{n+1} w_{ij}^{(1)} \hat{o}_i \right)$$
+$$o_j^{(1)} = s \left( \sum_{i=1}^{n+1} w_{ij}^{(1)} \hat{o}_i \right)$$
 
 Possiamo calcolare la $net$ su ogni unità dell'hidden layer attraverso la moltiplicazione vettore-matrice  $\hat{o}W_1$. Il vettore di output dell'hidden  $o^{(1)}$  layer può essere calcolato come segue:
 
@@ -1727,7 +1728,7 @@ La convoluzione tra due funzioni  $f, g : \mathbb{R}^d \rightarrow \mathbb{R}$  
 
 $$(f \ast g)(x) = \int_{-\infty}^{+\infty} f(z)g(x-z)dz$$
 
-Il che misura la sovrapposizione delle aree delle funzioni  $f$  e  $g$  quando  $g$  è flippata e shiftata di  $x$ . Discretizzando l'espressione otteniamo:
+Il che misura la sovrapposizione delle aree delle funzioni  $f$  e  $g$  quando  $g$  è flippata e shiftata di  $x$. Discretizzando l'espressione otteniamo:
 
 $$(f \ast g)(i) = \sum_{a} f(a)g(i - a)$$
 
@@ -1814,6 +1815,8 @@ $$
 
 ## **Output dimensions**
 
+La formula precedente viene usata all'atto pratico per il calcolo delle dimensioni di output di un kernel quando i parametri non restituiscono un valore intero, una formula più corretta, da utilizzare magari durante la progettazione per decidere i valori dei vari parametri è la seguente.
+
 Con le seguenti specifiche:
 
 - Input di dimensione $W \times H$.
@@ -1824,6 +1827,24 @@ Con le seguenti specifiche:
 Allora le dimensioni di output sono:
 
 $$W' = \frac{W - F_w + 2P}{S_w} + 1 \qquad\qquad H' = \frac{H - F_h + 2P}{S_h} + 1$$
+
+Esempio:
+
+* Input: $W = 8$
+* Kernel: $F_w = 3$
+* Padding: $P = 0$
+* Stride: $S_w = 2$
+
+$$
+\frac{8 - 3}{2} + 1 = \frac{5}{2} + 1 = 2.5 + 1 = 3.5
+$$
+
+Qui si ottiene **un valore non intero**, quindi sarebbe opportuno modificare i parametri (magari il padding) per avere un risultato intero altrimenti serve il `floor` per correggere:
+
+
+$$
+\left\lfloor \frac{8 - 3 + 0 + 2}{2} \right\rfloor = \left\lfloor \frac{7}{2} \right\rfloor = \left\lfloor 3.5 \right\rfloor = 3
+$$
 
 ## **1x1 kernels**
 
@@ -2022,7 +2043,7 @@ During testing, target images are mapped with the target encoder to the shared f
 
 > [Reference to CycleGAN](https://junyanz.github.io/CycleGAN/)
 
-L'Image-to-image transformation è un secondo approccio per la domain adaptation. Abbiamo due funzioni di mapping  $G: X \rightarrow Y$  e  $F: Y \rightarrow X$, e due discriminatori  $D_X$  e  $D_Y$ . Il discriminatore $D_Y$ incoraggia $G$ a tradurre *X* in output indistinguibili dal dominio $Y$, e viceversa  $D_X$  ed $F$. Per regolarizzare meglio questi mapping, vengono introdotte due **cycle consistency losses** che catturano l'intuizione che se mappiamo da un dominio all'altro e poi torniamo indietro, dovremmo arrivare dove abbiamo iniziato.
+L'Image-to-image transformation è un secondo approccio per la domain adaptation. Abbiamo due funzioni di mapping  $G: X \rightarrow Y$  e  $F: Y \rightarrow X$, e due discriminatori  $D_X$  e  $D_Y$ . Il discriminatore $D_Y$ incoraggia $G$ a tradurre $X$ in output indistinguibili dal dominio $Y$, e viceversa  $D_X$  ed $F$. Per regolarizzare meglio questi mapping, vengono introdotte due **cycle consistency losses** che catturano l'intuizione che se mappiamo da un dominio all'altro e poi torniamo indietro, dovremmo arrivare dove abbiamo iniziato.
 
 ![](img/_page_64_Figure_5.jpeg)
 
